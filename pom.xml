@@ -30,14 +30,14 @@
     <version>35</version>
   </parent>
   <artifactId>xwiki-application-admintools</artifactId>
-  <version>2.0.1</version>
+  <version>3.0-SNAPSHOT</version>
   <packaging>xar</packaging>
   <name>XWiki Platform - Applications - Admin Tools</name>
   <description>Advanced administration tools that provide more details about the health of the wiki/farm.</description>
   <scm>
-    <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/contrib/projects/xwiki-application-admintools/tags/xwiki-application-admintools-2.0.1</connection>
-     <developerConnection>scm:svn:https://svn.xwiki.org/svnroot/xwiki/contrib/projects/xwiki-application-admintools/tags/xwiki-application-admintools-2.0.1</developerConnection>
-    <url>http://svn.xwiki.org/svnroot/xwiki/contrib/projects/xwiki-application-admintools/tags/xwiki-application-admintools-2.0.1</url>
+    <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/contrib/projects/xwiki-application-admintools/trunk/</connection>
+     <developerConnection>scm:svn:https://svn.xwiki.org/svnroot/xwiki/contrib/projects/xwiki-application-admintools/trunk/</developerConnection>
+    <url>http://svn.xwiki.org/svnroot/xwiki/contrib/projects/xwiki-application-admintools/trunk/</url>
   </scm>
   <distributionManagement>
     <repository>
