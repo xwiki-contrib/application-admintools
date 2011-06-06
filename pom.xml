@@ -35,9 +35,9 @@
   <name>XWiki Platform - Applications - Admin Tools</name>
   <description>Advanced administration tools that provide more details about the health of the wiki/farm.</description>
   <scm>
-    <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/contrib/projects/xwiki-application-admintools/trunk/</connection>
-     <developerConnection>scm:svn:https://svn.xwiki.org/svnroot/xwiki/contrib/projects/xwiki-application-admintools/trunk/</developerConnection>
-    <url>http://svn.xwiki.org/svnroot/xwiki/contrib/projects/xwiki-application-admintools/trunk/</url>
+    <connection>scm:git:git://github.com/xwiki-contrib/application-admintools.git</connection>
+    <developerConnection>scm:git:git@github.com:xwiki-contrib/application-admintools.git</developerConnection>
+    <url>https://github.com/xwiki-contrib/application-admintools</url>
   </scm>
   <distributionManagement>
     <repository>
