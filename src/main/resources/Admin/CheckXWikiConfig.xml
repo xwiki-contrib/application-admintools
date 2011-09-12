@@ -86,7 +86,8 @@ def getEnvVars() {
     }
   else if ( (OS.indexOf("nt") &gt; -1)
          || (OS.indexOf("windows 2000") &gt; -1 )
-         || (OS.indexOf("windows xp") &gt; -1) ) {
+         || (OS.indexOf("windows xp") &gt; -1) 
+         || (OS.indexOf("windows") &gt; -1) ) {
     // thanks to JuanFran for the xp fix!
     p = r.exec( "cmd.exe /c set" );
     }
