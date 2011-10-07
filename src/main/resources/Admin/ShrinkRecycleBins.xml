@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>Admin</web>
+<name>ShrinkRecycleBins</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent>Admin.Tools</parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1317648634000</creationDate>
+<date>1317997680000</date>
+<contentUpdateDate>1317997680000</contentUpdateDate>
+<version>1.1</version>
+<title>Shrink Recycle Bins</title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.0</syntaxId>
+<hidden>false</hidden>
+<content>{{velocity}}
+$xwiki.ssfx.use("js/xwiki/table/table.css")
+$xwiki.jsfx.use("js/xwiki/table/tablefilterNsort.js", true)
+{{/velocity}}{{groovy}}
+import com.xpn.xwiki.doc.XWikiAttachment;
+
+// Utility method to run a query
+// return the result as a List of Maps or the Exception
+def runQuery(query) {
+  def context2 = xcontext.getContext()
+  def store = xwiki.getXWiki().getStore().getStore()
+  store.beginTransaction(context2)
+  def session = store.getSession(context2)
+  def connection = session.connection()
+  def stmt = connection.createStatement()
+  def list = new ArrayList()
+  try {
+    sql = request.query;
+    def resultset = stmt.executeQuery(query)
+    def mdata = resultset.getMetaData()
+    def nbcols = mdata.getColumnCount()
+    while (resultset.next()) {
+      def map = new HashMap()
+      for (i=1;i&lt;=nbcols;i++) {
+        def value = resultset.getObject(i)
+        if (value==null)
+          value = ""
+        map.put(mdata.getColumnName(i), value)
+      }
+      list.add(map)
+    }
+  } catch (Exception ex) {
+    println "Error running sql: ${sql} " + ex.getMessage()
+    return ex
+  } finally {
+    stmt.close()
+    store.endTransaction(context2, true)
+  }
+  return list
+}
+
+// Utility method to test MySQL database
+def isMySQL() {
+/* This doesn't work ----------------------
+  def store = xwiki.getXWiki().getStore().getStore()
+  def db = store.getDatabaseProductName()
+  println "isMySQL() : " + db.equals(com.xpn.xwiki.store.DatabaseProduct.MYSQL)
+-------------------------------------------*/
+  def r = runQuery("show processlist")
+  return (r instanceof Exception ? false : true) 
+}
+
+def Float getSpaceUsed(table, wiki) {
+  def mwikiquery = (wiki=="") ? "" : "AND TABLE_SCHEMA = '${wiki}'"
+  def query = (table=="") ? "SELECT SUM(DATA_LENGTH)/1024/1024 as 'space' FROM INFORMATION_SCHEMA.TABLES  WHERE 1=1 ${mwikiquery}" : "SELECT SUM(DATA_LENGTH)/1024/1024 as 'space' FROM INFORMATION_SCHEMA.TABLES  WHERE TABLE_NAME='${table}' ${mwikiquery}"
+  def spaceLeftResult = runQuery(query)
+  if (spaceLeftResult.size()==0 || spaceLeftResult.get(0).get("space")==null)
+    return -1f
+  Float spaceLeft = spaceLeftResult.get(0).get("space")
+  return spaceLeft
+}
+
+// Return the number of rows in a table of a wiki (or -1) 
+def Integer getCount(table, wiki) {
+  if ((table=="") || (wiki==""))
+    return -1
+  def query = "SELECT COUNT(1) AS 'counter' FROM ${wiki}.${table}"
+  //println "Q:" + query
+  def countResult = runQuery(query)
+  //println "countResult: ${countResult}"
+  if (countResult.size()==0 || countResult.get(0).get("counter")==null)
+    return -1
+  try {
+    return countResult.get(0).get("counter").toInteger()
+  } catch (Exception e) {
+    return -1
+  }
+}
+
+// Delete the trashed documents
+def emptyDocBin(wiki) {
+  if (wiki=="")
+    return "?"
+  xcontext.setDatabase(wiki)
+  def workWiki = xcontext.getXWiki()
+  def query = "SELECT DISTINCT XDD_FULLNAME, XDD_LANGUAGE FROM " + wiki + ".XWIKIRECYCLEBIN"
+  //println "Q:" + query
+  def docsResult = runQuery(query)
+  if (docsResult instanceof Exception)
+    return
+  println '**Deleted documents**'
+  if (docsResult.size() &gt; 0) {
+    for (doc in docsResult) {
+      def docName = doc.get("XDD_FULLNAME")
+      //println '* ' + docName+ ' * ' + workWiki.getDeletedDocuments(docName, "", xcontext.context).size()
+      workWiki.getDeletedDocuments(docName, "", xcontext.context).each{
+        print it.fullName + ' '
+        workWiki.getRecycleBinStore().deleteFromRecycleBin(
+             workWiki.getDocument(it.fullName,xcontext.context),
+             it.getId(),
+             xcontext.context,
+             true);
+      }
+    }
+  }
+  xcontext.setDatabase(xcontext.getOriginalDatabase())
+  println ' '
+}
+
+
+// Delete the trashed files
+def emptyAttBin(wiki) {
+  if (wiki=="")
+    return "?"
+  xcontext.setDatabase(wiki)
+  def workWiki = xcontext.getXWiki()
+  def context2 = xcontext.context
+  def allDeletedAttachments = workWiki.getAttachmentRecycleBinStore().getAllDeletedAttachments((XWikiAttachment)null, context2, true)
+  println '**Deleted files**'
+  allDeletedAttachments.each{
+    print it.filename + ' '
+    workWiki.getAttachmentRecycleBinStore().deleteFromRecycleBin(it.id, context2, true)
+  }
+  xcontext.setDatabase(xcontext.getOriginalDatabase())
+  println ' '
+}
+
+def showWikiBins(wiki) {
+  if (wiki=="xwiki")
+    println '&lt;tr&gt;&lt;td&gt;&lt;a href="' + doc.getName() +'?w=' + wiki + '"&gt;' + wiki + ' (main wiki)&lt;/td&gt;'
+  else
+    println '&lt;tr&gt;&lt;td&gt;&lt;a href="' + doc.getName() +'?w=' + wiki + '"&gt;' + wiki + '&lt;/td&gt;'
+  Float sizeD = getSpaceUsed("xwikirecyclebin", wiki)
+  Float sizeA = getSpaceUsed("xwikiattrecyclebin", wiki)
+  println '&lt;td style="text-align:right"&gt;' + String.format('%7.1f', sizeD) + '&lt;/td&gt;'
+  println '&lt;td style="text-align:right"&gt;' + String.format('%7.1f', sizeA) + '&lt;/td&gt;'
+  println '&lt;td style="text-align:right"&gt;' + String.format('%7.1f', (sizeD + sizeA)) + '&lt;/td&gt;&lt;/tr&gt;'
+}
+
+def displayRecycleBins() {
+  if (!isMySQL()) {
+    println "**Sorry, this script can't be run if the XWiki database is NOT MySQL.**"
+    return
+  }
+  println '= Recycle Bins Size (in Mega Bytes) ='
+  println '{{html}}'
+  println '&lt;table id="bins" class="grid sortable doOddEven"&gt;' 
+  println '&lt;tr class="sortHeader"&gt;&lt;th&gt;Wiki&lt;/th&gt;&lt;th&gt;Page Recycle bin&lt;/th&gt;&lt;th&gt;Attachment Recycle bin&lt;/th&gt;&lt;th&gt;Total&lt;/th&gt;&lt;/tr&gt;'
+
+  if (xwiki.isVirtual()) {
+    def wikilist = xwiki.wikimanager.getAllWikis().sort{it.toString()}
+    for (wiki in wikilist) {
+      showWikiBins(wiki.toString())
+    }
+  } else {
+    showWikiBins(xcontext.database)
+  }
+
+  println '&lt;/table&gt;'
+  println '{{/html}}'
+}
+
+def wParam = request.get("w") // Wiki name specified using the url parameter "w"
+if (wParam) {
+  if (request.confirmation) {
+    println "= Empty the 2 recycle bins of //${wParam}// ="
+    emptyDocBin(wParam)
+    emptyAttBin(wParam)
+    println '\n\n[[Done&gt;&gt;' + doc.getName() + ']]'
+  } else {
+    println "= Empty the 2 recycle bins of //${wParam}// ? ="
+    Integer docCount = getCount("xwikirecyclebin", wParam)
+    Integer attCount = getCount("xwikiattrecyclebin", wParam)
+    if ((docCount + attCount) &gt; 0) {
+      println 'Please, confirm that you will permanently delete **' + docCount + '** documents and **' + attCount + '** attachments.'
+      println ' '
+      println '[[{{html}}&lt;button type="button"&gt;Yes, I confirm&lt;/button&gt;{{/html}}&gt;&gt;' + doc.getName() + '?w=' + wParam + '&amp;confirmation=1]]'
+      println ' '
+      println 'I prefer to [[go back&gt;&gt;' + doc.getName() + ']]'
+    } else {
+      println 'Nothing to delete, the recycle bins of //' + wParam + '// are already empty.'
+      displayRecycleBins()
+    }
+  }
+} else {
+  displayRecycleBins()
+}
+{{/groovy}}</content></xwikidoc>

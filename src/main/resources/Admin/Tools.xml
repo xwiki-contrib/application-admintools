@@ -39,10 +39,14 @@ The following pages allow advanced administration of an XWiki or XWiki farm:
 == Activity Tools ==
 
 * [[Activity Report&gt;&gt;ActivityReport]]: tool to check activity on all wikis of a farm
-* [[Used Space&gt;&gt;UsedSpace]]: tool to check the disk space used by your wikis
 * [[User Rights Check&gt;&gt;CheckRights]]: tool to check the rights of a specific user
 * [[Flush Cache&gt;&gt;FlushCache]]: tool to flush the cache
 * [[Requests Status&gt;&gt;RequestsStatus]]: tool to view running requests (need monitor plugin activation)
+
+== Storage Management Tools ==
+
+* [[Used Space&gt;&gt;UsedSpace]]: tool to check the disk space used by your wikis
+* [[Shrink Recycle Bins&gt;&gt;ShrinkRecycleBins]]: tool to empty the recycle bins of your wikis
 
 == Upgrade Tools ==
 
