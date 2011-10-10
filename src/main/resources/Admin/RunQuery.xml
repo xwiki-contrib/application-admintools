@@ -51,8 +51,7 @@
             print "|";
        }
        println "";
-       while (true) {
-          resultset.next();
+       while (resultset.next()) {
           for (i=1;i&lt;=nbcols;i++) {
            def value = resultset.getString(i);
            if ((value==null)||(value==""))
@@ -62,15 +61,13 @@
             print "|";
           }
           println "";
-          if (resultset.isLast())         
-            break;
        } 
        println "{table}"
-       stmt.close();
     } catch (Exception e2) {
        println "* Error running sql: ${sql} " + e2.getMessage();
     } finally {
       stmt.close();
+      store.endTransaction(context2, true)
     }
    } 
 %&gt;</content></xwikidoc>
