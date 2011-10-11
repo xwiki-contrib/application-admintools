@@ -74,7 +74,7 @@ def isMySQL() {
   return (r instanceof Exception ? false : true) 
 }
 
-def Float getSpaceUsed(table, wiki) {
+def Float getMySQLSpaceUsed(table, wiki) {
   def mwikiquery = (wiki=="") ? "" : "AND TABLE_SCHEMA = '${wiki}'"
   def query = (table=="") ? "SELECT SUM(DATA_LENGTH)/1024/1024 as 'space' FROM INFORMATION_SCHEMA.TABLES  WHERE 1=1 ${mwikiquery}" : "SELECT SUM(DATA_LENGTH)/1024/1024 as 'space' FROM INFORMATION_SCHEMA.TABLES  WHERE TABLE_NAME='${table}' ${mwikiquery}"
   def spaceLeftResult = runQuery(query)
@@ -84,30 +84,38 @@ def Float getSpaceUsed(table, wiki) {
   return spaceLeft
 }
 
-// Return the number of rows in a table of a wiki (or -1) 
-def Integer getCount(table, wiki) {
-  if ((table=="") || (wiki==""))
-    return -1
-  def query = "SELECT COUNT(1) AS 'counter' FROM ${wiki}.${table}"
+def getAgeWhereClause(age) {
+  return (new Date() - age + 1).format('yyyy-MM-dd')
+}
+
+// Return figures about the 2 recycle bins (-1 is for error) 
+def getFigures(wiki, age) {
+  def result = [ 'docNb':-1i, 'docSize':-1i, 'attNb':-1i, 'attSize':-1i]
+  if (wiki=="") return result
+  // Get the doc recycle bin figures
+  def query = "SELECT COUNT(1) AS 'counter' FROM ${wiki}.XWIKIRECYCLEBIN WHERE XDD_DATE &lt; '${getAgeWhereClause(age)}'"
   //println "Q:" + query
-  def countResult = runQuery(query)
-  //println "countResult: ${countResult}"
-  if (countResult.size()==0 || countResult.get(0).get("counter")==null)
-    return -1
+  def rs = runQuery(query)
   try {
-    return countResult.get(0).get("counter").toInteger()
-  } catch (Exception e) {
-    return -1
-  }
+    result.putAt('docNb', rs.get(0).get('counter').toInteger())
+  } catch (Exception e) {}
+  // Get the attachment recycle bin figures
+  query = "SELECT COUNT(1) AS 'counter' FROM ${wiki}.XWIKIATTRECYCLEBIN WHERE XDA_DATE &lt; '${getAgeWhereClause(age)}'"
+  //println "Q:" + query
+  rs = runQuery(query)
+  try {
+    result.putAt('attNb', rs.get(0).get('counter').toInteger())
+  } catch (Exception e) {}
+  return result
 }
 
 // Delete the trashed documents
-def emptyDocBin(wiki) {
+def emptyDocBin(wiki, age) {
   if (wiki=="")
     return "?"
   xcontext.setDatabase(wiki)
   def workWiki = xcontext.getXWiki()
-  def query = "SELECT DISTINCT XDD_FULLNAME, XDD_LANGUAGE FROM " + wiki + ".XWIKIRECYCLEBIN"
+  def query = "SELECT DISTINCT XDD_FULLNAME FROM ${wiki}.XWIKIRECYCLEBIN WHERE XDD_DATE &lt; '${getAgeWhereClause(age)}'"
   //println "Q:" + query
   def docsResult = runQuery(query)
   if (docsResult instanceof Exception)
@@ -115,15 +123,16 @@ def emptyDocBin(wiki) {
   println '**Deleted documents**'
   if (docsResult.size() &gt; 0) {
     for (doc in docsResult) {
-      def docName = doc.get("XDD_FULLNAME")
-      //println '* ' + docName+ ' * ' + workWiki.getDeletedDocuments(docName, "", xcontext.context).size()
-      workWiki.getDeletedDocuments(docName, "", xcontext.context).each{
-        print it.fullName + ' '
-        workWiki.getRecycleBinStore().deleteFromRecycleBin(
-             workWiki.getDocument(it.fullName,xcontext.context),
-             it.getId(),
-             xcontext.context,
-             true);
+      def docName = doc.get('XDD_FULLNAME')
+      workWiki.getDeletedDocuments(docName, '', xcontext.context).each{
+        if (it.getDate()&lt;(new Date() - age + 1)) {
+          print it.fullName + ' '
+          workWiki.getRecycleBinStore().deleteFromRecycleBin(
+              workWiki.getDocument(it.fullName, xcontext.context),
+              it.getId(),
+              xcontext.context,
+              true);
+        }
       }
     }
   }
@@ -133,7 +142,7 @@ def emptyDocBin(wiki) {
 
 
 // Delete the trashed files
-def emptyAttBin(wiki) {
+def emptyAttBin(wiki, age) {
   if (wiki=="")
     return "?"
   xcontext.setDatabase(wiki)
@@ -142,28 +151,79 @@ def emptyAttBin(wiki) {
   def allDeletedAttachments = workWiki.getAttachmentRecycleBinStore().getAllDeletedAttachments((XWikiAttachment)null, context2, true)
   println '**Deleted files**'
   allDeletedAttachments.each{
-    print it.filename + ' '
-    workWiki.getAttachmentRecycleBinStore().deleteFromRecycleBin(it.id, context2, true)
+    if (it.getDate()&lt;(new Date() - age + 1)) {
+      print it.filename + ' '
+      workWiki.getAttachmentRecycleBinStore().deleteFromRecycleBin(it.id, context2, true)
+    }
   }
   xcontext.setDatabase(xcontext.getOriginalDatabase())
   println ' '
 }
 
+// Include a javascript refreshing the page with a new 'n' (NewerThan) parameter
+// and the related drop-down list
+def printNewerWidget(current) {
+  def listOfDays = [0, 1, 7, 30, 100, 366]
+  if (current==null) {
+    current = 30
+  }
+  println '\n{{html}}'
+  println '''
+    &lt;script type="text/javascript"&gt;
+    //&lt;![CDATA[
+    function getQueryVariable(variable) {
+      var query = window.location.search.substring(1);
+      var vars = query.split("&amp;");
+      for (var i=0;i&lt;vars.length;i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) {
+          return pair[1];
+        }
+      }
+      return "";
+    }
+    function sendNewer() {;
+      var urlParams;
+      var nbDays=document.getElementById("idNewerThan").value;
+      var currentWiki=getQueryVariable("w");
+      if (currentWiki.length==0) {
+        urlParams = "?n=" + nbDays;
+      } else {
+        urlParams = "?w=" + currentWiki + "&amp;n=" + nbDays;
+      }
+     window.location.assign(window.location.pathname + urlParams );
+    }
+    //]]&gt;
+    &lt;/script&gt;
+  '''
+
+  println '&lt;p&gt;Excluding items newer than &lt;select id="idNewerThan" onchange="sendNewer();"&gt;'
+  listOfDays.each{
+    print "&lt;option value=\"${it}\" "
+    if (current==it) print 'selected="selected"';
+    println "&gt;${it}&lt;/option&gt;"
+  }
+  println '&lt;/select&gt; days.&lt;/p&gt;'
+  println '\n{{/html}}\n'
+} // End printNewerWidget()
+
 def showWikiBins(wiki) {
+  print '&lt;tr&gt;&lt;td&gt;&lt;a href="' + doc.getName() +'?w=' + wiki + '"&gt;' + wiki
   if (wiki=="xwiki")
-    println '&lt;tr&gt;&lt;td&gt;&lt;a href="' + doc.getName() +'?w=' + wiki + '"&gt;' + wiki + ' (main wiki)&lt;/td&gt;'
+    println '&lt;/a&gt; (main wiki)&lt;/td&gt;'
   else
-    println '&lt;tr&gt;&lt;td&gt;&lt;a href="' + doc.getName() +'?w=' + wiki + '"&gt;' + wiki + '&lt;/td&gt;'
-  Float sizeD = getSpaceUsed("xwikirecyclebin", wiki)
-  Float sizeA = getSpaceUsed("xwikiattrecyclebin", wiki)
+    println '&lt;/a&gt;&lt;/td&gt;'
+  Float sizeD = getMySQLSpaceUsed("xwikirecyclebin", wiki)
+  Float sizeA = getMySQLSpaceUsed("xwikiattrecyclebin", wiki)
   println '&lt;td style="text-align:right"&gt;' + String.format('%7.1f', sizeD) + '&lt;/td&gt;'
   println '&lt;td style="text-align:right"&gt;' + String.format('%7.1f', sizeA) + '&lt;/td&gt;'
   println '&lt;td style="text-align:right"&gt;' + String.format('%7.1f', (sizeD + sizeA)) + '&lt;/td&gt;&lt;/tr&gt;'
 }
 
+// In a farm context, displays the size of the recycle bins for all the wikis
 def displayRecycleBins() {
   if (!isMySQL()) {
-    println "**Sorry, this script can't be run if the XWiki database is NOT MySQL.**"
+    println '**Sorry, this script can\'t be run if the XWiki farm database is NOT MySQL.**'
     return
   }
   println '= Recycle Bins Size (in Mega Bytes) ='
@@ -171,42 +231,48 @@ def displayRecycleBins() {
   println '&lt;table id="bins" class="grid sortable doOddEven"&gt;' 
   println '&lt;tr class="sortHeader"&gt;&lt;th&gt;Wiki&lt;/th&gt;&lt;th&gt;Page Recycle bin&lt;/th&gt;&lt;th&gt;Attachment Recycle bin&lt;/th&gt;&lt;th&gt;Total&lt;/th&gt;&lt;/tr&gt;'
 
-  if (xwiki.isVirtual()) {
-    def wikilist = xwiki.wikimanager.getAllWikis().sort{it.toString()}
-    for (wiki in wikilist) {
-      showWikiBins(wiki.toString())
-    }
-  } else {
-    showWikiBins(xcontext.database)
+  def wikilist = xwiki.wikimanager.getAllWikis().sort{it.toString()}
+  for (wiki in wikilist) {
+    showWikiBins(wiki.toString())
   }
-
   println '&lt;/table&gt;'
   println '{{/html}}'
 }
 
+// The script starts here
 def wParam = request.get("w") // Wiki name specified using the url parameter "w"
+def nParam = request.get("n") // Exclude NewerThan specified using the url parameter "n"
+Integer nValue = 30i // Default value is 30 days
+if (nParam) {
+  try { nValue=nParam.toInteger() } catch(exc) {}
+}
 if (wParam) {
   if (request.confirmation) {
     println "= Empty the 2 recycle bins of //${wParam}// ="
-    emptyDocBin(wParam)
-    emptyAttBin(wParam)
+    emptyDocBin(wParam, nValue)
+    emptyAttBin(wParam, nValue)
     println '\n\n[[Done&gt;&gt;' + doc.getName() + ']]'
   } else {
+    def figures = getFigures(wParam, nValue)
     println "= Empty the 2 recycle bins of //${wParam}// ? ="
-    Integer docCount = getCount("xwikirecyclebin", wParam)
-    Integer attCount = getCount("xwikiattrecyclebin", wParam)
-    if ((docCount + attCount) &gt; 0) {
-      println 'Please, confirm that you will permanently delete **' + docCount + '** documents and **' + attCount + '** attachments.'
+    printNewerWidget(nValue)
+    if ((figures.docNb + figures.attNb) &gt; 0) {
+      println 'Please, confirm that you will permanently delete **' + figures.docNb + '** documents and **' + figures.attNb+ '** attachments.'
       println ' '
-      println '[[{{html}}&lt;button type="button"&gt;Yes, I confirm&lt;/button&gt;{{/html}}&gt;&gt;' + doc.getName() + '?w=' + wParam + '&amp;confirmation=1]]'
+      println '[[{{html}}&lt;button type="button"&gt;Yes, I confirm&lt;/button&gt;{{/html}}&gt;&gt;' + doc.getName() + '?w=' + wParam + '&amp;n=' + nValue + '&amp;confirmation=1]]'
       println ' '
       println 'I prefer to [[go back&gt;&gt;' + doc.getName() + ']]'
     } else {
-      println 'Nothing to delete, the recycle bins of //' + wParam + '// are already empty.'
-      displayRecycleBins()
+      println '**Nothing to delete** in the //' + wParam + '// recycle bins.'
+      println ' '
+      println '[[Return&gt;&gt;' + doc.getName() + ']]'
     }
   }
 } else {
+  if (!xwiki.isVirtual()) {
+    response.sendRedirect(xwiki.getURL(doc.name) + '?w=' + xcontext.database)
+    return
+  }
   displayRecycleBins()
 }
 {{/groovy}}</content></xwikidoc>
