@@ -92,20 +92,20 @@ def getAgeWhereClause(age) {
 def getFigures(wiki, age) {
   def result = [ 'docNb':-1i, 'docSize':-1i, 'attNb':-1i, 'attSize':-1i]
   if (wiki=="") return result
+  xcontext.setDatabase(wiki)
   // Get the doc recycle bin figures
-  def query = "SELECT COUNT(1) AS 'counter' FROM ${wiki}.XWIKIRECYCLEBIN WHERE XDD_DATE &lt; '${getAgeWhereClause(age)}'"
-  //println "Q:" + query
-  def rs = runQuery(query)
+  def qry = "select count(doc) from XWikiDeletedDocument doc where doc.date &lt; '${getAgeWhereClause(age)}'"
   try {
-    result.putAt('docNb', rs.get(0).get('counter').toInteger())
+    def rs = services.get("query").hql(qry).execute()
+    result.putAt('docNb', rs.get(0))
   } catch (Exception e) {}
   // Get the attachment recycle bin figures
-  query = "SELECT COUNT(1) AS 'counter' FROM ${wiki}.XWIKIATTRECYCLEBIN WHERE XDA_DATE &lt; '${getAgeWhereClause(age)}'"
-  //println "Q:" + query
-  rs = runQuery(query)
+  qry = "select count(doc) from DeletedAttachment doc where doc.date &lt; '${getAgeWhereClause(age)}'"
   try {
-    result.putAt('attNb', rs.get(0).get('counter').toInteger())
+    def rs = services.get("query").hql(qry).execute()
+    result.putAt('attNb', rs.get(0))
   } catch (Exception e) {}
+  xcontext.setDatabase(xcontext.getOriginalDatabase())
   return result
 }
 
@@ -115,24 +115,17 @@ def emptyDocBin(wiki, age) {
     return "?"
   xcontext.setDatabase(wiki)
   def workWiki = xcontext.getXWiki()
-  def query = "SELECT DISTINCT XDD_FULLNAME FROM ${wiki}.XWIKIRECYCLEBIN WHERE XDD_DATE &lt; '${getAgeWhereClause(age)}'"
-  //println "Q:" + query
-  def docsResult = runQuery(query)
-  if (docsResult instanceof Exception)
-    return
+  def qry = "select doc.fullName from XWikiDeletedDocument doc where doc.date &lt; '${getAgeWhereClause(0)}'"
   println '**Deleted documents**'
-  if (docsResult.size() &gt; 0) {
-    for (doc in docsResult) {
-      def docName = doc.get('XDD_FULLNAME')
-      workWiki.getDeletedDocuments(docName, '', xcontext.context).each{
-        if (it.getDate()&lt;(new Date() - age + 1)) {
-          print it.fullName + ' '
-          workWiki.getRecycleBinStore().deleteFromRecycleBin(
-              workWiki.getDocument(it.fullName, xcontext.context),
-              it.getId(),
-              xcontext.context,
-              true);
-        }
+  services.get("query").hql(qry).execute().each() { docName -&gt;
+    workWiki.getDeletedDocuments(docName, '', xcontext.context).each{
+      if (it.getDate()&lt;(new Date() - age + 1)) {
+        print it.fullName + ' '
+        workWiki.getRecycleBinStore().deleteFromRecycleBin(
+            workWiki.getDocument(it.fullName, xcontext.context),
+            it.getId(),
+            xcontext.context,
+            true);
       }
     }
   }
@@ -251,7 +244,7 @@ if (wParam) {
     println "= Empty the 2 recycle bins of //${wParam}// ="
     emptyDocBin(wParam, nValue)
     emptyAttBin(wParam, nValue)
-    println '\n\n[[Done&gt;&gt;' + doc.getName() + ']]'
+    println '\n\n[[Done&gt;&gt;' + doc.name + ']]'
   } else {
     def figures = getFigures(wParam, nValue)
     println "= Empty the 2 recycle bins of //${wParam}// ? ="
@@ -261,7 +254,7 @@ if (wParam) {
       println ' '
       println '[[{{html}}&lt;button type="button"&gt;Yes, I confirm&lt;/button&gt;{{/html}}&gt;&gt;' + doc.getName() + '?w=' + wParam + '&amp;n=' + nValue + '&amp;confirmation=1]]'
       println ' '
-      println 'I prefer to [[go back&gt;&gt;' + doc.getName() + ']]'
+      println 'I prefer to [[go back&gt;&gt;' + doc.name + ']]'
     } else {
       println '**Nothing to delete** in the //' + wParam + '// recycle bins.'
       println ' '
