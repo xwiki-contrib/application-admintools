@@ -22,11 +22,9 @@
 <minorEdit>false</minorEdit>
 <syntaxId>xwiki/2.0</syntaxId>
 <hidden>false</hidden>
-<content>{{velocity}}
-$xwiki.ssfx.use("js/xwiki/table/table.css")
-$xwiki.jsfx.use("js/xwiki/table/tablefilterNsort.js", true)
-{{/velocity}}{{groovy}}
+<content>{{groovy}}
 import com.xpn.xwiki.doc.XWikiAttachment;
+import com.xpn.xwiki.XWikiException;
 
 // Utility method to run a query
 // return the result as a List of Maps or the Exception
@@ -39,7 +37,6 @@ def runQuery(query) {
   def stmt = connection.createStatement()
   def list = new ArrayList()
   try {
-    sql = request.query;
     def resultset = stmt.executeQuery(query)
     def mdata = resultset.getMetaData()
     def nbcols = mdata.getColumnCount()
@@ -67,8 +64,10 @@ def runQuery(query) {
 def isMySQL() {
 /* This doesn't work ----------------------
   def store = xwiki.getXWiki().getStore().getStore()
+  store.beginTransaction(xcontext.context)
   def db = store.getDatabaseProductName()
   println "isMySQL() : " + db.equals(com.xpn.xwiki.store.DatabaseProduct.MYSQL)
+  store.endTransaction(xcontext.context, true)
 -------------------------------------------*/
   def r = runQuery("show processlist")
   return (r instanceof Exception ? false : true) 
@@ -80,8 +79,7 @@ def Float getMySQLSpaceUsed(table, wiki) {
   def spaceLeftResult = runQuery(query)
   if (spaceLeftResult.size()==0 || spaceLeftResult.get(0).get("space")==null)
     return -1f
-  Float spaceLeft = spaceLeftResult.get(0).get("space")
-  return spaceLeft
+  return (Float)(spaceLeftResult.get(0).get('space'))
 }
 
 def getAgeWhereClause(age) {
@@ -117,19 +115,24 @@ def emptyDocBin(wiki, age) {
   def workWiki = xcontext.getXWiki()
   def qry = "select doc.fullName from XWikiDeletedDocument doc where doc.date &lt; '${getAgeWhereClause(0)}'"
   println '**Deleted documents**'
-  services.get("query").hql(qry).execute().each() { docName -&gt;
-    workWiki.getDeletedDocuments(docName, '', xcontext.context).each{
-      if (it.getDate()&lt;(new Date() - age + 1)) {
-        print it.fullName + ' '
-        workWiki.getRecycleBinStore().deleteFromRecycleBin(
-            workWiki.getDocument(it.fullName, xcontext.context),
-            it.getId(),
-            xcontext.context,
-            true);
+  try {
+    services.get("query").hql(qry).execute().each() { docName -&gt;
+      workWiki.getDeletedDocuments(docName, '', xcontext.context).each{
+        if (it.getDate()&lt;(new Date() - age + 1)) {
+          print it.fullName + ' '
+          workWiki.getRecycleBinStore().deleteFromRecycleBin(
+              workWiki.getDocument(it.fullName, xcontext.context),
+              it.getId(),
+              xcontext.context,
+              true);
+        }
       }
     }
+  } catch (XWikiException xe) {
+    print 'xe.message'
+  } finally {
+    xcontext.setDatabase(xcontext.getOriginalDatabase())
   }
-  xcontext.setDatabase(xcontext.getOriginalDatabase())
   println ' '
 }
 
@@ -141,64 +144,39 @@ def emptyAttBin(wiki, age) {
   xcontext.setDatabase(wiki)
   def workWiki = xcontext.getXWiki()
   def context2 = xcontext.context
-  def allDeletedAttachments = workWiki.getAttachmentRecycleBinStore().getAllDeletedAttachments((XWikiAttachment)null, context2, true)
   println '**Deleted files**'
-  allDeletedAttachments.each{
-    if (it.getDate()&lt;(new Date() - age + 1)) {
-      print it.filename + ' '
-      workWiki.getAttachmentRecycleBinStore().deleteFromRecycleBin(it.id, context2, true)
+  try {
+    def allDeletedAttachments = workWiki.getAttachmentRecycleBinStore().getAllDeletedAttachments((XWikiAttachment)null, context2, true)
+    allDeletedAttachments.each{
+      if (it.getDate()&lt;(new Date() - age + 1)) {
+        print it.filename + ' '
+        workWiki.getAttachmentRecycleBinStore().deleteFromRecycleBin(it.id, context2, true)
+      }
     }
+  } catch (XWikiException xe) {
+    print 'xe.message'
+  } finally {
+    xcontext.setDatabase(xcontext.getOriginalDatabase())
   }
-  xcontext.setDatabase(xcontext.getOriginalDatabase())
   println ' '
 }
 
-// Include a javascript refreshing the page with a new 'n' (NewerThan) parameter
-// and the related drop-down list
-def printNewerWidget(current) {
+// Include a drop-down list generating the 'n' (NewerThan) parameter
+def printNewerWidget(wiki, current) {
   def listOfDays = [0, 1, 7, 30, 100, 366]
   if (current==null) {
     current = 30
   }
-  println '\n{{html}}'
-  println '''
-    &lt;script type="text/javascript"&gt;
-    //&lt;![CDATA[
-    function getQueryVariable(variable) {
-      var query = window.location.search.substring(1);
-      var vars = query.split("&amp;");
-      for (var i=0;i&lt;vars.length;i++) {
-        var pair = vars[i].split("=");
-        if (pair[0] == variable) {
-          return pair[1];
-        }
-      }
-      return "";
-    }
-    function sendNewer() {;
-      var urlParams;
-      var nbDays=document.getElementById("idNewerThan").value;
-      var currentWiki=getQueryVariable("w");
-      if (currentWiki.length==0) {
-        urlParams = "?n=" + nbDays;
-      } else {
-        urlParams = "?w=" + currentWiki + "&amp;n=" + nbDays;
-      }
-     window.location.assign(window.location.pathname + urlParams );
-    }
-    //]]&gt;
-    &lt;/script&gt;
-  '''
-
-  println '&lt;p&gt;Excluding items newer than &lt;select id="idNewerThan" onchange="sendNewer();"&gt;'
+  println '\n{{html}}\n&lt;form action="" method="get"&gt;&lt;div&gt;'
+  println '&lt;input type="hidden" name="w" value="' + wiki + '" /&gt;'
+  println 'Excluding items newer than &lt;select name="n" onchange="document.getElementById(\'idWarn\').style.textDecoration=\'line-through\';"&gt;'
   listOfDays.each{
-    print "&lt;option value=\"${it}\" "
-    if (current==it) print 'selected="selected"';
+    print '&lt;option value="' + it + '" '
+    if (current == it) print 'selected="selected"';
     println "&gt;${it}&lt;/option&gt;"
   }
-  println '&lt;/select&gt; days.&lt;/p&gt;'
-  println '\n{{/html}}\n'
-} // End printNewerWidget()
+  println '&lt;/select&gt; days. &lt;input type="submit" value="change"/&gt;&lt;/div&gt;&lt;/form&gt;\n{{/html}}\n'
+}
 
 def showWikiBins(wiki) {
   print '&lt;tr&gt;&lt;td&gt;&lt;a href="' + doc.getName() +'?w=' + wiki + '"&gt;' + wiki
@@ -219,12 +197,16 @@ def displayRecycleBins() {
     println '**Sorry, this script can\'t be run if the XWiki farm database is NOT MySQL.**'
     return
   }
+  xwiki.ssfx.use("js/xwiki/table/table.css")
+  xwiki.jsfx.use("js/xwiki/table/tablefilterNsort.js", true)
   println '= Recycle Bins Size (in Mega Bytes) ='
   println '{{html}}'
   println '&lt;table id="bins" class="grid sortable doOddEven"&gt;' 
   println '&lt;tr class="sortHeader"&gt;&lt;th&gt;Wiki&lt;/th&gt;&lt;th&gt;Page Recycle bin&lt;/th&gt;&lt;th&gt;Attachment Recycle bin&lt;/th&gt;&lt;th&gt;Total&lt;/th&gt;&lt;/tr&gt;'
 
-  def wikilist = xwiki.wikimanager.getAllWikis().sort{it.toString()}
+  def wikilist = ['xwiki'];
+  if (xwiki.wikimanager != null) // wiki is virtual but wikimanager is not installed
+    wikilist = xwiki.wikimanager.getAllWikis().sort{it.toString()}
   for (wiki in wikilist) {
     showWikiBins(wiki.toString())
   }
@@ -248,15 +230,21 @@ if (wParam) {
   } else {
     def figures = getFigures(wParam, nValue)
     println "= Empty the 2 recycle bins of //${wParam}// ? ="
-    printNewerWidget(nValue)
+    printNewerWidget(wParam, nValue)
     if ((figures.docNb + figures.attNb) &gt; 0) {
-      println 'Please, confirm that you will permanently delete **' + figures.docNb + '** documents and **' + figures.attNb+ '** attachments.'
-      println ' '
-      println '[[{{html}}&lt;button type="button"&gt;Yes, I confirm&lt;/button&gt;{{/html}}&gt;&gt;' + doc.getName() + '?w=' + wParam + '&amp;n=' + nValue + '&amp;confirmation=1]]'
+      println """\
+        {{html clean="false"}}
+        &lt;p id="idWarn"&gt;Please, confirm that you will permanently delete &lt;b&gt;${figures.docNb}&lt;/b&gt; documents and &lt;b&gt;${figures.attNb}&lt;/b&gt; attachments.&lt;/p&gt;
+        &lt;form action="${doc.getURL('view', 'w=' + wParam +'&amp;n=' + nValue)}" method="post"&gt;&lt;div&gt;
+        &lt;input type="hidden" name="confirmation" value="1" /&gt;
+        &lt;span class="buttonWrapper"&gt;&lt;input type="submit" class="button" value="Yes, I confirm" /&gt;&lt;/span&gt;
+        &lt;/div&gt;&lt;/form&gt;
+        {{/html}}
+      """
       println ' '
       println 'I prefer to [[go back&gt;&gt;' + doc.name + ']]'
     } else {
-      println '**Nothing to delete** in the //' + wParam + '// recycle bins.'
+      println '(% id="idWarn"%)(((**Nothing to delete** in the //' + wParam + '// recycle bins.)))'
       println ' '
       println '[[Return&gt;&gt;' + doc.getName() + ']]'
     }
