@@ -129,7 +129,7 @@ def emptyDocBin(wiki, age) {
       }
     }
   } catch (XWikiException xe) {
-    print 'xe.message'
+    print xe.message
   } finally {
     xcontext.setDatabase(xcontext.getOriginalDatabase())
   }
@@ -154,7 +154,7 @@ def emptyAttBin(wiki, age) {
       }
     }
   } catch (XWikiException xe) {
-    print 'xe.message'
+    print xe.message
   } finally {
     xcontext.setDatabase(xcontext.getOriginalDatabase())
   }
