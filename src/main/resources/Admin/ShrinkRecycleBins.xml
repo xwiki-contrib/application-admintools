@@ -62,15 +62,11 @@ def runQuery(query) {
 
 // Utility method to test MySQL database
 def isMySQL() {
-/* This doesn't work ----------------------
   def store = xwiki.getXWiki().getStore().getStore()
   store.beginTransaction(xcontext.context)
-  def db = store.getDatabaseProductName()
-  println "isMySQL() : " + db.equals(com.xpn.xwiki.store.DatabaseProduct.MYSQL)
+  def db = store.getDatabaseProductName(xcontext.context)
   store.endTransaction(xcontext.context, true)
--------------------------------------------*/
-  def r = runQuery("show processlist")
-  return (r instanceof Exception ? false : true) 
+  return db.equals(com.xpn.xwiki.store.DatabaseProduct.MYSQL)
 }
 
 def Float getMySQLSpaceUsed(table, wiki) {
