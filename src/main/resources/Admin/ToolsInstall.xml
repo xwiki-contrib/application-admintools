@@ -35,7 +35,7 @@ Assigning programming rights to the following pages:
 [Confirm assigning programming rights to the following pages:&gt;$doc.fullName?confirm=1]
 #end
 
-#foreach($item in ["Admin.CheckConfig", "Admin.CheckXWikiConfig", "Admin.CheckConfigInstall", "Admin.CheckDBEncoding", "Admin.CheckIndexes", "Admin.CheckRights", "Admin.CheckProgrammingRights", "Admin.CheckPreferencesPages", "Admin.RunQuery", "Admin.WikiDiff", "Admin.WikiDiffGroovy", "Admin.UsedSpace", "Admin.ActivityReport", "Admin.RequestsStatus", "Admin.MonitorPluginReset", "Admin.FlushCache", "Admin.ExportTools", "Admin.Export", "Admin.ExportPage", "Admin.ImportPage", "Admin.ExportFromDate",  "Admin.ExportFromDateGroovy", "Admin.ExportPageSuggest", "Admin.ExportSpaceSuggest"])
+#foreach($item in ["Admin.CheckConfig", "Admin.CheckXWikiConfig", "Admin.CheckConfigInstall", "Admin.CheckDBEncoding", "Admin.CheckIndexes", "Admin.CheckRights", "Admin.CheckProgrammingRights", "Admin.CheckPreferencesPages", "Admin.RunQuery", "Admin.WikiDiff", "Admin.WikiDiffGroovy", "Admin.UsedSpace", "Admin.ActivityReport", "Admin.RequestsStatus", "Admin.MonitorPluginReset", "Admin.FlushCache", "Admin.ExportTools", "Admin.Export", "Admin.ExportPage", "Admin.ImportPage", "Admin.ExportFromDate",  "Admin.ExportFromDateGroovy", "Admin.ExportPageSuggest", "Admin.ExportSpaceSuggest", "Admin.ShrinkRecycleBins"])
 * $item #if($request.confirm=="1") 
 #set($itemdoc = $xwiki.getDocument($item))
 $itemdoc.save("save for programming rights") done #end
