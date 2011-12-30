@@ -26,6 +26,7 @@
 
 &lt;%
  import com.xpn.xwiki.util.Util;
+import java.text.DecimalFormat;
  //
  //
  // Sets the tomcat path to use
@@ -36,8 +37,15 @@
  //
  //
 
+def readableSize(size) {
+    if(size &lt;= 0) return "0";
+    def units = ["B", "KB", "MB", "GB", "TB" ];
+    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+    return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+}
+
 def printCacheMaxNodes(message, cache, wiki) {
- def evictionregionconfig = wiki.getPrivateField(cache,"jbosscacheConfiguration").getJBossCacheConfiguration().getEvictionConfig().getEvictionRegionConfig("/")
+ def evictionregionconfig = wiki.getPrivateField(cache,"jbosscacheConfiguration")?.getJBossCacheConfiguration()?.getEvictionConfig()?.getEvictionRegionConfig("/")
  def maxnodes = (evictionregionconfig==null) ? null : evictionregionconfig.getEvictionAlgorithmConfig().getMaxNodes()
  println "* ${message}: ${maxnodes}"
 }
@@ -47,9 +55,9 @@ if (wiki!=null) {
 println "1.1 Memory Configuration"
 
 println "This lists the memory settings of the Java VM and the current memory usage. An XWiki instance should be installed with at least 300Mb. A large one with at least 700Mb, especially if the cache settings are boosted. If after *flushing the cache*, the current free memory is low and the current total close to the maximum the instance might be running out of memory. "
-println "* Max Memory: ${wiki.maxMemory()}" 
-println "* Current Total: ${wiki.totalMemory()}" 
-println "* Current Free: ${wiki.freeMemory()}"
+println "* Max Memory: ${readableSize(wiki.maxMemory())}" 
+println "* Current Total: ${readableSize(wiki.totalMemory())}" 
+println "* Current Free: ${readableSize(wiki.freeMemory())}"
 
 println "1.1 Database configuration"
 
