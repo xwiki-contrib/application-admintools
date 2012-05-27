@@ -75,6 +75,7 @@ println """
        println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
     } finally {
       stmt.close();
+      store.endTransaction(context2, true)
     }
    } 
 {{/groovy}}</content></xwikidoc>
