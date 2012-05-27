@@ -30,7 +30,7 @@
 println """
 {{html clean=="false"}}
 &lt;form action=""&gt;
- Query: &lt;input type="text" name="query" value="$query" size="80" /&gt;
+ Query: &lt;input type="text" name="query" value="$escapetool.xml($query)" size="80" /&gt;
  &lt;input type="submit" value="Go" /&gt; 
 &lt;/form&gt;
 {{/html}}
@@ -38,7 +38,7 @@ println """
 
    if (request.query) {
     def context2 = xcontext.getContext();
-    def store = xwiki.getXWiki().getStore().getStore();
+    def store = xwiki.getXWiki().getHibernateStore();
     store.beginTransaction(context2);
     def session = store.getSession(context2);
     def connection = session.connection();
@@ -77,5 +77,5 @@ println """
       stmt.close();
       store.endTransaction(context2, true)
     }
-   } 
+   }
 {{/groovy}}</content></xwikidoc>
