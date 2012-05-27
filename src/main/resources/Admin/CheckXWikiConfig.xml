@@ -25,8 +25,12 @@
 <content>1 XWiki Configuration Check
 
 &lt;%
- import com.xpn.xwiki.util.Util;
+
+import com.xpn.xwiki.util.Util;
 import java.text.DecimalFormat;
+import java.lang.management.ManagementFactory;
+import javax.management.MBeanServer;
+
  //
  //
  // Sets the tomcat path to use
@@ -74,6 +78,31 @@ println "* Idle (current idle connections to the DB): $pool.numIdle"
 println "1.1 Cache configuration"
 
 println "This lists the main cache settings. An XWiki instance is set by default to 100 for the main cache which is ok for a small instance. A large one with at least 1000 (large XE) to 3000 (very large XE or large XEM). The page exist cache is set by default to 10000 which is good for any instance size."
+
+println "1.1.1 Configuration"
+
+def csize = wiki.Param("xwiki.store.cache.capacity", "100")
+println "* Store Cache ${csize}"
+csize = wiki.Param("xwiki.store.cache.pageexistcapacity", "10000")
+println "* Store Page Cache ${csize}"
+
+println "1.1.1 Real Time Infinspan info (if used)"
+
+MBeanServer server = ManagementFactory.getPlatformMBeanServer()
+def mbean = null
+
+try {
+ mbean = new GroovyMBean(server, 'org.xwiki.infinispan:type=Cache,name="xwiki.store.pagecache(local)",manager="XWikiCacheManager",component=Statistics')
+} catch (Exception e) {}
+csize = (mbean==null) ? null : mbean.getProperty("numberOfEntries")
+println "* Store Cache ${csize}"
+try {
+ mbean = new GroovyMBean(server, 'org.xwiki.infinispan:type=Cache,name="xwiki.store.pageexistcache(local)",manager="XWikiCacheManager",component=Statistics')
+} catch (Exception e) {}
+csize = (mbean==null) ? null : mbean.getProperty("numberOfEntries")
+println "* Store Page Cache ${csize}"
+
+println "1.1.1 Real Time JBoss Cache info (if used)"
 
 printCacheMaxNodes("Store Cache Eviction Policy Max nodes", wiki.store.cache, wiki)
 printCacheMaxNodes("Store Page Cache Eviction Policy Max nodes", wiki.store.pageExistCache, wiki)

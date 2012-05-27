@@ -61,4 +61,6 @@ The following pages allow advanced administration of an XWiki or XWiki farm:
 
 * [[MySQL Database Encoding Check&gt;&gt;CheckDBEncoding]]: tool to check the MySQL database encoding
 * [[MySQL Indexes Check&gt;&gt;CheckIndexes]]: tool to check MySQL indexes
-* [[Run Query&gt;&gt;RunQuery]]: tool to run queries on the MySQL database</content></xwikidoc>
+* [[Run Query&gt;&gt;RunQuery]]: tool to run queries on the MySQL database
+* [[Sanity Check&gt;&gt;SanityCheck]]: tool to check the consistency of the database
+</content></xwikidoc>

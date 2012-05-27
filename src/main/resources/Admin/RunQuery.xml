@@ -27,15 +27,16 @@
   if (query==null)
     query = "show processlist";
 
-  println """\
-    {{html clean="false"}}
-    &lt;form action=""&gt;
-    Query: &lt;input type="text" name="query" value="${query}" size="80" /&gt;
-    &lt;input type="submit" value="Go" /&gt; 
-    &lt;/form&gt;
-    {{/html}}
-  """;
-  if (request.query) {
+println """
+{{html clean=="false"}}
+&lt;form action=""&gt;
+ Query: &lt;input type="text" name="query" value="$query" size="80" /&gt;
+ &lt;input type="submit" value="Go" /&gt; 
+&lt;/form&gt;
+{{/html}}
+"""
+
+   if (request.query) {
     def context2 = xcontext.getContext();
     def store = xwiki.getXWiki().getStore().getStore();
     store.beginTransaction(context2);
@@ -43,28 +44,37 @@
     def connection = session.connection();
     def stmt = connection.createStatement();
     try {
-      sql = request.query;
-      def resultset = stmt.executeQuery(sql);
-      def mdata = resultset.getMetaData();
-      def nbcols = mdata.getColumnCount();
-      for (def i=1;i&lt;=nbcols;i++) {
-        print '|=' + mdata.getColumnName(i) ;
-      }
-      println '';
-      while (resultset.next()) {
-        for (i=1;i&lt;=nbcols;i++) {
-          def value = resultset.getString(i);
-          if ((value==null)||(value==''))
-            value = ' '
-          print '|' + value
-        }
-        println '';
-      } 
+       sql = request.query;
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       println "";
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value} }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
     } catch (Exception e2) {
-       println ":( Error running sql: ${sql}\n" + e2.getMessage();
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
     } finally {
       stmt.close();
-      store.endTransaction(context2, true)
     }
-  } 
+   } 
 {{/groovy}}</content></xwikidoc>
