@@ -82,9 +82,9 @@ println "This lists the main cache settings. An XWiki instance is set by default
 println "1.1.1 Configuration"
 
 def csize = wiki.Param("xwiki.store.cache.capacity", "100")
-println "* Store Cache ${csize}"
-csize = wiki.Param("xwiki.store.cache.pageexistcapacity", "10000")
 println "* Store Page Cache ${csize}"
+csize = wiki.Param("xwiki.store.cache.pageexistcapacity", "10000")
+println "* Store Page Exists Cache ${csize}"
 
 println "1.1.1 Real Time Infinspan info (if used)"
 
@@ -94,18 +94,24 @@ def mbean = null
 try {
  mbean = new GroovyMBean(server, 'org.xwiki.infinispan:type=Cache,name="xwiki.store.pagecache(local)",manager="XWikiCacheManager",component=Statistics')
 } catch (Exception e) {}
+csize = null
+try {
 csize = (mbean==null) ? null : mbean.getProperty("numberOfEntries")
-println "* Store Cache ${csize}"
+} catch (Exception e) {}
+println "* Store Page Cache ${csize}"
 try {
  mbean = new GroovyMBean(server, 'org.xwiki.infinispan:type=Cache,name="xwiki.store.pageexistcache(local)",manager="XWikiCacheManager",component=Statistics')
 } catch (Exception e) {}
+csize = null
+try {
 csize = (mbean==null) ? null : mbean.getProperty("numberOfEntries")
-println "* Store Page Cache ${csize}"
+} catch (Exception e) {}
+println "* Store Page Exists Cache ${csize}"
 
 println "1.1.1 Real Time JBoss Cache info (if used)"
 
-printCacheMaxNodes("Store Cache Eviction Policy Max nodes", wiki.store.cache, wiki)
-printCacheMaxNodes("Store Page Cache Eviction Policy Max nodes", wiki.store.pageExistCache, wiki)
+printCacheMaxNodes("Store Page Cache", wiki.store.cache, wiki)
+printCacheMaxNodes("Store Page Exists Cache", wiki.store.pageExistCache, wiki)
 }
 
 println "1.1 Encoding Configuration"
