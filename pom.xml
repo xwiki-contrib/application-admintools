@@ -27,7 +27,7 @@
     <version>35</version>
   </parent>
   <groupId>org.xwiki.contrib</groupId>
-  <artifactId>xwiki-application-admin-tools</artifactId>
+  <artifactId>xwiki-application-admintools</artifactId>
   <version>VERSION</version>
   <packaging>xar</packaging>
   <name>XWiki Application - Admin Tools</name>
