@@ -32,4 +32,16 @@
   <packaging>xar</packaging>
   <name>XWiki Application - Admin Tools</name>
   <description>Admin Tools</description>
+  <scm>
+    <connection>scm:git:git://github.com/xwiki-contrib/application-admintools.git</connection>
+    <developerConnection>scm:git:git@github.com:xwiki-contrib/application-admintools.git</developerConnection>
+    <url>https://github.com/xwiki-contrib/application-admintools</url>
+  </scm>
+  <distributionManagement>
+    <repository>
+      <id>xwiki-staging</id>
+      <name>XWiki Staging Repository</name>
+      <url>http://nexus.xwiki.org/nexus/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 </project>
