@@ -10,9 +10,9 @@
 <author>xwiki:XWiki.Admin</author>
 <customClass></customClass>
 <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1262300400000</creationDate>
-<date>1341613824000</date>
-<contentUpdateDate>1341613824000</contentUpdateDate>
+<creationDate>1353085470000</creationDate>
+<date>1353157611000</date>
+<contentUpdateDate>1353157611000</contentUpdateDate>
 <version>1.1</version>
 <title>Check programming rights</title>
 <template></template>
@@ -22,43 +22,462 @@
 <minorEdit>false</minorEdit>
 <syntaxId>xwiki/2.0</syntaxId>
 <hidden>false</hidden>
+<object>
+<class>
+<name>XWiki.JavaScriptExtension</name>
+<customClass></customClass>
+<customMapping></customMapping>
+<defaultViewSheet></defaultViewSheet>
+<defaultEditSheet></defaultEditSheet>
+<defaultWeb></defaultWeb>
+<nameField></nameField>
+<validationScript></validationScript>
+<cache>
+<cache>0</cache>
+<disabled>0</disabled>
+<displayType>select</displayType>
+<multiSelect>0</multiSelect>
+<name>cache</name>
+<number>5</number>
+<prettyName>Caching policy</prettyName>
+<relationalStorage>0</relationalStorage>
+<separator> </separator>
+<separators> ,|</separators>
+<size>1</size>
+<unmodifiable>0</unmodifiable>
+<values>long|short|default|forbid</values>
+<classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+</cache>
+<code>
+<disabled>0</disabled>
+<name>code</name>
+<number>2</number>
+<prettyName>Code</prettyName>
+<rows>20</rows>
+<size>50</size>
+<unmodifiable>0</unmodifiable>
+<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+</code>
+<name>
+<disabled>0</disabled>
+<name>name</name>
+<number>1</number>
+<prettyName>Name</prettyName>
+<size>30</size>
+<unmodifiable>0</unmodifiable>
+<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+</name>
+<parse>
+<disabled>0</disabled>
+<displayFormType>select</displayFormType>
+<displayType>yesno</displayType>
+<name>parse</name>
+<number>4</number>
+<prettyName>Parse content</prettyName>
+<unmodifiable>0</unmodifiable>
+<classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+</parse>
+<use>
+<cache>0</cache>
+<disabled>0</disabled>
+<displayType>select</displayType>
+<multiSelect>0</multiSelect>
+<name>use</name>
+<number>3</number>
+<prettyName>Use this extension</prettyName>
+<relationalStorage>0</relationalStorage>
+<separator> </separator>
+<separators> ,|</separators>
+<size>1</size>
+<unmodifiable>0</unmodifiable>
+<values>currentPage=Always on this page|onDemand=On demand|always=Always on this wiki</values>
+<classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+</use>
+</class>
+<name>Admin.CheckProgrammingRights</name>
+<number>0</number>
+<className>XWiki.JavaScriptExtension</className>
+<guid>18d70e37-7b7c-476b-911c-39a22da0e9bd</guid>
+<property>
+<cache>forbid</cache>
+</property>
+<property>
+<code>document.observe("xwiki:dom:loaded", function() {
+
+    var handleSelect = function(event, checked) {
+        var fragments = event.findElement().identify().split(':');
+        if (fragments.length == 2) {
+            var wikiname = fragments[1];
+            var id = 'pagelist:' + wikiname;
+            var selector = '#' + id;
+
+            $(id).select('input[name=pagelist]').each(function (input) {
+                input.checked = checked;
+            });
+        } else {
+            $$('input[name=pagelist]').each(function (input) {
+                input.checked = checked;
+            });
+        }
+    };
+
+    $$('.unselect_all').each(function (element) {
+        element.observe('click', function (event) {
+            handleSelect(event, false);
+        });
+    });
+
+    $$('.select_all').each(function (element) {
+        element.observe('click', function (event) {
+            handleSelect(event, true);
+        });
+    });
+});</code>
+</property>
+<property>
+<name>Checkbox control</name>
+</property>
+<property>
+<parse>0</parse>
+</property>
+<property>
+<use>currentPage</use>
+</property>
+</object>
+<object>
+<class>
+<name>XWiki.RequiredRightClass</name>
+<customClass></customClass>
+<customMapping></customMapping>
+<defaultViewSheet></defaultViewSheet>
+<defaultEditSheet></defaultEditSheet>
+<defaultWeb></defaultWeb>
+<nameField></nameField>
+<validationScript></validationScript>
+<level>
+<cache>0</cache>
+<disabled>0</disabled>
+<displayType>select</displayType>
+<multiSelect>0</multiSelect>
+<name>level</name>
+<number>1</number>
+<picker>0</picker>
+<prettyName>level</prettyName>
+<relationalStorage>0</relationalStorage>
+<separator> </separator>
+<separators> ,|</separators>
+<size>1</size>
+<sort>none</sort>
+<unmodifiable>0</unmodifiable>
+<validationMessage></validationMessage>
+<validationRegExp></validationRegExp>
+<values>edit|programming</values>
+<classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+</level>
+</class>
+<name>Admin.CheckProgrammingRights</name>
+<number>0</number>
+<className>XWiki.RequiredRightClass</className>
+<guid>2e93c625-8350-4ca0-8437-90153c3394d5</guid>
+<property>
+<level>programming</level>
+</property>
+</object>
+<object>
+<class>
+<name>XWiki.StyleSheetExtension</name>
+<customClass></customClass>
+<customMapping></customMapping>
+<defaultViewSheet></defaultViewSheet>
+<defaultEditSheet></defaultEditSheet>
+<defaultWeb></defaultWeb>
+<nameField></nameField>
+<validationScript></validationScript>
+<cache>
+<cache>0</cache>
+<disabled>0</disabled>
+<displayType>select</displayType>
+<multiSelect>0</multiSelect>
+<name>cache</name>
+<number>5</number>
+<prettyName>Caching policy</prettyName>
+<relationalStorage>0</relationalStorage>
+<separator> </separator>
+<separators> ,|</separators>
+<size>1</size>
+<unmodifiable>0</unmodifiable>
+<values>long|short|default|forbid</values>
+<classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+</cache>
+<code>
+<disabled>0</disabled>
+<name>code</name>
+<number>2</number>
+<prettyName>Code</prettyName>
+<rows>20</rows>
+<size>50</size>
+<unmodifiable>0</unmodifiable>
+<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+</code>
+<name>
+<disabled>0</disabled>
+<name>name</name>
+<number>1</number>
+<prettyName>Name</prettyName>
+<size>30</size>
+<unmodifiable>0</unmodifiable>
+<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+</name>
+<parse>
+<disabled>0</disabled>
+<displayFormType>select</displayFormType>
+<displayType>yesno</displayType>
+<name>parse</name>
+<number>4</number>
+<prettyName>Parse content</prettyName>
+<unmodifiable>0</unmodifiable>
+<classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+</parse>
+<use>
+<cache>0</cache>
+<disabled>0</disabled>
+<displayType>select</displayType>
+<multiSelect>0</multiSelect>
+<name>use</name>
+<number>3</number>
+<prettyName>Use this extension</prettyName>
+<relationalStorage>0</relationalStorage>
+<separator> </separator>
+<separators> ,|</separators>
+<size>1</size>
+<unmodifiable>0</unmodifiable>
+<values>currentPage=Always on this page|onDemand=On demand|always=Always on this wiki</values>
+<classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+</use>
+</class>
+<name>Admin.CheckProgrammingRights</name>
+<number>0</number>
+<className>XWiki.StyleSheetExtension</className>
+<guid>01831ba2-9cb5-4583-9e14-7812fe173615</guid>
+<property>
+<cache>forbid</cache>
+</property>
+<property>
+<code>legend.wikiname {
+    font-size: larger;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+div.select_checkbox_control {
+    margin-bottom: 1em;
+}
+
+a.select_all, a.unselect_all {
+    cursor: pointer;
+}</code>
+</property>
+<property>
+<name>Check programming style</name>
+</property>
+<property>
+<parse>0</parse>
+</property>
+<property>
+<use>currentPage</use>
+</property>
+</object>
 <content>{{groovy}}
-def context2 = xcontext.getContext();
+xwiki.ssx.use(doc.getFullName())
+xwiki.jsx.use(doc.getFullName())
 
-def wikilist =  xwiki.isVirtualMode() ? xwiki.getPlugin("wikimanager")?.getAllWikis() : [ "xwiki" ];
-def knownpageslist = ["Main.Spaces", "Main.Activity", "Main.SpaceIndex", "AnnotationCode.Style", "AnnotationCode.Script", "AnnotationCode.Settings"];
+if (!"post".equalsIgnoreCase(request.getMethod())) {
+    printForm(pageListPerWiki())
+} else if (!services.csrf.isTokenValid(request.getParameter('form_token'))) {
+    response.sendRedirect(services.csrf.getResubmissionURL())
+} else {
+    savePages(request.getParameterValues('pagelist'))
+}
 
-def db = context2.getDatabase()
-try {
-for(wiki in wikilist) {
- def wikiname = wiki.toString()
- println "* ${wikiname}"
- context2.setDatabase(wikiname)
- // get all the pages which have a required rights object attached to them, that specifies either edit or programming and save it
- def pagelist = xwiki.search("select distinct doc.fullName from XWikiDocument doc, BaseObject obj, StringProperty rightProp where obj.name = doc.fullName and obj.className='XWiki.RequiredRightClass' and rightProp.id.id = obj.id and rightProp.id.name='level' and (rightProp.value='programming' or rightProp.value='edit')")
- // add the known pages that need to be saved with programming || edit rights to the list of pages, if they don't have the required rights object
- for (knownpage in knownpageslist) {
-   if (!pagelist.contains(knownpage) &amp;&amp; xwiki.exists(knownpage)) {
-      pagelist.add(knownpage)  
-   } 
- }
- for (page in pagelist) {
-    print "** fixing ${page}"
-    def pagedoc = xwiki.getDocument(page)
-    if (request.confirm) {
-      pagedoc.save("Saving for programming or edit rights")
-      println(" ** Saved **")
-    } else {
-      println("")
+def pageListPerWiki()
+{
+    def wikilist =  xwiki.isVirtualMode() ? xwiki.getPlugin("wikimanager")?.getAllWikis() : [ "xwiki" ];
+    def knownpageslist = [
+        "AnnotationCode.Script",
+        "AnnotationCode.Settings",
+        "AnnotationCode.Style",
+        "Main.Activity",
+        "Main.SpaceIndex",
+        "Main.Spaces",
+        "XWiki.AllAttachments",
+    ];
+
+    def context2 = xcontext.getContext()
+    def db = context2.getDatabase()
+
+    def wikiPagelists = [:]
+     
+    try {
+        for (wiki in wikilist) {
+            def wikiname = wiki.toString()
+            context2.setDatabase(wikiname)
+            // get all the pages which have a required rights object
+            // attached to them, that specifies either edit or
+            // programming
+            def pagelist = services.query.xwql("select distinct doc.fullName from Document doc, doc.object(XWiki.RequiredRightClass) as reqRight where reqRight.level = 'programming' or reqRight.level = 'edit'").execute()
+            // add the known pages that need to be saved with programming
+            // || edit rights to the list of pages, if they don't have the '
+            // required rights object
+            for (knownpage in knownpageslist) {
+                if (!pagelist.contains(knownpage) &amp;&amp; xwiki.exists(knownpage)) {
+                    pagelist.add(knownpage)  
+                } 
+            }
+
+            def rs = xwiki.getXWiki().getRightService()
+
+            wikiPagelists[wikiname] = pagelist.findAll{
+                name -&gt; !rs.hasProgrammingRights(xwiki.getDocument(name).getDocument(), context2) ||
+                    needsRequiredRightsObj(xwiki.getDocument(name))
+            }
+
+        }
+    } finally {
+        context2.setDatabase(db)
     }
- }
-}
-} finally {
- context2.setDatabase(db)
+
+    return wikiPagelists
 }
 
-println ""
-if (request.confirm!="1") {
-  println "{{info}} You need to run this with a user that has programming rights, otherwise confirming will have no effect. {{/info}}\n\n{{html}}&lt;form action='' method='post'&gt;&lt;input type='submit' value='Confirm give programming and edit rights' /&gt; &lt;input type='hidden' name='confirm' value='1' /&gt;&lt;/form&gt;{{/html}}"
+def printForm(pagelistPerWiki)
+{
+    
+    println "{{info}} You need to run this with a user that has programming rights, otherwise it will have no effect. {{/info}}\n\n"
+
+    println("""\
+{{html}}
+&lt;span class=\"buttonwrapper\"&gt;
+&lt;a id=\"select_all_all_wikis\" class=\"select_all\"&gt;select all in all wikis&lt;/a&gt;
+&lt;/span&gt;
+&lt;span class=\"buttonwrapper\"&gt;
+&lt;a id=\"unselect_all_all_wikis\" class=\"unselect_all\"&gt;select none&lt;/a&gt;
+&lt;/span&gt;
+&lt;form action=\"${xwiki.getURL(doc.getFullName())}\" method=\"post\" &gt;
+&lt;input type=\"hidden\" name=\"form_token\" value=\"${services.csrf.token}\" /&gt;
+""")
+
+    for (wikiname in pagelistPerWiki.keySet()) {
+        if (pagelistPerWiki.get(wikiname).size() == 0) {
+            continue
+        }
+        println("&lt;fieldset id=\"pagelist:${wikiname}\" class=\"pagelist\" &gt;")
+        println("&lt;h2&gt;&lt;legend class=\"wikiname\"&gt;Wiki: ${wikiname}&lt;/legend&gt;&lt;/h2&gt;")
+        println("""\
+&lt;div class=\"select_checkbox_control\"&gt;
+&lt;span class=\"buttonwrapper\"&gt;
+&lt;a id=\"select_all:${wikiname}\" class=\"select_all\"&gt;select all&lt;/a&gt;
+&lt;/span&gt;
+&lt;span class=\"buttonwrapper\"&gt;
+&lt;a id=\"unselect_all:${wikiname}\" class=\"unselect_all\"&gt;select none&lt;/a&gt;
+&lt;/span&gt;
+&lt;/div&gt;
+""")
+        println("&lt;div&gt;")
+        for (page in pagelistPerWiki.get(wikiname)) {
+            println("""\
+&lt;div class=\"page_checkbox_item\"&gt;
+&lt;input type=\"checkbox\" name=\"pagelist\" id=\"page_${wikiname}_${page}\"
+       class=\"${wikiname}_page\" value=\"${wikiname}:${page}\"/&gt;
+ &lt;a href=\"${xwiki.getURL(wikiname + ':' + page)}?viewer=code\"&gt;${page}&lt;/a&gt; 
+&lt;/div&gt;
+""")
+        }
+        println("&lt;/div&gt;")
+        println("&lt;/fieldset&gt;")
+    }
+
+    println("""\
+&lt;hr /&gt;
+&lt;span class=\"buttonwrapper\"&gt;
+&lt;input class=\"button\" type=\"submit\" value=\"save with programming rights\" /&gt;
+&lt;/span&gt;
+&lt;/form&gt;
+{{/html}}
+""")
+
 }
-{{/groovy}}</content></xwikidoc>
+
+def addDenyEdit(prDoc)
+{
+    def rightObjs = prDoc.getObjects('XWiki.XWikiRights')
+
+    def addGroup = true
+    def addUser  = true
+
+    if (rightObjs != null) {
+        for (rightObj in rightObjs.findAll{ o -&gt; o.get('levels').split(' ').count('edit') &gt; 0}) {
+            def users = rightObj.getProperty('users')?.getValue()?.split(' ')
+            def groups = rightObj.getProperty('groups')?.getValue()?.split(' ')
+            if (rightObj.getProperty('allow').getValue() == 1) {
+                if (users != null &amp;&amp; users.count('XWiki.XWikiGuest') &gt; 0) {
+                    rightObj.set('users', users.findAll{ user -&gt; user != 'XWiki.XWikiGuest' }.join(' '))
+                }
+                if (groups != null &amp;&amp; groups.count('XWiki.XWikiAllGroup') &gt; 0) {
+                    rightObj.set('groups', groups.findAll{ group -&gt; group != 'XWiki.XWikiAllGroup' }.join(' '))
+                }
+            } else {
+                if (users != null &amp;&amp; users.count('XWiki.XWikiGuest') &gt; 0) {
+                    addUser = false;
+                }
+                if (groups != null &amp;&amp; groups.count('XWiki.XWikiAllGroup') &gt; 0) {
+                    addGroup = false;
+                }
+            }
+        }
+    }
+
+    if (addUser || addGroup) {
+        def obj = prDoc.newObject('XWiki.XWikiRights')
+        obj.set('allow', 0)
+        obj.set('levels', 'edit')
+        if (addUser) {
+            obj.set('users', 'XWiki.XWikiGuest')
+        }
+        if (addGroup) {
+            obj.set('groups', 'XWiki.XWikiAllGroup')
+        }
+    }
+}
+
+def needsRequiredRightsObj(prDoc)
+{
+    def objList = prDoc.getObjects('XWiki.RequiredRightClass');
+    return objList == null || objList.findAll{
+        obj -&gt; obj.getProperty('level').getValue() == 'programming' ||
+            obj.getProperty('level').getValue() == 'edit'
+    }.size() == 0
+}
+
+def addRequiredRightProgramming(prDoc)
+{
+    if (needsRequiredRightsObj(prDoc)) {
+        def reqRight = prDoc.newObject('XWiki.RequiredRightClass')
+        reqRight.set('level', 'programming')
+    }
+}
+
+def savePages(pagelist) {
+    for (page in pagelist) {
+        prDoc = xwiki.getDocument(page)
+        addDenyEdit(prDoc)
+        addRequiredRightProgramming(prDoc)
+        try {
+            prDoc.save('Saving with programming rights.', true)
+            println " * Successfully saved '${page}'"
+        } catch (Exception e) {
+            println " * Failed to save '${page}': " + e
+        }
+    }
+}
+{{/groovy}}
+</content></xwikidoc>
