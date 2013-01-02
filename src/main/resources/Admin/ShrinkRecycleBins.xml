@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>Admin</web>
-<name>ShrinkRecycleBins</name>
-<language></language>
-<defaultLanguage></defaultLanguage>
-<translation>0</translation>
-<parent>Admin.Tools</parent>
-<creator>xwiki:XWiki.Admin</creator>
-<author>xwiki:XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1317648634000</creationDate>
-<date>1317997680000</date>
-<contentUpdateDate>1317997680000</contentUpdateDate>
-<version>1.1</version>
-<title>Shrink Recycle Bins</title>
-<template></template>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/2.0</syntaxId>
-<hidden>false</hidden>
-<content>{{groovy}}
+  <web>Admin</web>
+  <name>ShrinkRecycleBins</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>Admin.Tools</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1317648634000</creationDate>
+  <date>1317997680000</date>
+  <contentUpdateDate>1317997680000</contentUpdateDate>
+  <version>1.1</version>
+  <title>Shrink Recycle Bins</title>
+  <template/>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.0</syntaxId>
+  <hidden>false</hidden>
+  <content>{{groovy}}
 import com.xpn.xwiki.doc.XWikiAttachment;
 import com.xpn.xwiki.XWikiException;
 
@@ -252,4 +253,5 @@ if (wParam) {
   }
   displayRecycleBins()
 }
-{{/groovy}}</content></xwikidoc>
+{{/groovy}}</content>
+</xwikidoc>
