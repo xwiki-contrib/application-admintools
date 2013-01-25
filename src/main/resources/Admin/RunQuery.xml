@@ -27,8 +27,7 @@
   def query = request.query;
   if (query==null)
     query = "show processlist";
-  def escapetool = new org.xwiki.velocity.tools.EscapeTool();
-  query = escapetool.xml(query);
+  query = services.xml.escape(query);
 
 println """
 {{html clean=="false"}}
