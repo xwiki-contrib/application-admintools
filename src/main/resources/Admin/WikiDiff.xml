@@ -65,22 +65,41 @@
  #end
 #end
 #else
+##
+## version patterns: 4.5, 4.5.1, 4.5-rc1, 4.5-milestone-1/ 
+##
 #set($version = $xwiki.version)
 #set($pos = $version.lastIndexOf("."))
-#set($version = $version.substring(0, $pos))
 #set($pos1 = $version.indexOf("."))
-#set($major = $xwiki.parseInt($version.substring(0, $pos1)))
-#set($pos1 = $pos1 + 1)
-#set($pos2 = $version.indexOf(".", $pos1))
-#if($pos2==-1)
-#set($minor = $xwiki.parseInt($version.substring($pos1)))
+#if($pos1 != $pos)
+  ## 4.5.1
+  #set($bigVersion = $version.substring(0, $pos))
+  #set($major = $xwiki.parseInt($bigVersion.substring(0, $pos1)))
+  #set($pos1 = $pos1 + 1)
+  #set($pos2 = $bigVersion.indexOf(".", $pos1))
+  #if($pos2 == -1)
+    #set($minor = $xwiki.parseInt($bigVersion.substring($pos1)))
+  #else
+    #set($minor = $xwiki.parseInt($bigVersion.substring($pos1, $pos2)))
+  #end
 #else
-#set($minor = $xwiki.parseInt($version.substring($pos1, $pos2)))
+  ## 4.5 4.5-rc1
+  #set($major = $xwiki.parseInt($version.substring(0, $pos)))
+  #set($pos = $pos + 1)
+  #set($minorVersion = $version.substring($pos))
+  #if($minorVersion.indexOf("rc") == -1 &amp;&amp; $minorVersion.indexOf("milestone") == -1)
+    #set($minor = $xwiki.parseInt($minorVersion))
+  #else 
+    #set($minor = 0)
+  #end
 #end
+{{info}}Major version:$major Minor version=$minor Checking against:$version {{/info}}
 #if($major&lt;2 || ($minor&lt;6 &amp;&amp; $major==2))
-#set($source = "http://maven.xwiki.org/releases/com/xpn/xwiki/products/xwiki-enterprise-wiki/$version/xwiki-enterprise-wiki-${version}.xar")
+  #set($source = "http://maven.xwiki.org/releases/com/xpn/xwiki/products/xwiki-enterprise-wiki/$version/xwiki-enterprise-wiki-${version}.xar")
+#elseif($major &gt;= 3 &amp;&amp; $minor &gt;= 3)
+  #set($source = "http://maven.xwiki.org/releases/org/xwiki/enterprise/xwiki-enterprise-ui-all/${version}/xwiki-enterprise-ui-all-${version}.xar")
 #else
-#set($source = "http://maven.xwiki.org/releases/org/xwiki/enterprise/xwiki-enterprise-wiki/$version/xwiki-enterprise-wiki-${version}.xar")
+  #set($source = "http://maven.xwiki.org/releases/org/xwiki/enterprise/xwiki-enterprise-wiki/$version/xwiki-enterprise-wiki-${version}.xar")
 #end
 {{html clean=false}}
 &lt;form action=""&gt;
