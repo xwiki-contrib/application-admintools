@@ -10,18 +10,18 @@
 <author>XWiki.Admin</author>
 <customClass></customClass>
 <contentAuthor>XWiki.Admin</contentAuthor>
-<creationDate>1374224647000</creationDate>
-<date>1374581393000</date>
-<contentUpdateDate>1374581393000</contentUpdateDate>
-<version>1.1</version>
+<creationDate>1374668860000</creationDate>
+<date>1374668860000</date>
+<contentUpdateDate>1374668860000</contentUpdateDate>
+<version>111.1</version>
 <title>Space Used</title>
 <defaultTemplate></defaultTemplate>
 <validationScript></validationScript>
-<comment></comment>
+<comment>Copied from xwiki:Admin.UsedSpace2</comment>
 <minorEdit>false</minorEdit>
-<syntaxId>xwiki/2.0</syntaxId>
+<syntaxId>xwiki/2.1</syntaxId>
 <hidden>false</hidden>
-<content>The following page shows the space used by usually biggest tables.
+<content>The following page shows the space used in MegaBytes by usually biggest tables.
 
 __xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&gt;&gt;Admin.ShrinkRecycleBins]].
 __xwikircs__ : Versioning of documents.
@@ -31,73 +31,51 @@ __xwikiattachment_content__ : Stores the content of attachments in database.
 __xwikiattachment_archive__ : Versioning of attachments
 __xwikiattrecyclebin__ : Recycle bin of attachments.
 
-{{groovy}}
-
-private static boolean isFilesystemStore(final Object store)
-{
-    return store.getClass().getName().contains("Filesystem");
-}
-
-// Check if current wiki is configured in FS attachment mode.
-fsstore = isFilesystemStore(xcontext.getContext().getWiki().getAttachmentStore())
-
-def dbs = []
-services.wikimanager ? services.wikimanager.getAllWikis() : dbs.add(xcontext.getMainWikiName())
-
-String Query(table,schema){
-    def context = xcontext.getContext();
-    def store = xwiki.getXWiki().getHibernateStore();
-    store.beginTransaction(context);
-    def session = store.getSession(context);
-    def connection = session.connection();
-    def stmt = connection.createStatement();
-    try {
-       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
-       def resultset = stmt.executeQuery(sql);
-       def mdata = resultset.getMetaData();
-       def nbcols = mdata.getColumnCount();
-       print "|="
-       for (def i=1;i&lt;=nbcols;i++) {
-         print  mdata.getColumnName(i);
-           if (i!=nbcols)
-            print "|=";
-       }
-       while (true) {
-          resultset.next();
-          print "|"
-          for (i=1;i&lt;=nbcols;i++) {
-           def value = resultset.getString(i);
-           if ((value==null)||(value==""))
-            value = " "
-           print "{{{ ${value}MB }}}"
-           if (i!=nbcols)
-            print "|";
-          }
-          println "";
-          if (resultset.isLast())         
-            break;
-       } 
-       stmt.close();
-    } catch (Exception e2) {
-       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
-    } finally {
-      stmt.close();
-      store.endTransaction(context, true)
-    }
-}
-
-def tables = fsstore ? ['xwikirecyclebin','xwikircs'] : ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin']
-for(schema in dbs){
-  println "== Used space of wiki ${schema} =="
-  for(table in tables){
-    Query(table,schema)
-  }
-}
- 
-
-{{/groovy}}
-
 {{velocity}}
+
+## Check if Filesystem Storage is enabled at the moment.
+#set($fsstore = false)
+#if($xcontext.getContext().getWiki().getAttachmentStore().getClass().getName().contains("Filesystem"))
+  #set($fsstore = true)
+#end
+
+
+#if($hasProgramming)
+  #set($sqlTools = $xwiki.parseGroovyFromPage('SQLTools.SQLToolsGroovy'))
+  #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
+  Your database is: **$system**
+  #if($system == "HSQL Database Engine")
+    {{warning}}$system is not supported for this action{{/warning}}
+  #end
+
+ #if($services.wikimanager)
+    #set($dbs = $services.wikimanager.getAllWikis())
+ #else
+    #set($dbs = ["$xcontext.getDatabase()"])
+ #end
+
+#if($fsstore)
+  #set($tables = ['xwikirecyclebin','xwikircs'])
+#else
+  #set($tables = ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin'])
+#end
+
+#foreach($schema in $dbs)
+  $xcontext.setDatabase($schema)
+  == Used space of wiki ${schema} ==
+  #foreach($table in $tables)
+    #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
+    #set($query = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';")
+    #set($results = $sqlTools.getResults($connection, $query, true))
+    $results
+  #end
+#end
+
+
+
+#else
+{{error}}Sorry, you need the programming rights to use this tool{{/error}}
+#end 
 
 == Recommandations ==
 
