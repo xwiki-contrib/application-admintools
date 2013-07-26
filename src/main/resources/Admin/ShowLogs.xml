@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>Admin</web>
+<name>ShowLogs</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent>Admin.Tools</parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1374849167000</creationDate>
+<date>1374851477000</date>
+<contentUpdateDate>1374851477000</contentUpdateDate>
+<version>27.1</version>
+<title>Show Logs</title>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.1</syntaxId>
+<hidden>false</hidden>
+<content>{{groovy}}
+if (request.lines) {
+  lines = request.lines;
+} else {
+  lines = 2000
+}
+if (request.logfile) {
+  logfile = request.logfile;
+} else {
+  logfile = "/usr/local/tomcat/logs/catalina.out"
+}
+{{/groovy}}
+
+{{info}}This script only works in a Linux environnent.{{/info}}
+ {{html clean="false" wiki="true"}}
+ &lt;form action="" method="post"&gt;
+ &lt;table border="0"&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Logfile to read : &lt;/td&gt;&lt;td&gt;&lt;input type="text" name="logfile" size="40" value="/usr/local/tomcat/logs/catalina.out"/&gt;&lt;/td&gt;&lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Number of log lines to show : &lt;/td&gt;&lt;td&gt;&lt;input type="text" name="lines" size="40" value="2000" /&gt;&lt;/td&gt;
+ &lt;input type="hidden" name="showlog" value="1" /&gt;
+ &lt;/tr&gt;
+ &lt;/table&gt;
+ &lt;br/&gt;
+ &lt;input type="submit" name="Show" /&gt;
+ &lt;/form&gt;
+ {{/html}}
+
+{{groovy}}
+if(request.showlog == "1") {
+  print("= Result =")
+  line = "/usr/bin/tail -n " + lines + " " + logfile
+  print("{{code language='none'}}")
+  print(line.execute().getText()) 
+  print("{{/code}}")
+}
+{{/groovy}}</content>
+<versions>head	27.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+27.1
+date	2013.07.26.17.11.17;	author XWiki_2EAdmin;	state full;
+branches;
+next	;
+
+
+desc
+@@
+
+
+27.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;ShowLogs&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;en&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374849167000&lt;/creationDate&gt;
+&lt;date&gt;1374851477000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374851477000&lt;/contentUpdateDate&gt;
+&lt;version&gt;27.1&lt;/version&gt;
+&lt;title&gt;Show Logs&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.1&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;{{groovy}}
+if (request.lines) {
+  lines = request.lines;
+} else {
+  lines = 2000
+}
+if (request.logfile) {
+  logfile = request.logfile;
+} else {
+  logfile = "/usr/local/tomcat/logs/catalina.out"
+}
+{{/groovy}}
+
+{{info}}This script only works in a Linux environnent.{{/info}}
+ {{html clean="false" wiki="true"}}
+ &amp;lt;form action="" method="post"&amp;gt;
+ &amp;lt;table border="0"&amp;gt;
+ &amp;lt;tr&amp;gt;
+ &amp;lt;td&amp;gt;Logfile to read : &amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;input type="text" name="logfile" size="40" value="/usr/local/tomcat/logs/catalina.out"/&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
+ &amp;lt;tr&amp;gt;
+ &amp;lt;td&amp;gt;Number of log lines to show : &amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;input type="text" name="lines" size="40" value="2000" /&amp;gt;&amp;lt;/td&amp;gt;
+ &amp;lt;input type="hidden" name="showlog" value="1" /&amp;gt;
+ &amp;lt;/tr&amp;gt;
+ &amp;lt;/table&amp;gt;
+ &amp;lt;br/&amp;gt;
+ &amp;lt;input type="submit" name="Show" /&amp;gt;
+ &amp;lt;/form&amp;gt;
+ {{/html}}
+
+{{groovy}}
+if(request.showlog == "1") {
+  print("= Result =")
+  line = "/usr/bin/tail -n " + lines + " " + logfile
+  print("{{code language='none'}}")
+  print(line.execute().getText()) 
+  print("{{/code}}")
+}
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+</versions></xwikidoc>

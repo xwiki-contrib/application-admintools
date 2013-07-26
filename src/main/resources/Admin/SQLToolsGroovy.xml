@@ -5,21 +5,20 @@
 <language></language>
 <defaultLanguage>en</defaultLanguage>
 <translation>0</translation>
-<parent>Admin.WebHome</parent>
+<parent></parent>
 <creator>XWiki.Admin</creator>
-<author>xwiki:XWiki.GuillaumeDelhumeau</author>
+<author>XWiki.Admin</author>
 <customClass></customClass>
-<contentAuthor>xwiki:XWiki.GuillaumeDelhumeau</contentAuthor>
-<creationDate>1352114288000</creationDate>
-<date>1365090128000</date>
-<contentUpdateDate>1365090128000</contentUpdateDate>
-<version>1.2</version>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1374225068000</creationDate>
+<date>1374503443000</date>
+<contentUpdateDate>1374503443000</contentUpdateDate>
+<version>4.1</version>
 <title>SQLToolsGroovy</title>
-<template></template>
 <defaultTemplate></defaultTemplate>
 <validationScript></validationScript>
 <comment></comment>
-<minorEdit>true</minorEdit>
+<minorEdit>false</minorEdit>
 <syntaxId>xwiki/2.1</syntaxId>
 <hidden>false</hidden>
 <object>
@@ -53,10 +52,10 @@
 <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
 </level>
 </class>
-<name>SQLTools.SQLToolsGroovy</name>
+<name>Admin.SQLToolsGroovy</name>
 <number>0</number>
 <className>XWiki.RequiredRightClass</className>
-<guid>4bf0810f-053d-4cc4-8dc5-05148950b699</guid>
+<guid>47f1dd58-f20a-4799-a2e1-e1cfd0f0d61b</guid>
 <property>
 <level>programming</level>
 </property>
@@ -284,5 +283,440 @@ class SQLTools{
     return toReturn;
   }
 
+};</content>
+<versions>head	4.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+4.1
+date	2013.07.22.16.30.43;	author XWiki_2EAdmin;	state full;
+branches;
+next	3.2;
+
+3.2
+date	2013.07.22.16.25.49;	author XWiki_2EAdmin;	state diff;
+branches;
+next	3.1;
+
+3.1
+date	2013.07.22.16.22.14;	author XWiki_2EAdmin;	state diff;
+branches;
+next	2.1;
+
+2.1
+date	2013.07.19.11.05.40;	author XWiki_2EAdmin;	state diff;
+branches;
+next	1.1;
+
+1.1
+date	2013.04.04.17.42.08;	author XWiki_2EGuillaumeDelhumeau;	state diff;
+branches;
+next	;
+
+
+desc
+@@
+
+
+4.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;SQLToolsGroovy&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;en&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374225068000&lt;/creationDate&gt;
+&lt;date&gt;1374503443000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374503443000&lt;/contentUpdateDate&gt;
+&lt;version&gt;4.1&lt;/version&gt;
+&lt;title&gt;SQLToolsGroovy&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.1&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;object&gt;
+&lt;class&gt;
+&lt;name&gt;XWiki.RequiredRightClass&lt;/name&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;customMapping&gt;&lt;/customMapping&gt;
+&lt;defaultViewSheet&gt;&lt;/defaultViewSheet&gt;
+&lt;defaultEditSheet&gt;&lt;/defaultEditSheet&gt;
+&lt;defaultWeb&gt;&lt;/defaultWeb&gt;
+&lt;nameField&gt;&lt;/nameField&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;level&gt;
+&lt;cache&gt;0&lt;/cache&gt;
+&lt;disabled&gt;0&lt;/disabled&gt;
+&lt;displayType&gt;select&lt;/displayType&gt;
+&lt;multiSelect&gt;0&lt;/multiSelect&gt;
+&lt;name&gt;level&lt;/name&gt;
+&lt;number&gt;1&lt;/number&gt;
+&lt;picker&gt;0&lt;/picker&gt;
+&lt;prettyName&gt;level&lt;/prettyName&gt;
+&lt;relationalStorage&gt;0&lt;/relationalStorage&gt;
+&lt;separator&gt; &lt;/separator&gt;
+&lt;separators&gt; ,|&lt;/separators&gt;
+&lt;size&gt;1&lt;/size&gt;
+&lt;sort&gt;none&lt;/sort&gt;
+&lt;unmodifiable&gt;0&lt;/unmodifiable&gt;
+&lt;validationMessage&gt;&lt;/validationMessage&gt;
+&lt;validationRegExp&gt;&lt;/validationRegExp&gt;
+&lt;values&gt;edit|programming&lt;/values&gt;
+&lt;classType&gt;com.xpn.xwiki.objects.classes.StaticListClass&lt;/classType&gt;
+&lt;/level&gt;
+&lt;/class&gt;
+&lt;name&gt;Admin.SQLToolsGroovy&lt;/name&gt;
+&lt;number&gt;0&lt;/number&gt;
+&lt;className&gt;XWiki.RequiredRightClass&lt;/className&gt;
+&lt;guid&gt;47f1dd58-f20a-4799-a2e1-e1cfd0f0d61b&lt;/guid&gt;
+&lt;property&gt;
+&lt;level&gt;programming&lt;/level&gt;
+&lt;/property&gt;
+&lt;/object&gt;
+&lt;content&gt;/**
+ * Import
+ */ 
+import org.apache.velocity.tools.generic.EscapeTool;
+import java.sql.*
+
+/**
+ * Class 
+ */
+class SQLTools{
+
+  /**
+   * Get Form
+   */
+  String getForm(request, doc, withJDBCForm, withQuery){    
+    def escapeTool = new EscapeTool();
+    def spageUrl = escapeTool.xml(doc.getURL());    
+    
+    // &amp;lt;form&amp;gt;
+    def toReturn = """
+      {{html clean=="false"}}
+      &amp;lt;form action="${spageUrl}#HResults" class="xform" method="post"&amp;gt;
+    """;
+    // JDB Form (user, password driver, url)
+    if(withJDBCForm){
+      // Get the data
+      def user = request.user;
+      if (user==null)
+        user = "xwiki";
+      def password = request.password;
+      if (password==null)
+        password = "xwiki";
+      def url = request.url;
+      if (url==null)
+        url = "jdbc:mysql://localhost/xwiki?useServerPrepStmts=false&amp;amp;useUnicode=true&amp;amp;characterEncoding=UTF-8";
+      def driver = request.driver;
+      if (driver==null)
+        driver = "com.mysql.jdbc.Driver";
+        
+      // Escape datas
+      def surl = escapeTool.xml(url);
+      def suser = escapeTool.xml(user);
+      def spassword = escapeTool.xml(password);
+      def sdriver = escapeTool.xml(driver);      
+    
+      // Print form
+      toReturn += """
+        &amp;lt;dl&amp;gt;
+          &amp;lt;dt&amp;gt;
+            &amp;lt;label for="user"&amp;gt;User:&amp;lt;/label&amp;gt;
+          &amp;lt;/dt&amp;gt;
+          &amp;lt;dd&amp;gt;
+            &amp;lt;input type="text" name="user" id="user" value="${suser}" size="80" /&amp;gt;
+          &amp;lt;/dd&amp;gt;    
+        &amp;lt;/dl&amp;gt;
+        &amp;lt;dl&amp;gt;
+          &amp;lt;dt&amp;gt;
+            &amp;lt;label for="password"&amp;gt;Password:&amp;lt;/label&amp;gt;
+          &amp;lt;/dt&amp;gt;
+          &amp;lt;dd&amp;gt;
+            &amp;lt;input type="text" name="password" id="password" value="${spassword}" size="80" /&amp;gt;
+          &amp;lt;/dd&amp;gt;    
+        &amp;lt;/dl&amp;gt;
+        &amp;lt;dl&amp;gt;
+          &amp;lt;dt&amp;gt;
+            &amp;lt;label for="url"&amp;gt;URL:&amp;lt;/label&amp;gt;
+          &amp;lt;/dt&amp;gt;
+          &amp;lt;dd&amp;gt;
+            &amp;lt;input type="text" name="url" id="url" value="${surl}" size="80" /&amp;gt;
+          &amp;lt;/dd&amp;gt;    
+        &amp;lt;/dl&amp;gt;
+        &amp;lt;dl&amp;gt;
+          &amp;lt;dt&amp;gt;
+            &amp;lt;label for="Driver"&amp;gt;Driver:&amp;lt;/label&amp;gt;
+          &amp;lt;/dt&amp;gt;
+          &amp;lt;dd&amp;gt;
+            &amp;lt;input type="text" name="driver" id="driver" value="${sdriver}" size="80" /&amp;gt;
+          &amp;lt;/dd&amp;gt;    
+        &amp;lt;/dl&amp;gt;
+      """;
+    }
+    // &amp;lt;texteare&amp;gt;Query&amp;lt;/textarea&amp;gt;
+    if(withQuery){
+      // Get the datas
+      def query = request.query;
+      if (query==null)
+        query = "SHOW TABLES";
+      def squery = escapeTool.xml(query);
+      
+      // Print the form
+      toReturn += """
+        &amp;lt;dl&amp;gt;
+          &amp;lt;dt&amp;gt;
+            &amp;lt;label for="query"&amp;gt;Query:&amp;lt;/label&amp;gt;
+          &amp;lt;/dt&amp;gt;
+          &amp;lt;dd&amp;gt;
+            &amp;lt;textarea name="query" id="query" cols="100" rows="10"/&amp;gt;${squery}&amp;lt;/textarea&amp;gt;
+          &amp;lt;/dd&amp;gt;    
+        &amp;lt;/dl&amp;gt; 
+      """;
+    }
+    
+    // &amp;lt;/form&amp;gt;
+    toReturn += """
+      &amp;lt;p&amp;gt;&amp;lt;span class="buttonwrapper"&amp;gt;&amp;lt;input type="submit" value="Go" class="button"/&amp;gt;&amp;lt;/span&amp;gt;&amp;lt;/p&amp;gt;
+      &amp;lt;/form&amp;gt;
+      {{/html}}
+    """;
+    
+    return toReturn;
+  }
+  
+  /**
+   * Get connection from request
+   */
+  Connection getConnectionFromRequest(request){
+    String userName = request.user;
+    String password = request.password;
+    String url = request.url;
+    if(!request.user)
+      throw new Exception("You must fill the field 'user'");
+    if(!request.url)
+      throw new Exception("You must fill the field 'url'");
+    if(!request.driver)
+      throw new Exception("You must fill the field 'driver'");
+    Class.forName (request.driver).newInstance ();
+    def conn = DriverManager.getConnection (url, userName, password);
+    return conn;
+  }
+  
+  /**
+   * Get XWiki Database System
+   */
+  String getXWikiDatabaseSystem(xwiki, xcontext){
+    def store = xwiki.getXWiki().getHibernateStore();
+    def db = store.getDatabaseProductName(xcontext.getContext());
+    return db.getProductName();
+  }
+  
+  /**
+   * Get XWiki Connection
+   */
+  def getXWikiConnection(xwiki, xcontext){    
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(xcontext.getContext());
+    def session = store.getSession(xcontext.getContext());
+    return session.connection();    
+  }
+  
+  
+  /**
+   * Get results
+   */
+  String getResults(connection, sql, closeConnectionAtTheEnd){     
+    def toReturn = "";
+    try{
+      def stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+      try {
+        def sqlLower = sql.toLowerCase().trim();
+        if(sqlLower.startsWith("delete") || sqlLower.startsWith("update") || sqlLower.startsWith("insert") || sqlLower.startsWith("drop")){
+          int results = stmt.executeUpdate(sql);
+          return "\n{{success}}$results lines changed{{/success}}\n";
+        }else{
+          def resultset = stmt.executeQuery(sql);
+          def mdata = resultset.getMetaData();
+          def nbcols = mdata.getColumnCount();
+          for (def i=1;i&amp;lt;=nbcols;i++) {
+            toReturn += "|=";
+            toReturn += mdata.getColumnName(i);          
+          }
+          toReturn +=  "\n";
+          while (resultset.next()) {          
+            for (def i=1;i&amp;lt;=nbcols;i++) {
+              def value = resultset.getString(i);
+              if ((value==null)||(value==""))
+                value = " ";
+              toReturn += "|"
+              toReturn += "{{{${value}}}}";
+            }
+            toReturn +=  "\n";
+          }
+        }
+      }
+      catch (Exception e2) {
+        toReturn += "\n{{error}} **Error running sql: {{{${sql}}}}**\n" + e2.getMessage() + "{{/error}}\n";
+      } finally {
+        stmt.close();
+        if(closeConnectionAtTheEnd)   
+          connection.close();
+      }
+    }
+    catch(Exception e){
+      toReturn += "\n{{error}} Error: " + e.getMessage() + "{{/error}}\n";
+    }
+    return toReturn;
+  }  
+  
+  /**
+   * Get Tables
+   */
+  String getTables(connection){    
+    def sql = "SHOW TABLES";
+    def stmt1 = connection.createStatement();
+    def toReturn = "";
+    try {
+      // Get Tables list
+      def rs = stmt1.executeQuery(sql);
+      while(rs.next()){
+        def table = rs.getString(1);        
+        toReturn += "== ${table} ==\n";
+        toReturn += getResults(connection, "DESCRIBE ${table}", false);                       
+      }
+    }
+    catch (Exception e2) {
+      toReturn += "{{error}} **Error running sql: {{{${sql}}}}**\n" + e2.getMessage() + "{{/error}}\n";
+    } finally {
+      stmt1.close();      
+      connection.close();
+    }
+    
+    return toReturn;
+  }
+
+};&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+3.2
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374503149000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374503149000&lt;/contentUpdateDate&gt;
+&lt;version&gt;3.2&lt;/version&gt;
+d21 1
+a21 1
+&lt;minorEdit&gt;true&lt;/minorEdit&gt;
+a285 22
+
+String getTablesSize(connection,database,table){    
+    def sql = "select table_schema, sum(round(data_length/1024/1024,2)) as total_size_mb from information_schema.tables where table_name=${database} and table_schema=${table};";
+    def stmt1 = connection.createStatement();
+    def toReturn = "";
+    try {
+      def rs = stmt1.executeQuery(sql);
+      while(rs.next()){
+        def table = rs.getString(1);        
+        toReturn += "== ${table} ==\n";                       
+      }
+    }
+    catch (Exception e2) {
+      toReturn += "{{error}} **Error running sql: {{{${sql}}}}**\n" + e2.getMessage() + "{{/error}}\n";
+    } finally {
+      stmt1.close();      
+      connection.close();
+    }
+    
+    return toReturn;
+  }
+
+@
+
+
+3.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374502934000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374502934000&lt;/contentUpdateDate&gt;
+&lt;version&gt;3.1&lt;/version&gt;
+d21 1
+a21 1
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+a291 1
+      // Get Tables list
+d295 1
+a295 2
+        toReturn += "== ${table} ==\n";
+        toReturn += getResults(connection, "DESCRIBE ${table}", false);                       
+@
+
+
+2.1
+log
+@@
+text
+@d3 1
+a3 1
+&lt;web&gt;SQLTools&lt;/web&gt;
+d13 4
+a16 4
+&lt;creationDate&gt;1374224655000&lt;/creationDate&gt;
+&lt;date&gt;1374224740000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374224740000&lt;/contentUpdateDate&gt;
+&lt;version&gt;2.1&lt;/version&gt;
+d55 1
+a55 1
+&lt;name&gt;SQLTools.SQLToolsGroovy&lt;/name&gt;
+d58 1
+a58 1
+&lt;guid&gt;4bf0810f-053d-4cc4-8dc5-05148950b699&lt;/guid&gt;
+d286 25
+a310 2
 };
-</content></xwikidoc>
+&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+1.1
+log
+@Imported from XAR
+@
+text
+@d10 1
+a10 1
+&lt;author&gt;XWiki.GuillaumeDelhumeau&lt;/author&gt;
+d12 1
+a12 1
+&lt;contentAuthor&gt;XWiki.GuillaumeDelhumeau&lt;/contentAuthor&gt;
+d14 3
+a16 3
+&lt;date&gt;1365090128000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1365090128000&lt;/contentUpdateDate&gt;
+&lt;version&gt;1.1&lt;/version&gt;
+d20 1
+a20 1
+&lt;comment&gt;Imported from XAR&lt;/comment&gt;
+@
+</versions></xwikidoc>

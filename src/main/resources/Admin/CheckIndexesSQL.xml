@@ -1,29 +1,415 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <xwikidoc>
-  <web>Admin</web>
-  <name>CheckIndexesSQL</name>
-  <language/>
-  <defaultLanguage/>
-  <translation>0</translation>
-  <parent>Admin.WebHome</parent>
-  <creator>xwiki:XWiki.Admin</creator>
-  <author>xwiki:XWiki.Admin</author>
-  <customClass/>
-  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-  <creationDate>1262300400000</creationDate>
-  <date>1262300400000</date>
-  <contentUpdateDate>1262300400000</contentUpdateDate>
-  <version>1.1</version>
-  <title/>
-  <template/>
-  <defaultTemplate/>
-  <validationScript/>
-  <comment/>
-  <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/2.0</syntaxId>
-  <hidden>false</hidden>
-  <content>create index xwd_name on xwikidoc (xwd_name);
+<web>Admin</web>
+<name>CheckIndexesSQL</name>
+<language></language>
+<defaultLanguage></defaultLanguage>
+<translation>0</translation>
+<parent>Admin.WebHome</parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1374854227000</creationDate>
+<date>1374853688000</date>
+<contentUpdateDate>1374853688000</contentUpdateDate>
+<version>9.1</version>
+<title></title>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment>Copied from xwiki:Admin.CheckIndexesSQL2</comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.0</syntaxId>
+<hidden>false</hidden>
+<content>xwikidoc:DOC_NAME:(XWD_NAME)
+xwikidoc:DOC_FULLNAME:(XWD_FULLNAME)
+xwikidoc:DOC_SPACE:(XWD_WEB)
+</content><versions>head	9.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+9.1
+date	2013.07.26.17.48.08;	author XWiki_2EAdmin;	state full;
+branches;
+next	8.3;
+
+8.3
+date	2013.07.26.17.27.16;	author XWiki_2EAdmin;	state diff;
+branches;
+next	8.2;
+
+8.2
+date	2013.07.26.17.26.57;	author XWiki_2EAdmin;	state diff;
+branches;
+next	8.1;
+
+8.1
+date	2013.07.26.17.21.37;	author XWiki_2EAdmin;	state diff;
+branches;
+next	7.1;
+
+7.1
+date	2013.07.26.17.21.28;	author XWiki_2EAdmin;	state full;
+branches;
+next	6.1;
+
+6.1
+date	2013.07.26.17.21.13;	author XWiki_2EAdmin;	state diff;
+branches;
+next	5.3;
+
+5.3
+date	2013.07.26.17.17.51;	author XWiki_2EAdmin;	state diff;
+branches;
+next	5.2;
+
+5.2
+date	2013.07.26.17.17.35;	author XWiki_2EAdmin;	state diff;
+branches;
+next	5.1;
+
+5.1
+date	2013.07.24.16.41.57;	author XWiki_2EAdmin;	state diff;
+branches;
+next	4.1;
+
+4.1
+date	2013.07.24.16.41.29;	author XWiki_2EAdmin;	state full;
+branches;
+next	3.1;
+
+3.1
+date	2013.07.24.16.37.53;	author XWiki_2EAdmin;	state diff;
+branches;
+next	2.2;
+
+2.2
+date	2013.07.24.15.37.04;	author XWiki_2EAdmin;	state diff;
+branches;
+next	2.1;
+
+2.1
+date	2013.07.24.14.46.21;	author XWiki_2EAdmin;	state diff;
+branches;
+next	1.1;
+
+1.1
+date	2010.01.01.00.00.00;	author XWiki_2EAdmin;	state diff;
+branches;
+next	;
+
+
+desc
+@@
+
+
+9.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;CheckIndexesSQL2&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.WebHome&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374669929000&lt;/creationDate&gt;
+&lt;date&gt;1374853688000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374853688000&lt;/contentUpdateDate&gt;
+&lt;version&gt;9.1&lt;/version&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;xwikidoc:DOC_NAME:(XWD_NAME)
+xwikidoc:DOC_FULLNAME:(XWD_FULLNAME)
+xwikidoc:DOC_SPACE:(XWD_WEB)
+&lt;/content&gt;&lt;/xwikidoc&gt;@
+
+
+8.3
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374852436000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374852436000&lt;/contentUpdateDate&gt;
+&lt;version&gt;8.3&lt;/version&gt;
+d21 1
+a21 1
+&lt;minorEdit&gt;true&lt;/minorEdit&gt;
+d26 1
+a26 1
+xwikidoc:DOC:(XWD_WEB)
+@
+
+
+8.2
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374852417000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374852417000&lt;/contentUpdateDate&gt;
+&lt;version&gt;8.2&lt;/version&gt;
+d26 1
+a26 1
+xwiki:DOC_SPACE:(XWD_WEB)
+@
+
+
+8.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374852097000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374852097000&lt;/contentUpdateDate&gt;
+&lt;version&gt;8.1&lt;/version&gt;
+d21 1
+a21 1
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+d26 1
+a26 1
+xwikidoc:DOC_SPACE:(XWD_WEB)
+@
+
+
+7.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;CheckIndexesSQL2&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.WebHome&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374669929000&lt;/creationDate&gt;
+&lt;date&gt;1374852088000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374852088000&lt;/contentUpdateDate&gt;
+&lt;version&gt;7.1&lt;/version&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;xwikidoc:DOC_NAME:(XWD_NAME)
+xwikidoc:DOC_FULLNAME:(XWD_FULLNAME)
+xwikidoc:DOC_:(XWD_WEB)
+
+&lt;/content&gt;&lt;/xwikidoc&gt;@
+
+
+6.1
+log
+@Rollback to version 3.1
+@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374852073000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374852073000&lt;/contentUpdateDate&gt;
+&lt;version&gt;6.1&lt;/version&gt;
+d20 1
+a20 1
+&lt;comment&gt;Rollback to version 3.1&lt;/comment&gt;
+d26 1
+a26 1
+xwikidoc:DOC_SPACE:(XWD_WEB)
+@
+
+
+5.3
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374851871000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374851871000&lt;/contentUpdateDate&gt;
+&lt;version&gt;5.3&lt;/version&gt;
+d20 2
+a21 2
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;true&lt;/minorEdit&gt;
+@
+
+
+5.2
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374851855000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374851855000&lt;/contentUpdateDate&gt;
+&lt;version&gt;5.2&lt;/version&gt;
+d26 1
+a26 1
+xwikidoc:DOC_SPACE2:(XWD_WEB)
+@
+
+
+5.1
+log
+@Rollback to version 3.1
+@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374676917000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374676917000&lt;/contentUpdateDate&gt;
+&lt;version&gt;5.1&lt;/version&gt;
+d20 2
+a21 2
+&lt;comment&gt;Rollback to version 3.1&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+d26 1
+a26 1
+xwikidoc:DOC_SPACE:(XWD_WEB)
+@
+
+
+4.1
+log
+@Rollback to version 2.2
+@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;CheckIndexesSQL2&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.WebHome&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374669929000&lt;/creationDate&gt;
+&lt;date&gt;1374676889000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374676889000&lt;/contentUpdateDate&gt;
+&lt;version&gt;4.1&lt;/version&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;Rollback to version 2.2&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;xwikidoc:xwd_name:(xwd_name)
+xwikidoc:xwd_fullname:(xwd_fullname)
+xwikidoc:xwd_web:(xwd_web)&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+3.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374676673000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374676673000&lt;/contentUpdateDate&gt;
+&lt;version&gt;3.1&lt;/version&gt;
+d20 1
+a20 1
+&lt;comment&gt;&lt;/comment&gt;
+d24 3
+a26 5
+&lt;content&gt;xwikidoc:DOC_NAME:(XWD_NAME)
+xwikidoc:DOC_FULLNAME:(XWD_FULLNAME)
+xwikidoc:DOC_SPACE:(XWD_WEB)
+
+&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+2.2
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374673024000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374673024000&lt;/contentUpdateDate&gt;
+&lt;version&gt;2.2&lt;/version&gt;
+d21 1
+a21 1
+&lt;minorEdit&gt;true&lt;/minorEdit&gt;
+d24 5
+a28 3
+&lt;content&gt;xwikidoc:xwd_name:(xwd_name)
+xwikidoc:xwd_fullname:(xwd_fullname)
+xwikidoc:xwd_web:(xwd_web)&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+2.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374669981000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374669981000&lt;/contentUpdateDate&gt;
+&lt;version&gt;2.1&lt;/version&gt;
+d21 1
+a21 1
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+d26 1
+a26 3
+xwikidoc:xwd_web:(xwd_web)
+
+&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+1.1
+log
+@Imported from XAR
+@
+text
+@d4 1
+a4 1
+&lt;name&gt;CheckIndexesSQL&lt;/name&gt;
+d13 4
+a16 4
+&lt;creationDate&gt;1374224637000&lt;/creationDate&gt;
+&lt;date&gt;1262300400000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1262300400000&lt;/contentUpdateDate&gt;
+&lt;version&gt;1.1&lt;/version&gt;
+d20 1
+a20 1
+&lt;comment&gt;Imported from XAR&lt;/comment&gt;
+d24 4
+a27 71
+&lt;content&gt;create index xwd_name on xwikidoc (xwd_name);
 create index xwd_fullname on xwikidoc (xwd_fullname);
 create index xwd_web on xwikidoc (xwd_web);
 create index xwo_name on xwikiobjects (xwo_name);  
@@ -94,5 +480,5 @@ create index xda_doc_name on xwikiattrecyclebin (xda_doc_name);
 create index xda_filename on xwikiattrecyclebin (xda_filename);
 create index xda_date on xwikiattrecyclebin (xda_date);
 create index xda_deleter on xwikiattrecyclebin (xda_deleter);
-</content>
-</xwikidoc>
+@
+</versions></xwikidoc>

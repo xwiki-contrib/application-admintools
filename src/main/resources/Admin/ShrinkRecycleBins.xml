@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <xwikidoc>
-  <web>Admin</web>
-  <name>ShrinkRecycleBins</name>
-  <language/>
-  <defaultLanguage/>
-  <translation>0</translation>
-  <parent>Admin.Tools</parent>
-  <creator>xwiki:XWiki.Admin</creator>
-  <author>xwiki:XWiki.Admin</author>
-  <customClass/>
-  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-  <creationDate>1317648634000</creationDate>
-  <date>1317997680000</date>
-  <contentUpdateDate>1317997680000</contentUpdateDate>
-  <version>1.1</version>
-  <title>Shrink Recycle Bins</title>
-  <template/>
-  <defaultTemplate/>
-  <validationScript/>
-  <comment/>
-  <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/2.0</syntaxId>
-  <hidden>false</hidden>
-  <content>{{groovy}}
+<web>Admin</web>
+<name>ShrinkRecycleBins</name>
+<language></language>
+<defaultLanguage></defaultLanguage>
+<translation>0</translation>
+<parent>Admin.Tools</parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1374224645000</creationDate>
+<date>1317997680000</date>
+<contentUpdateDate>1317997680000</contentUpdateDate>
+<version>1.1</version>
+<title>Shrink Recycle Bins</title>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment>Imported from XAR</comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.0</syntaxId>
+<hidden>false</hidden>
+<content>{{groovy}}
 import com.xpn.xwiki.doc.XWikiAttachment;
 import com.xpn.xwiki.XWikiException;
 
@@ -254,4 +252,281 @@ if (wParam) {
   displayRecycleBins()
 }
 {{/groovy}}</content>
-</xwikidoc>
+<versions>head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2011.10.07.16.28.00;	author XWiki_2EAdmin;	state full;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Imported from XAR
+@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;ShrinkRecycleBins&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224645000&lt;/creationDate&gt;
+&lt;date&gt;1317997680000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1317997680000&lt;/contentUpdateDate&gt;
+&lt;version&gt;1.1&lt;/version&gt;
+&lt;title&gt;Shrink Recycle Bins&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;Imported from XAR&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;{{groovy}}
+import com.xpn.xwiki.doc.XWikiAttachment;
+import com.xpn.xwiki.XWikiException;
+
+// Utility method to run a query
+// return the result as a List of Maps or the Exception
+def runQuery(query) {
+  def context2 = xcontext.getContext()
+  def store = xwiki.getXWiki().getStore().getStore()
+  store.beginTransaction(context2)
+  def session = store.getSession(context2)
+  def connection = session.connection()
+  def stmt = connection.createStatement()
+  def list = new ArrayList()
+  try {
+    def resultset = stmt.executeQuery(query)
+    def mdata = resultset.getMetaData()
+    def nbcols = mdata.getColumnCount()
+    while (resultset.next()) {
+      def map = new HashMap()
+      for (i=1;i&amp;lt;=nbcols;i++) {
+        def value = resultset.getObject(i)
+        if (value==null)
+          value = ""
+        map.put(mdata.getColumnName(i), value)
+      }
+      list.add(map)
+    }
+  } catch (Exception ex) {
+    println "Error running sql: ${sql} " + ex.getMessage()
+    return ex
+  } finally {
+    stmt.close()
+    store.endTransaction(context2, true)
+  }
+  return list
+}
+
+// Utility method to test MySQL database
+def isMySQL() {
+  def store = xwiki.getXWiki().getStore().getStore()
+  store.beginTransaction(xcontext.context)
+  def db = store.getDatabaseProductName(xcontext.context)
+  store.endTransaction(xcontext.context, true)
+  return db.equals(com.xpn.xwiki.store.DatabaseProduct.MYSQL)
+}
+
+def Float getMySQLSpaceUsed(table, wiki) {
+  def mwikiquery = (wiki=="") ? "" : "AND TABLE_SCHEMA = '${wiki}'"
+  def query = (table=="") ? "SELECT SUM(DATA_LENGTH)/1024/1024 as 'space' FROM INFORMATION_SCHEMA.TABLES  WHERE 1=1 ${mwikiquery}" : "SELECT SUM(DATA_LENGTH)/1024/1024 as 'space' FROM INFORMATION_SCHEMA.TABLES  WHERE TABLE_NAME='${table}' ${mwikiquery}"
+  def spaceLeftResult = runQuery(query)
+  if (spaceLeftResult.size()==0 || spaceLeftResult.get(0).get("space")==null)
+    return -1f
+  return (Float)(spaceLeftResult.get(0).get('space'))
+}
+
+def getAgeWhereClause(age) {
+  return (new Date() - age + 1).format('yyyy-MM-dd')
+}
+
+// Return figures about the 2 recycle bins (-1 is for error) 
+def getFigures(wiki, age) {
+  def result = [ 'docNb':-1i, 'docSize':-1i, 'attNb':-1i, 'attSize':-1i]
+  if (wiki=="") return result
+  xcontext.setDatabase(wiki)
+  // Get the doc recycle bin figures
+  def qry = "select count(doc) from XWikiDeletedDocument doc where doc.date &amp;lt; '${getAgeWhereClause(age)}'"
+  try {
+    def rs = services.get("query").hql(qry).execute()
+    result.putAt('docNb', rs.get(0))
+  } catch (Exception e) {}
+  // Get the attachment recycle bin figures
+  qry = "select count(doc) from DeletedAttachment doc where doc.date &amp;lt; '${getAgeWhereClause(age)}'"
+  try {
+    def rs = services.get("query").hql(qry).execute()
+    result.putAt('attNb', rs.get(0))
+  } catch (Exception e) {}
+  xcontext.setDatabase(xcontext.getOriginalDatabase())
+  return result
+}
+
+// Delete the trashed documents
+def emptyDocBin(wiki, age) {
+  if (wiki=="")
+    return "?"
+  xcontext.setDatabase(wiki)
+  def workWiki = xcontext.getXWiki()
+  def qry = "select doc.fullName from XWikiDeletedDocument doc where doc.date &amp;lt; '${getAgeWhereClause(0)}'"
+  println '**Deleted documents**'
+  try {
+    services.get("query").hql(qry).execute().each() { docName -&amp;gt;
+      workWiki.getDeletedDocuments(docName, '', xcontext.context).each{
+        if (it.getDate()&amp;lt;(new Date() - age + 1)) {
+          print it.fullName + ' '
+          workWiki.getRecycleBinStore().deleteFromRecycleBin(
+              workWiki.getDocument(it.fullName, xcontext.context),
+              it.getId(),
+              xcontext.context,
+              true);
+        }
+      }
+    }
+  } catch (XWikiException xe) {
+    print xe.message
+  } finally {
+    xcontext.setDatabase(xcontext.getOriginalDatabase())
+  }
+  println ' '
+}
+
+
+// Delete the trashed files
+def emptyAttBin(wiki, age) {
+  if (wiki=="")
+    return "?"
+  xcontext.setDatabase(wiki)
+  def workWiki = xcontext.getXWiki()
+  def context2 = xcontext.context
+  println '**Deleted files**'
+  try {
+    def allDeletedAttachments = workWiki.getAttachmentRecycleBinStore().getAllDeletedAttachments((XWikiAttachment)null, context2, true)
+    allDeletedAttachments.each{
+      if (it.getDate()&amp;lt;(new Date() - age + 1)) {
+        print it.filename + ' '
+        workWiki.getAttachmentRecycleBinStore().deleteFromRecycleBin(it.id, context2, true)
+      }
+    }
+  } catch (XWikiException xe) {
+    print xe.message
+  } finally {
+    xcontext.setDatabase(xcontext.getOriginalDatabase())
+  }
+  println ' '
+}
+
+// Include a drop-down list generating the 'n' (NewerThan) parameter
+def printNewerWidget(wiki, current) {
+  def listOfDays = [0, 1, 7, 30, 100, 366]
+  if (current==null) {
+    current = 30
+  }
+  println '\n{{html}}\n&amp;lt;form action="" method="get"&amp;gt;&amp;lt;div&amp;gt;'
+  println '&amp;lt;input type="hidden" name="w" value="' + wiki + '" /&amp;gt;'
+  println 'Excluding items newer than &amp;lt;select name="n" onchange="document.getElementById(\'idWarn\').style.textDecoration=\'line-through\';"&amp;gt;'
+  listOfDays.each{
+    print '&amp;lt;option value="' + it + '" '
+    if (current == it) print 'selected="selected"';
+    println "&amp;gt;${it}&amp;lt;/option&amp;gt;"
+  }
+  println '&amp;lt;/select&amp;gt; days. &amp;lt;input type="submit" value="change"/&amp;gt;&amp;lt;/div&amp;gt;&amp;lt;/form&amp;gt;\n{{/html}}\n'
+}
+
+def showWikiBins(wiki) {
+  print '&amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;&amp;lt;a href="' + doc.getName() +'?w=' + wiki + '"&amp;gt;' + wiki
+  if (wiki=="xwiki")
+    println '&amp;lt;/a&amp;gt; (main wiki)&amp;lt;/td&amp;gt;'
+  else
+    println '&amp;lt;/a&amp;gt;&amp;lt;/td&amp;gt;'
+  Float sizeD = getMySQLSpaceUsed("xwikirecyclebin", wiki)
+  Float sizeA = getMySQLSpaceUsed("xwikiattrecyclebin", wiki)
+  println '&amp;lt;td style="text-align:right"&amp;gt;' + String.format('%7.1f', sizeD) + '&amp;lt;/td&amp;gt;'
+  println '&amp;lt;td style="text-align:right"&amp;gt;' + String.format('%7.1f', sizeA) + '&amp;lt;/td&amp;gt;'
+  println '&amp;lt;td style="text-align:right"&amp;gt;' + String.format('%7.1f', (sizeD + sizeA)) + '&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;'
+}
+
+// In a farm context, displays the size of the recycle bins for all the wikis
+def displayRecycleBins() {
+  if (!isMySQL()) {
+    println '**Sorry, this script can\'t be run if the XWiki farm database is NOT MySQL.**'
+    return
+  }
+  xwiki.ssfx.use("js/xwiki/table/table.css")
+  xwiki.jsfx.use("js/xwiki/table/tablefilterNsort.js", true)
+  println '= Recycle Bins Size (in Mega Bytes) ='
+  println '{{html}}'
+  println '&amp;lt;table id="bins" class="grid sortable doOddEven"&amp;gt;' 
+  println '&amp;lt;tr class="sortHeader"&amp;gt;&amp;lt;th&amp;gt;Wiki&amp;lt;/th&amp;gt;&amp;lt;th&amp;gt;Page Recycle bin&amp;lt;/th&amp;gt;&amp;lt;th&amp;gt;Attachment Recycle bin&amp;lt;/th&amp;gt;&amp;lt;th&amp;gt;Total&amp;lt;/th&amp;gt;&amp;lt;/tr&amp;gt;'
+
+  def wikilist = ['xwiki'];
+  if (xwiki.wikimanager != null) // wiki is virtual but wikimanager is not installed
+    wikilist = xwiki.wikimanager.getAllWikis().sort{it.toString()}
+  for (wiki in wikilist) {
+    showWikiBins(wiki.toString())
+  }
+  println '&amp;lt;/table&amp;gt;'
+  println '{{/html}}'
+}
+
+// The script starts here
+def wParam = request.get("w") // Wiki name specified using the url parameter "w"
+def nParam = request.get("n") // Exclude NewerThan specified using the url parameter "n"
+Integer nValue = 30i // Default value is 30 days
+if (nParam) {
+  try { nValue=nParam.toInteger() } catch(exc) {}
+}
+if (wParam) {
+  if (request.confirmation) {
+    println "= Empty the 2 recycle bins of //${wParam}// ="
+    emptyDocBin(wParam, nValue)
+    emptyAttBin(wParam, nValue)
+    println '\n\n[[Done&amp;gt;&amp;gt;' + doc.name + ']]'
+  } else {
+    def figures = getFigures(wParam, nValue)
+    println "= Empty the 2 recycle bins of //${wParam}// ? ="
+    printNewerWidget(wParam, nValue)
+    if ((figures.docNb + figures.attNb) &amp;gt; 0) {
+      println """\
+        {{html clean="false"}}
+        &amp;lt;p id="idWarn"&amp;gt;Please, confirm that you will permanently delete &amp;lt;b&amp;gt;${figures.docNb}&amp;lt;/b&amp;gt; documents and &amp;lt;b&amp;gt;${figures.attNb}&amp;lt;/b&amp;gt; attachments.&amp;lt;/p&amp;gt;
+        &amp;lt;form action="${doc.getURL('view', 'w=' + wParam +'&amp;amp;n=' + nValue)}" method="post"&amp;gt;&amp;lt;div&amp;gt;
+        &amp;lt;input type="hidden" name="confirmation" value="1" /&amp;gt;
+        &amp;lt;span class="buttonWrapper"&amp;gt;&amp;lt;input type="submit" class="button" value="Yes, I confirm" /&amp;gt;&amp;lt;/span&amp;gt;
+        &amp;lt;/div&amp;gt;&amp;lt;/form&amp;gt;
+        {{/html}}
+      """
+      println ' '
+      println 'I prefer to [[go back&amp;gt;&amp;gt;' + doc.name + ']]'
+    } else {
+      println '(% id="idWarn"%)(((**Nothing to delete** in the //' + wParam + '// recycle bins.)))'
+      println ' '
+      println '[[Return&amp;gt;&amp;gt;' + doc.getName() + ']]'
+    }
+  }
+} else {
+  if (!xwiki.isVirtual()) {
+    response.sendRedirect(xwiki.getURL(doc.name) + '?w=' + xcontext.database)
+    return
+  }
+  displayRecycleBins()
+}
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+</versions></xwikidoc>

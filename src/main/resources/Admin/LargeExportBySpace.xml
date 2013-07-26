@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>Admin</web>
+<name>LargeExportBySpace</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent>Admin.WebHome</parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1374848360000</creationDate>
+<date>1374848805000</date>
+<contentUpdateDate>1374848805000</contentUpdateDate>
+<version>39.1</version>
+<title>Large export on disk by space</title>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.1</syntaxId>
+<hidden>false</hidden>
+<object>
+<class>
+<name>XWiki.TagClass</name>
+<customClass></customClass>
+<customMapping></customMapping>
+<defaultViewSheet></defaultViewSheet>
+<defaultEditSheet></defaultEditSheet>
+<defaultWeb></defaultWeb>
+<nameField></nameField>
+<validationScript></validationScript>
+<tags>
+<cache>0</cache>
+<disabled>0</disabled>
+<displayType>input</displayType>
+<multiSelect>1</multiSelect>
+<name>tags</name>
+<number>1</number>
+<prettyName>Tags</prettyName>
+<relationalStorage>1</relationalStorage>
+<separator>|</separator>
+<separators>|,</separators>
+<size>30</size>
+<unmodifiable>0</unmodifiable>
+<values></values>
+<classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+</tags>
+</class>
+<name>Admin.LargeExportBySpace</name>
+<number>0</number>
+<className>XWiki.TagClass</className>
+<guid>65f1d371-9ebc-48e4-b88f-62f1817bccbf</guid>
+<property>
+<tags/>
+</property>
+</object>
+<content>{{groovy}}
+
+import com.xpn.xwiki.*;
+import com.xpn.xwiki.doc.*;
+import com.xpn.xwiki.plugin.packaging.*;
+import java.util.zip.*;
+import com.xpn.xwiki.util.Util;
+
+def getXAR(String filename, XWikiContext context) { 
+    def request = xcontext.getRequest();
+    def export = xcontext.getXWiki().getPluginApi("package", xcontext.getContext());
+    spaces = request.getParameterMap().get("spaces");
+    export.setWithVersions(true);
+    export.setAuthorName("XWiki.Admin");
+    export.setDescription("");
+    export.setLicence("");
+    export.setVersion("");
+    export.setBackupPack(true);
+    export.setName("backup");
+    def pack = export.getPackage();
+    for(space in spaces){
+        for(docName in xwiki.getSpaceDocsName(space)){
+            println "* Exported ${docName} page of space ${space}."
+            pack.add(space+"."+docName, com.xpn.xwiki.plugin.packaging.DocumentInfo.ACTION_OVERWRITE, xcontext.getContext());
+        }
+    }
+    if(request.dir){
+        pack.exportToDir(new File(filename), xcontext.getContext());
+    }else{
+        pack.export(new FileOutputStream(new File(filename)), xcontext.getContext());
+    }
+}
+
+if (request.filename) {
+ getXAR(request.filename,xcontext.getContext())
+ xcontext.put('displayForm',false)
+ println "{{success}}Export is now finished. Check in the logs for any error{{/success}}"
+} else {
+ println "== Large Export =="
+ xcontext.put('displayForm',true)
+}
+{{/groovy}}
+
+{{velocity}}
+
+#set($displayForm = $xcontext.get('displayForm'))
+#if($displayForm)
+ {{html clean="false" wiki="true"}}
+ &lt;form action="" method="post"&gt;
+ &lt;table border="0"&gt;
+ &lt;tr&gt;
+ &lt;td&gt;File/directory to write to:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="filename" size="60" /&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/table&gt;
+ #foreach($space in $xwiki.getSpaces())
+    * $space &lt;input type="checkbox" name="spaces" value="$space"/&gt;
+ #end
+
+ * **Don't zip files, output to directory.** &lt;input type="checkbox" name="dir"/&gt;
+ &lt;br/&gt;
+ &lt;input type="submit" name="Export" /&gt;
+ &lt;/form&gt;
+ {{/html}}
+#end
+{{/velocity}}</content>
+<versions>head	39.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+39.1
+date	2013.07.26.16.26.45;	author XWiki_2EAdmin;	state full;
+branches;
+next	38.1;
+
+38.1
+date	2013.07.26.16.19.48;	author XWiki_2EAdmin;	state diff;
+branches;
+next	37.1;
+
+37.1
+date	2013.07.26.16.01.58;	author XWiki_2EAdmin;	state diff;
+branches;
+next	;
+
+
+desc
+@@
+
+
+39.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;LargeExportBySpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;en&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.WebHome&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374848360000&lt;/creationDate&gt;
+&lt;date&gt;1374848805000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374848805000&lt;/contentUpdateDate&gt;
+&lt;version&gt;39.1&lt;/version&gt;
+&lt;title&gt;Large export on disk by space&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.1&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;object&gt;
+&lt;class&gt;
+&lt;name&gt;XWiki.TagClass&lt;/name&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;customMapping&gt;&lt;/customMapping&gt;
+&lt;defaultViewSheet&gt;&lt;/defaultViewSheet&gt;
+&lt;defaultEditSheet&gt;&lt;/defaultEditSheet&gt;
+&lt;defaultWeb&gt;&lt;/defaultWeb&gt;
+&lt;nameField&gt;&lt;/nameField&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;tags&gt;
+&lt;cache&gt;0&lt;/cache&gt;
+&lt;disabled&gt;0&lt;/disabled&gt;
+&lt;displayType&gt;input&lt;/displayType&gt;
+&lt;multiSelect&gt;1&lt;/multiSelect&gt;
+&lt;name&gt;tags&lt;/name&gt;
+&lt;number&gt;1&lt;/number&gt;
+&lt;prettyName&gt;Tags&lt;/prettyName&gt;
+&lt;relationalStorage&gt;1&lt;/relationalStorage&gt;
+&lt;separator&gt;|&lt;/separator&gt;
+&lt;separators&gt;|,&lt;/separators&gt;
+&lt;size&gt;30&lt;/size&gt;
+&lt;unmodifiable&gt;0&lt;/unmodifiable&gt;
+&lt;values&gt;&lt;/values&gt;
+&lt;classType&gt;com.xpn.xwiki.objects.classes.StaticListClass&lt;/classType&gt;
+&lt;/tags&gt;
+&lt;/class&gt;
+&lt;name&gt;Admin.LargeExportBySpace&lt;/name&gt;
+&lt;number&gt;0&lt;/number&gt;
+&lt;className&gt;XWiki.TagClass&lt;/className&gt;
+&lt;guid&gt;65f1d371-9ebc-48e4-b88f-62f1817bccbf&lt;/guid&gt;
+&lt;property&gt;
+&lt;tags/&gt;
+&lt;/property&gt;
+&lt;/object&gt;
+&lt;content&gt;{{groovy}}
+
+import com.xpn.xwiki.*;
+import com.xpn.xwiki.doc.*;
+import com.xpn.xwiki.plugin.packaging.*;
+import java.util.zip.*;
+import com.xpn.xwiki.util.Util;
+
+def getXAR(String filename, XWikiContext context) { 
+    def request = xcontext.getRequest();
+    def export = xcontext.getXWiki().getPluginApi("package", xcontext.getContext());
+    spaces = request.getParameterMap().get("spaces");
+    export.setWithVersions(true);
+    export.setAuthorName("XWiki.Admin");
+    export.setDescription("");
+    export.setLicence("");
+    export.setVersion("");
+    export.setBackupPack(true);
+    export.setName("backup");
+    def pack = export.getPackage();
+    for(space in spaces){
+        for(docName in xwiki.getSpaceDocsName(space)){
+            println "* Exported ${docName} page of space ${space}."
+            pack.add(space+"."+docName, com.xpn.xwiki.plugin.packaging.DocumentInfo.ACTION_OVERWRITE, xcontext.getContext());
+        }
+    }
+    if(request.dir){
+        pack.exportToDir(new File(filename), xcontext.getContext());
+    }else{
+        pack.export(new FileOutputStream(new File(filename)), xcontext.getContext());
+    }
+}
+
+if (request.filename) {
+ getXAR(request.filename,xcontext.getContext())
+ xcontext.put('displayForm',false)
+ println "{{success}}Export is now finished. Check in the logs for any error{{/success}}"
+} else {
+ println "== Large Export =="
+ xcontext.put('displayForm',true)
+}
+{{/groovy}}
+
+{{velocity}}
+
+#set($displayForm = $xcontext.get('displayForm'))
+#if($displayForm)
+ {{html clean="false" wiki="true"}}
+ &amp;lt;form action="" method="post"&amp;gt;
+ &amp;lt;table border="0"&amp;gt;
+ &amp;lt;tr&amp;gt;
+ &amp;lt;td&amp;gt;File/directory to write to:&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;input type="text" name="filename" size="60" /&amp;gt;&amp;lt;/td&amp;gt;
+ &amp;lt;/tr&amp;gt;
+ &amp;lt;/table&amp;gt;
+ #foreach($space in $xwiki.getSpaces())
+    * $space &amp;lt;input type="checkbox" name="spaces" value="$space"/&amp;gt;
+ #end
+
+ * **Don't zip files, output to directory.** &amp;lt;input type="checkbox" name="dir"/&amp;gt;
+ &amp;lt;br/&amp;gt;
+ &amp;lt;input type="submit" name="Export" /&amp;gt;
+ &amp;lt;/form&amp;gt;
+ {{/html}}
+#end
+{{/velocity}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+38.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374848388000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374848388000&lt;/contentUpdateDate&gt;
+&lt;version&gt;38.1&lt;/version&gt;
+d107 1
+a107 1
+ &amp;lt;form action="" method="get"&amp;gt;
+@
+
+
+37.1
+log
+@@
+text
+@d3 2
+a4 2
+&lt;web&gt;Main&lt;/web&gt;
+&lt;name&gt;largeExportBySpace&lt;/name&gt;
+d8 1
+a8 1
+&lt;parent&gt;&lt;/parent&gt;
+d13 5
+a17 5
+&lt;creationDate&gt;1374836358000&lt;/creationDate&gt;
+&lt;date&gt;1374847318000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374847318000&lt;/contentUpdateDate&gt;
+&lt;version&gt;37.1&lt;/version&gt;
+&lt;title&gt;largeExportBySpace&lt;/title&gt;
+d51 1
+a51 1
+&lt;name&gt;Main.largeExportBySpace&lt;/name&gt;
+d54 1
+a54 1
+&lt;guid&gt;9b69807e-9fd6-467f-8acb-a7d8975dba3b&lt;/guid&gt;
+@
+</versions></xwikidoc>

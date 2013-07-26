@@ -11,13 +11,13 @@
 <customClass></customClass>
 <contentAuthor>XWiki.Admin</contentAuthor>
 <creationDate>1374668860000</creationDate>
-<date>1374668860000</date>
-<contentUpdateDate>1374668860000</contentUpdateDate>
-<version>111.1</version>
+<date>1374855988000</date>
+<contentUpdateDate>1374855988000</contentUpdateDate>
+<version>116.1</version>
 <title>Space Used</title>
 <defaultTemplate></defaultTemplate>
 <validationScript></validationScript>
-<comment>Copied from xwiki:Admin.UsedSpace2</comment>
+<comment></comment>
 <minorEdit>false</minorEdit>
 <syntaxId>xwiki/2.1</syntaxId>
 <hidden>false</hidden>
@@ -27,6 +27,989 @@ __xwikirecyclebin__ : Here is store the deleted documents. You can shrink the re
 __xwikircs__ : Versioning of documents.
 
 {{warning}}The following tables will not be shown if you're using [[Filesystem Attachment feature&gt;&gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]].{{/warning}}
+__xwikiattachment_content__ : Stores the content of attachments in database.
+__xwikiattachment_archive__ : Versioning of attachments
+__xwikiattrecyclebin__ : Recycle bin of attachments.
+
+{{velocity}}
+
+## Check if Filesystem Storage is enabled at the moment.
+#set($fsstore = false)
+#if($xcontext.getContext().getWiki().getAttachmentStore().getClass().getName().contains("Filesystem"))
+  #set($fsstore = true)
+#end
+
+
+#if($hasProgramming)
+  #set($sqlTools = $xwiki.parseGroovyFromPage('SQLTools.SQLToolsGroovy'))
+  #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
+  Your database is: **$system**
+  #if($system == "HSQL Database Engine")
+    {{warning}}$system is not supported for this action{{/warning}}
+  #end
+
+ #if($services.wikimanager)
+    #set($dbs = $services.wikimanager.getAllWikis())
+ #else
+    #set($dbs = ["$xcontext.getDatabase()"])
+ #end
+
+ #if($fsstore)
+  #set($tables = ['xwikirecyclebin','xwikircs'])
+ #else
+  #set($tables = ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin'])
+ #end
+
+ #foreach($schema in $dbs)
+ #set($alltables = "")
+  $xcontext.setDatabase($schema)
+  == Used space of wiki ${schema} in MB ==
+  #foreach($table in $tables)
+    #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
+    #set($query = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';")
+    #set($results = $sqlTools.getResults($connection, $query, true))
+    #set($alltables = $alltables + $results)
+  #end
+  $alltables
+ #end
+
+#else
+{{error}}Sorry, you need the programming rights to use this tool{{/error}}
+#end 
+
+== Recommandations ==
+
+
+#if($fsstore != true)
+{{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&gt;&gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
+#end
+
+{{/velocity}}</content>
+<versions>head	116.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+116.1
+date	2013.07.26.18.26.28;	author XWiki_2EAdmin;	state full;
+branches;
+next	115.1;
+
+115.1
+date	2013.07.26.18.26.07;	author XWiki_2EAdmin;	state full;
+branches;
+next	114.1;
+
+114.1
+date	2013.07.26.18.25.56;	author XWiki_2EAdmin;	state diff;
+branches;
+next	113.1;
+
+113.1
+date	2013.07.26.18.24.57;	author XWiki_2EAdmin;	state diff;
+branches;
+next	112.1;
+
+112.1
+date	2013.07.26.18.21.31;	author XWiki_2EAdmin;	state diff;
+branches;
+next	111.1;
+
+111.1
+date	2013.07.24.14.27.33;	author XWiki_2EAdmin;	state diff;
+branches;
+next	110.1;
+
+110.1
+date	2013.07.24.14.26.26;	author XWiki_2EAdmin;	state full;
+branches;
+next	109.1;
+
+109.1
+date	2013.07.24.14.17.40;	author XWiki_2EAdmin;	state diff;
+branches;
+next	108.1;
+
+108.1
+date	2013.07.24.14.15.30;	author XWiki_2EAdmin;	state diff;
+branches;
+next	107.1;
+
+107.1
+date	2013.07.24.14.15.07;	author XWiki_2EAdmin;	state diff;
+branches;
+next	106.1;
+
+106.1
+date	2013.07.24.14.14.07;	author XWiki_2EAdmin;	state diff;
+branches;
+next	105.1;
+
+105.1
+date	2013.07.24.14.13.42;	author XWiki_2EAdmin;	state full;
+branches;
+next	104.1;
+
+104.1
+date	2013.07.24.14.13.07;	author XWiki_2EAdmin;	state diff;
+branches;
+next	103.1;
+
+103.1
+date	2013.07.24.14.09.05;	author XWiki_2EAdmin;	state diff;
+branches;
+next	102.1;
+
+102.1
+date	2013.07.24.13.51.16;	author XWiki_2EAdmin;	state diff;
+branches;
+next	101.1;
+
+101.1
+date	2013.07.23.16.22.01;	author XWiki_2EAdmin;	state diff;
+branches;
+next	100.1;
+
+100.1
+date	2013.07.23.16.21.21;	author XWiki_2EAdmin;	state full;
+branches;
+next	99.1;
+
+99.1
+date	2013.07.23.16.20.53;	author XWiki_2EAdmin;	state diff;
+branches;
+next	98.1;
+
+98.1
+date	2013.07.23.16.20.41;	author XWiki_2EAdmin;	state diff;
+branches;
+next	97.1;
+
+97.1
+date	2013.07.23.16.20.02;	author XWiki_2EAdmin;	state diff;
+branches;
+next	96.1;
+
+96.1
+date	2013.07.23.16.19.15;	author XWiki_2EAdmin;	state diff;
+branches;
+next	95.1;
+
+95.1
+date	2013.07.23.16.18.23;	author XWiki_2EAdmin;	state full;
+branches;
+next	94.1;
+
+94.1
+date	2013.07.23.16.18.19;	author XWiki_2EAdmin;	state diff;
+branches;
+next	93.1;
+
+93.1
+date	2013.07.23.16.18.00;	author XWiki_2EAdmin;	state diff;
+branches;
+next	92.1;
+
+92.1
+date	2013.07.23.16.16.27;	author XWiki_2EAdmin;	state diff;
+branches;
+next	91.1;
+
+91.1
+date	2013.07.23.16.16.10;	author XWiki_2EAdmin;	state diff;
+branches;
+next	90.1;
+
+90.1
+date	2013.07.23.16.15.50;	author XWiki_2EAdmin;	state full;
+branches;
+next	89.1;
+
+89.1
+date	2013.07.23.16.15.29;	author XWiki_2EAdmin;	state diff;
+branches;
+next	88.1;
+
+88.1
+date	2013.07.23.16.13.43;	author XWiki_2EAdmin;	state diff;
+branches;
+next	87.1;
+
+87.1
+date	2013.07.23.16.13.31;	author XWiki_2EAdmin;	state diff;
+branches;
+next	86.1;
+
+86.1
+date	2013.07.23.16.09.00;	author XWiki_2EAdmin;	state diff;
+branches;
+next	85.1;
+
+85.1
+date	2013.07.23.16.08.12;	author XWiki_2EAdmin;	state full;
+branches;
+next	84.1;
+
+84.1
+date	2013.07.23.16.05.57;	author XWiki_2EAdmin;	state diff;
+branches;
+next	83.1;
+
+83.1
+date	2013.07.23.14.26.49;	author XWiki_2EAdmin;	state diff;
+branches;
+next	82.1;
+
+82.1
+date	2013.07.23.14.12.57;	author XWiki_2EAdmin;	state diff;
+branches;
+next	81.1;
+
+81.1
+date	2013.07.23.14.12.51;	author XWiki_2EAdmin;	state diff;
+branches;
+next	80.1;
+
+80.1
+date	2013.07.23.14.09.53;	author XWiki_2EAdmin;	state full;
+branches;
+next	79.1;
+
+79.1
+date	2013.07.23.14.09.27;	author XWiki_2EAdmin;	state diff;
+branches;
+next	78.1;
+
+78.1
+date	2013.07.23.14.05.40;	author XWiki_2EAdmin;	state diff;
+branches;
+next	77.1;
+
+77.1
+date	2013.07.23.14.04.54;	author XWiki_2EAdmin;	state diff;
+branches;
+next	76.1;
+
+76.1
+date	2013.07.23.13.59.10;	author XWiki_2EAdmin;	state diff;
+branches;
+next	75.1;
+
+75.1
+date	2013.07.23.13.57.58;	author XWiki_2EAdmin;	state full;
+branches;
+next	74.1;
+
+74.1
+date	2013.07.23.13.56.59;	author XWiki_2EAdmin;	state diff;
+branches;
+next	73.1;
+
+73.1
+date	2013.07.23.13.54.49;	author XWiki_2EAdmin;	state diff;
+branches;
+next	72.1;
+
+72.1
+date	2013.07.23.13.53.47;	author XWiki_2EAdmin;	state diff;
+branches;
+next	71.1;
+
+71.1
+date	2013.07.23.13.52.27;	author XWiki_2EAdmin;	state diff;
+branches;
+next	70.1;
+
+70.1
+date	2013.07.23.13.52.03;	author XWiki_2EAdmin;	state full;
+branches;
+next	69.1;
+
+69.1
+date	2013.07.23.13.51.38;	author XWiki_2EAdmin;	state diff;
+branches;
+next	68.1;
+
+68.1
+date	2013.07.23.13.49.08;	author XWiki_2EAdmin;	state diff;
+branches;
+next	67.1;
+
+67.1
+date	2013.07.23.13.49.08;	author XWiki_2EAdmin;	state diff;
+branches;
+next	66.1;
+
+66.1
+date	2013.07.23.11.29.09;	author XWiki_2EAdmin;	state diff;
+branches;
+next	65.1;
+
+65.1
+date	2013.07.23.11.28.15;	author XWiki_2EAdmin;	state full;
+branches;
+next	64.1;
+
+64.1
+date	2013.07.23.11.20.02;	author XWiki_2EAdmin;	state diff;
+branches;
+next	63.1;
+
+63.1
+date	2013.07.23.11.19.48;	author XWiki_2EAdmin;	state diff;
+branches;
+next	62.1;
+
+62.1
+date	2013.07.23.11.18.10;	author XWiki_2EAdmin;	state diff;
+branches;
+next	61.1;
+
+61.1
+date	2013.07.23.11.17.14;	author XWiki_2EAdmin;	state diff;
+branches;
+next	60.1;
+
+60.1
+date	2013.07.23.11.16.25;	author XWiki_2EAdmin;	state full;
+branches;
+next	59.1;
+
+59.1
+date	2013.07.23.11.16.07;	author XWiki_2EAdmin;	state diff;
+branches;
+next	58.1;
+
+58.1
+date	2013.07.23.11.15.30;	author XWiki_2EAdmin;	state diff;
+branches;
+next	57.1;
+
+57.1
+date	2013.07.23.11.15.17;	author XWiki_2EAdmin;	state diff;
+branches;
+next	56.1;
+
+56.1
+date	2013.07.23.11.14.40;	author XWiki_2EAdmin;	state diff;
+branches;
+next	55.1;
+
+55.1
+date	2013.07.23.11.14.31;	author XWiki_2EAdmin;	state full;
+branches;
+next	54.1;
+
+54.1
+date	2013.07.23.11.14.20;	author XWiki_2EAdmin;	state diff;
+branches;
+next	53.1;
+
+53.1
+date	2013.07.23.11.14.00;	author XWiki_2EAdmin;	state diff;
+branches;
+next	52.1;
+
+52.1
+date	2013.07.23.11.11.58;	author XWiki_2EAdmin;	state diff;
+branches;
+next	51.1;
+
+51.1
+date	2013.07.23.11.11.30;	author XWiki_2EAdmin;	state diff;
+branches;
+next	50.1;
+
+50.1
+date	2013.07.23.11.11.22;	author XWiki_2EAdmin;	state full;
+branches;
+next	49.1;
+
+49.1
+date	2013.07.23.11.11.16;	author XWiki_2EAdmin;	state diff;
+branches;
+next	48.1;
+
+48.1
+date	2013.07.23.11.10.24;	author XWiki_2EAdmin;	state diff;
+branches;
+next	47.1;
+
+47.1
+date	2013.07.23.11.10.03;	author XWiki_2EAdmin;	state diff;
+branches;
+next	46.1;
+
+46.1
+date	2013.07.23.11.09.46;	author XWiki_2EAdmin;	state diff;
+branches;
+next	45.1;
+
+45.1
+date	2013.07.23.11.09.23;	author XWiki_2EAdmin;	state full;
+branches;
+next	44.1;
+
+44.1
+date	2013.07.23.11.08.40;	author XWiki_2EAdmin;	state diff;
+branches;
+next	43.5;
+
+43.5
+date	2013.07.23.11.07.45;	author XWiki_2EAdmin;	state diff;
+branches;
+next	43.4;
+
+43.4
+date	2013.07.23.11.06.32;	author XWiki_2EAdmin;	state diff;
+branches;
+next	43.3;
+
+43.3
+date	2013.07.23.11.05.57;	author XWiki_2EAdmin;	state diff;
+branches;
+next	43.2;
+
+43.2
+date	2013.07.23.11.05.13;	author XWiki_2EAdmin;	state full;
+branches;
+next	43.1;
+
+43.1
+date	2013.07.23.10.59.06;	author XWiki_2EAdmin;	state diff;
+branches;
+next	42.1;
+
+42.1
+date	2013.07.23.10.58.00;	author XWiki_2EAdmin;	state diff;
+branches;
+next	41.1;
+
+41.1
+date	2013.07.23.10.54.43;	author XWiki_2EAdmin;	state diff;
+branches;
+next	40.1;
+
+40.1
+date	2013.07.23.10.54.27;	author XWiki_2EAdmin;	state diff;
+branches;
+next	39.1;
+
+39.1
+date	2013.07.23.10.49.47;	author XWiki_2EAdmin;	state full;
+branches;
+next	38.1;
+
+38.1
+date	2013.07.23.10.48.43;	author XWiki_2EAdmin;	state diff;
+branches;
+next	37.1;
+
+37.1
+date	2013.07.22.18.11.06;	author XWiki_2EAdmin;	state diff;
+branches;
+next	36.1;
+
+36.1
+date	2013.07.22.18.10.52;	author XWiki_2EAdmin;	state diff;
+branches;
+next	35.1;
+
+35.1
+date	2013.07.22.17.47.03;	author XWiki_2EAdmin;	state diff;
+branches;
+next	34.1;
+
+34.1
+date	2013.07.22.17.46.30;	author XWiki_2EAdmin;	state full;
+branches;
+next	33.1;
+
+33.1
+date	2013.07.22.17.46.22;	author XWiki_2EAdmin;	state diff;
+branches;
+next	32.1;
+
+32.1
+date	2013.07.22.17.46.13;	author XWiki_2EAdmin;	state diff;
+branches;
+next	31.1;
+
+31.1
+date	2013.07.22.17.44.56;	author XWiki_2EAdmin;	state diff;
+branches;
+next	30.1;
+
+30.1
+date	2013.07.22.17.44.35;	author XWiki_2EAdmin;	state diff;
+branches;
+next	29.1;
+
+29.1
+date	2013.07.22.17.44.18;	author XWiki_2EAdmin;	state full;
+branches;
+next	28.1;
+
+28.1
+date	2013.07.22.17.42.59;	author XWiki_2EAdmin;	state diff;
+branches;
+next	27.1;
+
+27.1
+date	2013.07.22.17.41.58;	author XWiki_2EAdmin;	state diff;
+branches;
+next	26.1;
+
+26.1
+date	2013.07.22.17.32.50;	author XWiki_2EAdmin;	state diff;
+branches;
+next	25.1;
+
+25.1
+date	2013.07.22.17.32.37;	author XWiki_2EAdmin;	state diff;
+branches;
+next	24.1;
+
+24.1
+date	2013.07.22.17.28.50;	author XWiki_2EAdmin;	state full;
+branches;
+next	23.1;
+
+23.1
+date	2013.07.22.17.28.33;	author XWiki_2EAdmin;	state diff;
+branches;
+next	22.1;
+
+22.1
+date	2013.07.22.17.28.14;	author XWiki_2EAdmin;	state diff;
+branches;
+next	21.1;
+
+21.1
+date	2013.07.22.17.28.02;	author XWiki_2EAdmin;	state diff;
+branches;
+next	20.1;
+
+20.1
+date	2013.07.22.17.27.26;	author XWiki_2EAdmin;	state diff;
+branches;
+next	19.1;
+
+19.1
+date	2013.07.22.17.27.03;	author XWiki_2EAdmin;	state full;
+branches;
+next	18.1;
+
+18.1
+date	2013.07.22.16.52.28;	author XWiki_2EAdmin;	state diff;
+branches;
+next	17.1;
+
+17.1
+date	2013.07.22.16.52.10;	author XWiki_2EAdmin;	state diff;
+branches;
+next	16.1;
+
+16.1
+date	2013.07.22.16.51.24;	author XWiki_2EAdmin;	state diff;
+branches;
+next	15.1;
+
+15.1
+date	2013.07.22.16.50.44;	author XWiki_2EAdmin;	state diff;
+branches;
+next	14.1;
+
+14.1
+date	2013.07.22.16.50.29;	author XWiki_2EAdmin;	state full;
+branches;
+next	13.1;
+
+13.1
+date	2013.07.22.16.49.45;	author XWiki_2EAdmin;	state diff;
+branches;
+next	12.1;
+
+12.1
+date	2013.07.22.16.49.04;	author XWiki_2EAdmin;	state diff;
+branches;
+next	11.1;
+
+11.1
+date	2013.07.22.16.48.39;	author XWiki_2EAdmin;	state diff;
+branches;
+next	10.1;
+
+10.1
+date	2013.07.22.16.47.53;	author XWiki_2EAdmin;	state diff;
+branches;
+next	9.1;
+
+9.1
+date	2013.07.22.16.45.57;	author XWiki_2EAdmin;	state full;
+branches;
+next	8.1;
+
+8.1
+date	2013.07.22.16.45.17;	author XWiki_2EAdmin;	state diff;
+branches;
+next	7.1;
+
+7.1
+date	2013.07.22.16.45.02;	author XWiki_2EAdmin;	state diff;
+branches;
+next	6.1;
+
+6.1
+date	2013.07.22.16.44.46;	author XWiki_2EAdmin;	state diff;
+branches;
+next	5.1;
+
+5.1
+date	2013.07.22.16.31.16;	author XWiki_2EAdmin;	state diff;
+branches;
+next	4.1;
+
+4.1
+date	2013.07.22.16.22.43;	author XWiki_2EAdmin;	state full;
+branches;
+next	3.2;
+
+3.2
+date	2013.07.22.16.16.29;	author XWiki_2EAdmin;	state diff;
+branches;
+next	3.1;
+
+3.1
+date	2013.07.22.16.06.09;	author XWiki_2EAdmin;	state diff;
+branches;
+next	2.1;
+
+2.1
+date	2013.07.22.16.05.51;	author XWiki_2EAdmin;	state diff;
+branches;
+next	1.1;
+
+1.1
+date	2010.01.01.00.00.00;	author XWiki_2EAdmin;	state diff;
+branches;
+next	;
+
+
+desc
+@@
+
+
+116.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374668860000&lt;/creationDate&gt;
+&lt;date&gt;1374855988000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374855988000&lt;/contentUpdateDate&gt;
+&lt;version&gt;116.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.1&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;The following page shows the space used in MegaBytes by usually biggest tables.
+
+__xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&amp;gt;&amp;gt;Admin.ShrinkRecycleBins]].
+__xwikircs__ : Versioning of documents.
+
+{{warning}}The following tables will not be shown if you're using [[Filesystem Attachment feature&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]].{{/warning}}
+__xwikiattachment_content__ : Stores the content of attachments in database.
+__xwikiattachment_archive__ : Versioning of attachments
+__xwikiattrecyclebin__ : Recycle bin of attachments.
+
+{{velocity}}
+
+## Check if Filesystem Storage is enabled at the moment.
+#set($fsstore = false)
+#if($xcontext.getContext().getWiki().getAttachmentStore().getClass().getName().contains("Filesystem"))
+  #set($fsstore = true)
+#end
+
+
+#if($hasProgramming)
+  #set($sqlTools = $xwiki.parseGroovyFromPage('SQLTools.SQLToolsGroovy'))
+  #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
+  Your database is: **$system**
+  #if($system == "HSQL Database Engine")
+    {{warning}}$system is not supported for this action{{/warning}}
+  #end
+
+ #if($services.wikimanager)
+    #set($dbs = $services.wikimanager.getAllWikis())
+ #else
+    #set($dbs = ["$xcontext.getDatabase()"])
+ #end
+
+ #if($fsstore)
+  #set($tables = ['xwikirecyclebin','xwikircs'])
+ #else
+  #set($tables = ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin'])
+ #end
+
+ #foreach($schema in $dbs)
+ #set($alltables = "")
+  $xcontext.setDatabase($schema)
+  == Used space of wiki ${schema} in MB ==
+  #foreach($table in $tables)
+    #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
+    #set($query = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';")
+    #set($results = $sqlTools.getResults($connection, $query, true))
+    #set($alltables = $alltables + $results)
+  #end
+  $alltables
+ #end
+
+#else
+{{error}}Sorry, you need the programming rights to use this tool{{/error}}
+#end 
+
+== Recommandations ==
+
+
+#if($fsstore != true)
+{{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
+#end
+
+{{/velocity}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+115.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374668860000&lt;/creationDate&gt;
+&lt;date&gt;1374855967000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374855967000&lt;/contentUpdateDate&gt;
+&lt;version&gt;115.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.1&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;The following page shows the space used in MegaBytes by usually biggest tables.
+
+__xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&amp;gt;&amp;gt;Admin.ShrinkRecycleBins]].
+__xwikircs__ : Versioning of documents.
+
+{{warning}}The following tables will not be shown if you're using [[Filesystem Attachment feature&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]].{{/warning}}
+__xwikiattachment_content__ : Stores the content of attachments in database.
+__xwikiattachment_archive__ : Versioning of attachments
+__xwikiattrecyclebin__ : Recycle bin of attachments.
+
+{{velocity}}
+
+## Check if Filesystem Storage is enabled at the moment.
+#set($fsstore = false)
+#if($xcontext.getContext().getWiki().getAttachmentStore().getClass().getName().contains("Filesystem"))
+  #set($fsstore = true)
+#end
+
+
+#if($hasProgramming)
+  #set($sqlTools = $xwiki.parseGroovyFromPage('SQLTools.SQLToolsGroovy'))
+  #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
+  Your database is: **$system**
+  #if($system == "HSQL Database Engine")
+    {{warning}}$system is not supported for this action{{/warning}}
+  #end
+
+ #if($services.wikimanager)
+    #set($dbs = $services.wikimanager.getAllWikis())
+ #else
+    #set($dbs = ["$xcontext.getDatabase()"])
+ #end
+
+ #if($fsstore)
+  #set($tables = ['xwikirecyclebin','xwikircs'])
+ #else
+  #set($tables = ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin'])
+ #end
+
+ #foreach($schema in $dbs)
+ #set($alltables = "")
+  $xcontext.setDatabase($schema)
+  == Used space of wiki ${schema} ==
+  #foreach($table in $tables)
+    #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
+    #set($query = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';")
+    #set($results = $sqlTools.getResults($connection, $query, true))
+    #set($alltables = $alltables + $results)
+  #end
+  $alltables
+ #end
+
+#else
+{{error}}Sorry, you need the programming rights to use this tool{{/error}}
+#end 
+
+== Recommandations ==
+
+
+#if($fsstore != true)
+{{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
+#end
+
+{{/velocity}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+114.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374855956000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374855956000&lt;/contentUpdateDate&gt;
+&lt;version&gt;114.1&lt;/version&gt;
+d71 1
+a71 1
+    #set($alltables = $global + $results)
+@
+
+
+113.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374855897000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374855897000&lt;/contentUpdateDate&gt;
+&lt;version&gt;113.1&lt;/version&gt;
+a62 1
+ #set($global = "")
+d64 1
+d71 1
+a71 1
+    #set($global = $global + $results)
+d73 1
+a73 1
+  $global
+@
+
+
+112.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374855691000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374855691000&lt;/contentUpdateDate&gt;
+&lt;version&gt;112.1&lt;/version&gt;
+d63 1
+d71 1
+a71 1
+    $results
+d73 1
+@
+
+
+111.1
+log
+@@
+text
+@d4 1
+a4 1
+&lt;name&gt;UsedSpace2&lt;/name&gt;
+d13 4
+a16 4
+&lt;creationDate&gt;1374667260000&lt;/creationDate&gt;
+&lt;date&gt;1374668853000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374668786000&lt;/contentUpdateDate&gt;
+&lt;version&gt;111.1&lt;/version&gt;
+d57 1
+a57 1
+#if($fsstore)
+d59 1
+a59 1
+#else
+d61 1
+a61 1
+#end
+d63 1
+a63 1
+#foreach($schema in $dbs)
+d72 1
+a72 1
+#end
+a73 2
+
+
+@
+
+
+110.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace2&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374667260000&lt;/creationDate&gt;
+&lt;date&gt;1374668786000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374668786000&lt;/contentUpdateDate&gt;
+&lt;version&gt;110.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.1&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;The following page shows the space used in MegaBytes by usually biggest tables.
+
+__xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&amp;gt;&amp;gt;Admin.ShrinkRecycleBins]].
+__xwikircs__ : Versioning of documents.
+
+{{warning}}The following tables will not be shown if you're using [[Filesystem Attachment feature&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]].{{/warning}}
 __xwikiattachment_content__ : Stores the content of attachments in database.
 __xwikiattachment_archive__ : Versioning of attachments
 __xwikiattrecyclebin__ : Recycle bin of attachments.
@@ -81,7 +1064,3788 @@ __xwikiattrecyclebin__ : Recycle bin of attachments.
 
 
 #if($fsstore != true)
-{{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&gt;&gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
+{{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
 #end
 
-{{/velocity}}</content></xwikidoc>
+{{/velocity}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+109.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374668260000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374668260000&lt;/contentUpdateDate&gt;
+&lt;version&gt;109.1&lt;/version&gt;
+d24 1
+a24 1
+&lt;content&gt;The following page shows the space used by usually biggest tables.
+a67 1
+    === Table $table ===
+@
+
+
+108.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374668130000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374668130000&lt;/contentUpdateDate&gt;
+&lt;version&gt;108.1&lt;/version&gt;
+d54 1
+a54 1
+    #set($dbs = ['xwiki'])
+a64 1
+  #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
+d67 1
+@
+
+
+107.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374668107000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374668047000&lt;/contentUpdateDate&gt;
+&lt;version&gt;107.1&lt;/version&gt;
+d71 1
+@
+
+
+106.1
+log
+@@
+text
+@d14 1
+a14 1
+&lt;date&gt;1374668047000&lt;/date&gt;
+d16 1
+a16 1
+&lt;version&gt;106.1&lt;/version&gt;
+@
+
+
+105.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace2&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374667260000&lt;/creationDate&gt;
+&lt;date&gt;1374668022000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374668022000&lt;/contentUpdateDate&gt;
+&lt;version&gt;105.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.1&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;The following page shows the space used by usually biggest tables.
+
+__xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&amp;gt;&amp;gt;Admin.ShrinkRecycleBins]].
+__xwikircs__ : Versioning of documents.
+
+{{warning}}The following tables will not be shown if you're using [[Filesystem Attachment feature&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]].{{/warning}}
+__xwikiattachment_content__ : Stores the content of attachments in database.
+__xwikiattachment_archive__ : Versioning of attachments
+__xwikiattrecyclebin__ : Recycle bin of attachments.
+
+{{velocity}}
+
+## Check if Filesystem Storage is enabled at the moment.
+#set($fsstore = false)
+#if($xcontext.getContext().getWiki().getAttachmentStore().getClass().getName().contains("Filesystem"))
+  #set($fsstore = true)
+#end
+
+
+#if($hasProgramming)
+  #set($sqlTools = $xwiki.parseGroovyFromPage('SQLTools.SQLToolsGroovy'))
+  #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
+  Your database is: **$system**
+  #if($system == "HSQL Database Engine")
+    {{warning}}$system is not supported for this action{{/warning}}
+  #end
+
+ #if($services.wikimanager)
+    #set($dbs = $services.wikimanager.getAllWikis())
+ #else
+    #set($dbs = ['xwiki'])
+ #end
+
+#if($fsstore)
+  #set($tables = ['xwikirecyclebin','xwikircs'])
+#else
+  #set($tables = ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin'])
+#end
+
+#foreach($schema in $dbs)
+  $xcontext.setDatabase($schema)
+  #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
+  == Used space of wiki ${schema} ==
+  #foreach($table in $tables)
+    #set($query = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';")
+    #set($results = $sqlTools.getResults($connection, $query, true))
+  #end
+#end
+
+
+
+#else
+{{error}}Sorry, you need the programming rights to use this tool{{/error}}
+#end 
+
+== Recommandations ==
+
+
+#if($fsstore != true)
+{{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
+#end
+
+{{/velocity}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+104.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374667987000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374667987000&lt;/contentUpdateDate&gt;
+&lt;version&gt;104.1&lt;/version&gt;
+d68 1
+a68 1
+    #set($query = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+@
+
+
+103.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374667745000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374667745000&lt;/contentUpdateDate&gt;
+&lt;version&gt;103.1&lt;/version&gt;
+d64 2
+d68 2
+a69 1
+    $Query(table,schema)
+d73 2
+@
+
+
+102.1
+log
+@@
+text
+@d4 1
+a4 1
+&lt;name&gt;UsedSpace&lt;/name&gt;
+d13 4
+a16 4
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374666676000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374589321000&lt;/contentUpdateDate&gt;
+&lt;version&gt;102.1&lt;/version&gt;
+d34 1
+a34 1
+{{groovy}}
+d36 5
+a40 4
+private static boolean isFilesystemStore(final Object store)
+{
+    return store.getClass().getName().contains("Filesystem");
+}
+a41 2
+// Check if current wiki is configured in FS attachment mode.
+fsstore = isFilesystemStore(xcontext.getContext().getWiki().getAttachmentStore())
+d43 7
+a49 6
+def dbs = []
+if (services.wikimanager) {
+    dbs = services.wikimanager.getAllWikis()
+} else {
+    dbs.add(xcontext.getMainWikiName())
+}
+d51 5
+d57 5
+d63 6
+a68 41
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+d70 3
+a72 8
+def tables = fsstore ? ['xwikirecyclebin','xwikircs'] : ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin']
+for(schema in dbs){
+  println "== Used space of wiki ${schema} =="
+  for(table in tables){
+    Query(table,schema)
+  }
+}
+ 
+a73 4
+{{/groovy}}
+
+{{velocity}}
+
+@
+
+
+101.1
+log
+@@
+text
+@d14 1
+a14 1
+&lt;date&gt;1374589321000&lt;/date&gt;
+d16 1
+a16 1
+&lt;version&gt;101.1&lt;/version&gt;
+@
+
+
+100.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374589281000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374589281000&lt;/contentUpdateDate&gt;
+&lt;version&gt;100.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.1&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;The following page shows the space used by usually biggest tables.
+
+__xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&amp;gt;&amp;gt;Admin.ShrinkRecycleBins]].
+__xwikircs__ : Versioning of documents.
+
+{{warning}}The following tables will not be shown if you're using [[Filesystem Attachment feature&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]].{{/warning}}
+__xwikiattachment_content__ : Stores the content of attachments in database.
+__xwikiattachment_archive__ : Versioning of attachments
+__xwikiattrecyclebin__ : Recycle bin of attachments.
+
+{{groovy}}
+
+private static boolean isFilesystemStore(final Object store)
+{
+    return store.getClass().getName().contains("Filesystem");
+}
+
+// Check if current wiki is configured in FS attachment mode.
+fsstore = isFilesystemStore(xcontext.getContext().getWiki().getAttachmentStore())
+
+def dbs = []
+// services.wikimanager ? services.wikimanager.getAllWikis() : dbs.add(xcontext.getMainWikiName())
+if (services.wikimanager) {
+    dbs = services.wikimanager.getAllWikis()
+} else {
+    dbs.add(xcontext.getMainWikiName())
+}
+println dbs
+
+
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+
+def tables = fsstore ? ['xwikirecyclebin','xwikircs'] : ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin']
+for(schema in dbs){
+  println "== Used space of wiki ${schema} =="
+  for(table in tables){
+    Query(table,schema)
+  }
+}
+ 
+
+{{/groovy}}
+
+{{velocity}}
+
+== Recommandations ==
+
+
+#if($fsstore != true)
+{{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
+#end
+
+{{/velocity}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+99.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374589253000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374589253000&lt;/contentUpdateDate&gt;
+&lt;version&gt;99.1&lt;/version&gt;
+d48 2
+a49 4
+} 
+else 
+{
+    dbs.add(xcontext.getMainWikiName()
+@
+
+
+98.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374589241000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374589241000&lt;/contentUpdateDate&gt;
+&lt;version&gt;98.1&lt;/version&gt;
+d46 8
+a55 1
+
+@
+
+
+97.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374589202000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374589202000&lt;/contentUpdateDate&gt;
+&lt;version&gt;97.1&lt;/version&gt;
+a45 6
+if (services.wikimanager) {
+    dbs = services.wikimanager.getAllWikis()
+} else {
+    dbs.add(xcontext.getMainWikiName()
+}
+println dbs
+d48 1
+@
+
+
+96.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374589155000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374589155000&lt;/contentUpdateDate&gt;
+&lt;version&gt;96.1&lt;/version&gt;
+d46 2
+a47 2
+if services.wikimanager {
+dbs = services.wikimanager.getAllWikis()
+d49 1
+a49 1
+dbs.add(xcontext.getMainWikiName()
+@
+
+
+95.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374589103000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374589099000&lt;/contentUpdateDate&gt;
+&lt;version&gt;95.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.1&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;The following page shows the space used by usually biggest tables.
+
+__xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&amp;gt;&amp;gt;Admin.ShrinkRecycleBins]].
+__xwikircs__ : Versioning of documents.
+
+{{warning}}The following tables will not be shown if you're using [[Filesystem Attachment feature&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]].{{/warning}}
+__xwikiattachment_content__ : Stores the content of attachments in database.
+__xwikiattachment_archive__ : Versioning of attachments
+__xwikiattrecyclebin__ : Recycle bin of attachments.
+
+{{groovy}}
+
+private static boolean isFilesystemStore(final Object store)
+{
+    return store.getClass().getName().contains("Filesystem");
+}
+
+// Check if current wiki is configured in FS attachment mode.
+fsstore = isFilesystemStore(xcontext.getContext().getWiki().getAttachmentStore())
+
+def dbs = []
+// services.wikimanager ? services.wikimanager.getAllWikis() : dbs.add(xcontext.getMainWikiName())
+services.wikimanager ? services.wikimanager.getAllWikis() : dbs=['xwiki',1]
+
+println dbs
+
+
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+
+def tables = fsstore ? ['xwikirecyclebin','xwikircs'] : ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin']
+for(schema in dbs){
+  println "== Used space of wiki ${schema} =="
+  for(table in tables){
+    Query(table,schema)
+  }
+}
+ 
+
+{{/groovy}}
+
+{{velocity}}
+
+== Recommandations ==
+
+
+#if($fsstore != true)
+{{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
+#end
+
+{{/velocity}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+94.1
+log
+@@
+text
+@d14 1
+a14 1
+&lt;date&gt;1374589099000&lt;/date&gt;
+d16 1
+a16 1
+&lt;version&gt;94.1&lt;/version&gt;
+@
+
+
+93.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374589080000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374589080000&lt;/contentUpdateDate&gt;
+&lt;version&gt;93.1&lt;/version&gt;
+d46 1
+a46 1
+services.wikimanager ? services.wikimanager.getAllWikis() : """dbs=['xwiki','1']"""
+@
+
+
+92.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374588987000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374588987000&lt;/contentUpdateDate&gt;
+&lt;version&gt;92.1&lt;/version&gt;
+d46 1
+a46 1
+services.wikimanager ? services.wikimanager.getAllWikis() : dbs = ['xwiki','1']
+@
+
+
+91.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374588970000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374588970000&lt;/contentUpdateDate&gt;
+&lt;version&gt;91.1&lt;/version&gt;
+d46 1
+a46 1
+services.wikimanager ? "dbs = services.wikimanager.getAllWikis()" : dbs = ['xwiki','1']
+@
+
+
+90.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374588950000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374588950000&lt;/contentUpdateDate&gt;
+&lt;version&gt;90.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.1&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;The following page shows the space used by usually biggest tables.
+
+__xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&amp;gt;&amp;gt;Admin.ShrinkRecycleBins]].
+__xwikircs__ : Versioning of documents.
+
+{{warning}}The following tables will not be shown if you're using [[Filesystem Attachment feature&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]].{{/warning}}
+__xwikiattachment_content__ : Stores the content of attachments in database.
+__xwikiattachment_archive__ : Versioning of attachments
+__xwikiattrecyclebin__ : Recycle bin of attachments.
+
+{{groovy}}
+
+private static boolean isFilesystemStore(final Object store)
+{
+    return store.getClass().getName().contains("Filesystem");
+}
+
+// Check if current wiki is configured in FS attachment mode.
+fsstore = isFilesystemStore(xcontext.getContext().getWiki().getAttachmentStore())
+
+def dbs = []
+// services.wikimanager ? services.wikimanager.getAllWikis() : dbs.add(xcontext.getMainWikiName())
+services.wikimanager ? "dbs = services.wikimanager.getAllWikis()" : "dbs = ['xwiki','1']"
+
+println dbs
+
+
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+
+def tables = fsstore ? ['xwikirecyclebin','xwikircs'] : ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin']
+for(schema in dbs){
+  println "== Used space of wiki ${schema} =="
+  for(table in tables){
+    Query(table,schema)
+  }
+}
+ 
+
+{{/groovy}}
+
+{{velocity}}
+
+== Recommandations ==
+
+
+#if($fsstore != true)
+{{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
+#end
+
+{{/velocity}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+89.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374588929000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374588929000&lt;/contentUpdateDate&gt;
+&lt;version&gt;89.1&lt;/version&gt;
+d46 1
+a46 1
+services.wikimanager ? dbs = services.wikimanager.getAllWikis() : dbs = ['xwiki','1'])
+@
+
+
+88.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374588823000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374588823000&lt;/contentUpdateDate&gt;
+&lt;version&gt;88.1&lt;/version&gt;
+d45 3
+a47 4
+services.wikimanager ? services.wikimanager.getAllWikis() : dbs.add(xcontext.getMainWikiName())
+if(dbs != []) {
+dbs = ['xwiki','1']
+}
+@
+
+
+87.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374588811000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374588811000&lt;/contentUpdateDate&gt;
+&lt;version&gt;87.1&lt;/version&gt;
+d46 1
+a46 1
+if(dbs == []) {
+@
+
+
+86.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374588540000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374588540000&lt;/contentUpdateDate&gt;
+&lt;version&gt;86.1&lt;/version&gt;
+d45 5
+a49 1
+services.wikimanager ? dbs=services.wikimanager.getAllWikis() : dbs=['xwiki','2']
+d51 1
+@
+
+
+85.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374588492000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374588492000&lt;/contentUpdateDate&gt;
+&lt;version&gt;85.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.1&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;The following page shows the space used by usually biggest tables.
+
+__xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&amp;gt;&amp;gt;Admin.ShrinkRecycleBins]].
+__xwikircs__ : Versioning of documents.
+
+{{warning}}The following tables will not be shown if you're using [[Filesystem Attachment feature&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]].{{/warning}}
+__xwikiattachment_content__ : Stores the content of attachments in database.
+__xwikiattachment_archive__ : Versioning of attachments
+__xwikiattrecyclebin__ : Recycle bin of attachments.
+
+{{groovy}}
+
+private static boolean isFilesystemStore(final Object store)
+{
+    return store.getClass().getName().contains("Filesystem");
+}
+
+// Check if current wiki is configured in FS attachment mode.
+fsstore = isFilesystemStore(xcontext.getContext().getWiki().getAttachmentStore())
+
+def dbs = []
+services.wikimanager ? dbs.add(services.wikimanager.getAllWikis()) : dbs.add(xcontext.getMainWikiName())
+
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+
+def tables = fsstore ? ['xwikirecyclebin','xwikircs'] : ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin']
+for(schema in dbs){
+  println "== Used space of wiki ${schema} =="
+  for(table in tables){
+    Query(table,schema)
+  }
+}
+ 
+
+{{/groovy}}
+
+{{velocity}}
+
+== Recommandations ==
+
+
+#if($fsstore != true)
+{{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
+#end
+
+{{/velocity}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+84.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374588357000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374588357000&lt;/contentUpdateDate&gt;
+&lt;version&gt;84.1&lt;/version&gt;
+d45 1
+a45 1
+services.wikimanager ? dbs=services.wikimanager.getAllWikis() : dbs=xcontext.getMainWikiName()
+@
+
+
+83.1
+log
+@Rollback to version 81.1
+@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374582409000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374582409000&lt;/contentUpdateDate&gt;
+&lt;version&gt;83.1&lt;/version&gt;
+d20 1
+a20 1
+&lt;comment&gt;Rollback to version 81.1&lt;/comment&gt;
+d45 1
+a45 1
+services.wikimanager ? services.wikimanager.getAllWikis() : dbs.add(xcontext.getMainWikiName())
+@
+
+
+82.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374581577000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374581577000&lt;/contentUpdateDate&gt;
+&lt;version&gt;82.1&lt;/version&gt;
+d20 1
+a20 1
+&lt;comment&gt;&lt;/comment&gt;
+d61 1
+a61 1
+         print  mdata.getColumnName;
+d69 1
+a69 1
+           def value = resultset.getString;
+@
+
+
+81.1
+log
+@Document converted from syntax xwiki/2.0 to syntax xwiki/2.1
+@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374581571000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374581571000&lt;/contentUpdateDate&gt;
+&lt;version&gt;81.1&lt;/version&gt;
+d20 1
+a20 1
+&lt;comment&gt;Document converted from syntax xwiki/2.0 to syntax xwiki/2.1&lt;/comment&gt;
+d61 1
+a61 1
+         print  mdata.getColumnName(i);
+d69 1
+a69 1
+           def value = resultset.getString(i);
+@
+
+
+80.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374581393000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374581393000&lt;/contentUpdateDate&gt;
+&lt;version&gt;80.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;The following page shows the space used by usually biggest tables.
+
+__xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&amp;gt;&amp;gt;Admin.ShrinkRecycleBins]].
+__xwikircs__ : Versioning of documents.
+
+{{warning}}The following tables will not be shown if you're using [[Filesystem Attachment feature&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]].{{/warning}}
+__xwikiattachment_content__ : Stores the content of attachments in database.
+__xwikiattachment_archive__ : Versioning of attachments
+__xwikiattrecyclebin__ : Recycle bin of attachments.
+
+{{groovy}}
+
+private static boolean isFilesystemStore(final Object store)
+{
+    return store.getClass().getName().contains("Filesystem");
+}
+
+// Check if current wiki is configured in FS attachment mode.
+fsstore = isFilesystemStore(xcontext.getContext().getWiki().getAttachmentStore())
+
+def dbs = []
+services.wikimanager ? services.wikimanager.getAllWikis() : dbs.add(xcontext.getMainWikiName())
+
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+
+def tables = fsstore ? ['xwikirecyclebin','xwikircs'] : ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin']
+for(schema in dbs){
+  println "== Used space of wiki ${schema} =="
+  for(table in tables){
+    Query(table,schema)
+  }
+}
+ 
+
+{{/groovy}}
+
+{{velocity}}
+
+== Recommandations ==
+
+
+#if($fsstore != true)
+{{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
+#end
+
+{{/velocity}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+79.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374581367000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374581367000&lt;/contentUpdateDate&gt;
+&lt;version&gt;79.1&lt;/version&gt;
+d104 1
+d106 1
+a106 1
+  It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]
+@
+
+
+78.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374581140000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374581140000&lt;/contentUpdateDate&gt;
+&lt;version&gt;78.1&lt;/version&gt;
+d29 1
+a29 1
+{{warning}}The following tables are not used if you're using [[Filesystem Attachment feature&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]. You should use this feature if you store large documents in your wiki.{{/warning}}
+d89 1
+a89 1
+def tables = fsstore ? ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin'] : ['xwikirecyclebin','xwikircs']
+d98 11
+a108 1
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+77.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374581094000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374581094000&lt;/contentUpdateDate&gt;
+&lt;version&gt;77.1&lt;/version&gt;
+d41 1
+a41 2
+// wiki = xcontext.getMainWikiName().getXWiki()
+//fsstore = isFilesystemStore(xcontext.getMainWikiName().getXWiki().getAttachmentStore())
+d89 1
+a89 1
+def tables = fsstore ? ['xwikirecyclebin','xwikircs'] : ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin']
+@
+
+
+76.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374580750000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374580750000&lt;/contentUpdateDate&gt;
+&lt;version&gt;76.1&lt;/version&gt;
+d42 2
+a43 1
+fsstore = isFilesystemStore("xwiki".getXWiki().getAttachmentStore())
+@
+
+
+75.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374580678000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374580678000&lt;/contentUpdateDate&gt;
+&lt;version&gt;75.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;The following page shows the space used by usually biggest tables.
+
+__xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&amp;gt;&amp;gt;Admin.ShrinkRecycleBins]].
+__xwikircs__ : Versioning of documents.
+
+{{warning}}The following tables are not used if you're using [[Filesystem Attachment feature&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]. You should use this feature if you store large documents in your wiki.{{/warning}}
+__xwikiattachment_content__ : Stores the content of attachments in database.
+__xwikiattachment_archive__ : Versioning of attachments
+__xwikiattrecyclebin__ : Recycle bin of attachments.
+
+{{groovy}}
+
+private static boolean isFilesystemStore(final Object store)
+{
+    return store.getClass().getName().contains("Filesystem");
+}
+
+// wiki = xcontext.getMainWikiName().getXWiki()
+fsstore = isFilesystemStore(xcontext.getMainWikiName().getXWiki().getAttachmentStore())
+
+def dbs = []
+services.wikimanager ? services.wikimanager.getAllWikis() : dbs.add(xcontext.getMainWikiName())
+
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+
+def tables = fsstore ? ['xwikirecyclebin','xwikircs'] : ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin']
+for(schema in dbs){
+  println "== Used space of wiki ${schema} =="
+  for(table in tables){
+    Query(table,schema)
+  }
+}
+ 
+
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+74.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374580619000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374580619000&lt;/contentUpdateDate&gt;
+&lt;version&gt;74.1&lt;/version&gt;
+d41 2
+a42 2
+wiki = xcontext.getMainWikiName().getXWiki()
+fsstore = isFilesystemStore(wiki.getAttachmentStore())
+@
+
+
+73.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374580489000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374580489000&lt;/contentUpdateDate&gt;
+&lt;version&gt;73.1&lt;/version&gt;
+d41 1
+a41 1
+wiki=xwiki.getXWiki()
+a42 1
+println fsstore
+d89 1
+a89 1
+def tables = ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin']
+@
+
+
+72.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374580427000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374580427000&lt;/contentUpdateDate&gt;
+&lt;version&gt;72.1&lt;/version&gt;
+d41 1
+d45 3
+d89 1
+a89 2
+def dbs = []
+services.wikimanager ? services.wikimanager.getAllWikis() : dbs.add(xcontext.getMainWikiName())
+d97 1
+a97 1
+wiki=xwiki.getXWiki()
+a98 2
+println 
+
+@
+
+
+71.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374580347000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374580347000&lt;/contentUpdateDate&gt;
+&lt;version&gt;71.1&lt;/version&gt;
+d41 3
+d96 1
+a96 1
+println wiki.getAttachmentStore()
+@
+
+
+70.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374580323000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374580323000&lt;/contentUpdateDate&gt;
+&lt;version&gt;70.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;The following page shows the space used by usually biggest tables.
+
+__xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&amp;gt;&amp;gt;Admin.ShrinkRecycleBins]].
+__xwikircs__ : Versioning of documents.
+
+{{warning}}The following tables are not used if you're using [[Filesystem Attachment feature&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]. You should use this feature if you store large documents in your wiki.{{/warning}}
+__xwikiattachment_content__ : Stores the content of attachments in database.
+__xwikiattachment_archive__ : Versioning of attachments
+__xwikiattrecyclebin__ : Recycle bin of attachments.
+
+{{groovy}}
+
+private static boolean isFilesystemStore(final Object store)
+{
+    return store.getClass().getName()
+}
+
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+def dbs = []
+services.wikimanager ? services.wikimanager.getAllWikis() : dbs.add(xcontext.getMainWikiName())
+def tables = ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin']
+for(schema in dbs){
+  println "== Used space of wiki ${schema} =="
+  for(table in tables){
+    Query(table,schema)
+  }
+}
+wiki=xwiki.getXWiki()
+
+println isFilesystemStore(wiki.getAttachmentStore())
+
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+69.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374580298000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374580298000&lt;/contentUpdateDate&gt;
+&lt;version&gt;69.1&lt;/version&gt;
+d38 1
+a38 1
+    return store.getClass().getName().contains("Filesystem");
+@
+
+
+68.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374580148000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374580148000&lt;/contentUpdateDate&gt;
+&lt;version&gt;68.1&lt;/version&gt;
+d91 1
+a91 1
+wiki="xwiki"
+@
+
+
+67.1
+log
+@@
+text
+@d16 1
+a16 1
+&lt;version&gt;67.1&lt;/version&gt;
+@
+
+
+66.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374571749000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374571749000&lt;/contentUpdateDate&gt;
+&lt;version&gt;66.1&lt;/version&gt;
+d35 6
+d91 1
+d93 2
+@
+
+
+65.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374571695000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374571695000&lt;/contentUpdateDate&gt;
+&lt;version&gt;65.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;The following page shows the space used by usually biggest tables.
+
+__xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&amp;gt;&amp;gt;Admin.ShrinkRecycleBins]].
+__xwikircs__ : Versioning of documents.
+
+{{warning}}The following tables are not used if you're using [[Filesystem Attachment feature&amp;gt;&amp;gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]. You should use this feature if you store large documents in your wiki.{{/warning}}
+__xwikiattachment_content__ : Stores the content of attachments in database.
+__xwikiattachment_archive__ : Versioning of attachments
+__xwikiattrecyclebin__ : Recycle bin of attachments.
+
+{{groovy}}
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+def dbs = []
+services.wikimanager ? services.wikimanager.getAllWikis() : dbs.add(xcontext.getMainWikiName())
+def tables = ['xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin', 'xwikircs', 'xwikirecyclebin']
+for(schema in dbs){
+  println "== Used space of wiki ${schema} =="
+  for(table in tables){
+    Query(table,schema)
+  }
+}
+
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+64.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374571202000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374571202000&lt;/contentUpdateDate&gt;
+&lt;version&gt;64.1&lt;/version&gt;
+d24 1
+a24 1
+&lt;content&gt;This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+d26 2
+a27 1
+Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+d29 5
+d80 1
+a80 1
+  println "== Size information for wiki ${schema} =="
+@
+
+
+63.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374571188000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374571188000&lt;/contentUpdateDate&gt;
+&lt;version&gt;63.1&lt;/version&gt;
+d74 1
+a74 1
+  println "Size information for wiki ${schema}"
+@
+
+
+62.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374571090000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374571090000&lt;/contentUpdateDate&gt;
+&lt;version&gt;62.1&lt;/version&gt;
+d41 1
+a41 1
+       print "Wiki ${schema}|="
+d74 1
+@
+
+
+61.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374571034000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374571034000&lt;/contentUpdateDate&gt;
+&lt;version&gt;61.1&lt;/version&gt;
+d41 1
+a41 1
+       print "|="
+@
+
+
+60.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374570985000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570985000&lt;/contentUpdateDate&gt;
+&lt;version&gt;60.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+
+Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+
+{{groovy}}
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+def schema = []
+services.wikimanager ? services.wikimanager.getAllWikis() : schema.add(xcontext.getMainWikiName())
+def tables = ['xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin', 'xwikircs', 'xwikirecyclebin']
+for(db in schema){
+  println "";
+  println "${db}|plop";
+  for(table in tables){
+    Query(table,db)
+  }
+}
+
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+59.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570967000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570967000&lt;/contentUpdateDate&gt;
+&lt;version&gt;59.1&lt;/version&gt;
+d74 2
+a75 2
+  println ""
+  println "${db}|"
+@
+
+
+58.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570930000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570930000&lt;/contentUpdateDate&gt;
+&lt;version&gt;58.1&lt;/version&gt;
+d74 2
+@
+
+
+57.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570917000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570917000&lt;/contentUpdateDate&gt;
+&lt;version&gt;57.1&lt;/version&gt;
+d73 1
+a73 1
+for(schema in schema){
+d75 1
+a75 1
+    Query(table,schema)
+@
+
+
+56.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570880000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570880000&lt;/contentUpdateDate&gt;
+&lt;version&gt;56.1&lt;/version&gt;
+d73 1
+a73 1
+for(wiki in 'xwiki'){
+@
+
+
+55.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374570871000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570871000&lt;/contentUpdateDate&gt;
+&lt;version&gt;55.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+
+Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+
+{{groovy}}
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+def schema = []
+services.wikimanager ? services.wikimanager.getAllWikis() : schema.add(xcontext.getMainWikiName())
+def tables = ['xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin', 'xwikircs', 'xwikirecyclebin']
+for(wiki in xwiki){
+  for(table in tables){
+    Query(table,schema)
+  }
+}
+
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+54.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570860000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570860000&lt;/contentUpdateDate&gt;
+&lt;version&gt;54.1&lt;/version&gt;
+d73 1
+a73 1
+for(wiki in schema.get(0)){
+@
+
+
+53.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570840000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570840000&lt;/contentUpdateDate&gt;
+&lt;version&gt;53.1&lt;/version&gt;
+d73 1
+a73 2
+println schema.get(0)
+for(wiki in schema){
+@
+
+
+52.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570718000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570718000&lt;/contentUpdateDate&gt;
+&lt;version&gt;52.1&lt;/version&gt;
+d73 2
+a74 2
+
+for(wiki in "$schema"){
+@
+
+
+51.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570690000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570690000&lt;/contentUpdateDate&gt;
+&lt;version&gt;51.1&lt;/version&gt;
+d73 2
+a74 2
+print schema.class.name
+for(wiki in schema){
+@
+
+
+50.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374570682000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570682000&lt;/contentUpdateDate&gt;
+&lt;version&gt;50.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+
+Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+
+{{groovy}}
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+def schema = []
+services.wikimanager ? services.wikimanager.getAllWikis() : schema.add(xcontext.getMainWikiName())
+def tables = ['xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin', 'xwikircs', 'xwikirecyclebin']
+schema.class
+for(wiki in schema){
+  for(table in tables){
+    Query(table,schema)
+  }
+}
+
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+49.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570676000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570676000&lt;/contentUpdateDate&gt;
+&lt;version&gt;49.1&lt;/version&gt;
+d73 1
+a73 1
+schema.class.name
+@
+
+
+48.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570624000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570624000&lt;/contentUpdateDate&gt;
+&lt;version&gt;48.1&lt;/version&gt;
+d73 1
+a75 1
+    println "table $table in wiki $schema"
+@
+
+
+47.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570603000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570603000&lt;/contentUpdateDate&gt;
+&lt;version&gt;47.1&lt;/version&gt;
+d71 1
+a71 1
+services.wikimanager ? services.wikimanager.getAllWikis() : schema.add("xcontext.getMainWikiName()")
+@
+
+
+46.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570586000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570586000&lt;/contentUpdateDate&gt;
+&lt;version&gt;46.1&lt;/version&gt;
+d71 1
+a71 1
+services.wikimanager ? services.wikimanager.getAllWikis() : schema.add(xcontext.getMainWikiName())
+@
+
+
+45.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374570563000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570563000&lt;/contentUpdateDate&gt;
+&lt;version&gt;45.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+
+Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+
+{{groovy}}
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+def schema = []
+services.wikimanager ? services.wikimanager.getAllWikis() : schema.add(xcontext.getMainWikiName())
+def tables = ['xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin', 'xwikircs', 'xwikirecyclebin']
+for(wiki in schema){
+  for(table in tables){
+    Query(table,schema)
+  }
+}
+
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+44.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570520000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570465000&lt;/contentUpdateDate&gt;
+&lt;version&gt;44.1&lt;/version&gt;
+d71 1
+a71 2
+def wikis = services.wikimanager ? services.wikimanager.getAllWikis() : schema.add(xcontext.getMainWikiName())
+println "$wikis $schema"
+@
+
+
+43.5
+log
+@@
+text
+@d14 1
+a14 1
+&lt;date&gt;1374570465000&lt;/date&gt;
+d16 1
+a16 1
+&lt;version&gt;43.5&lt;/version&gt;
+d21 1
+a21 1
+&lt;minorEdit&gt;true&lt;/minorEdit&gt;
+@
+
+
+43.4
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570392000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570392000&lt;/contentUpdateDate&gt;
+&lt;version&gt;43.4&lt;/version&gt;
+d71 2
+a72 1
+def wikis = services.wikimanager ? services.wikimanager.getAllWikis() : schema.add(xcontext.getMainWikiName()) println wikis + schema
+@
+
+
+43.3
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374570357000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570357000&lt;/contentUpdateDate&gt;
+&lt;version&gt;43.3&lt;/version&gt;
+d71 1
+a71 1
+def wikis = services.wikimanager ? services.wikimanager.getAllWikis() : schema.add(xcontext.getMainWikiName()) wikis schema
+@
+
+
+43.2
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374570313000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374570313000&lt;/contentUpdateDate&gt;
+&lt;version&gt;43.2&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;true&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+
+Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+
+{{groovy}}
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+def schema = []
+def wikis = services.wikimanager ? services.wikimanager.getAllWikis() : schema.add(xcontext.getMainWikiName())
+def tables = ['xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin', 'xwikircs', 'xwikirecyclebin']
+for(wiki in schema){
+  for(table in tables){
+    Query(table,schema)
+  }
+}
+
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+43.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374569946000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374569946000&lt;/contentUpdateDate&gt;
+&lt;version&gt;43.1&lt;/version&gt;
+d21 1
+a21 1
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+d70 2
+a71 1
+def wikis = services.wikimanager ? services.wikimanager.getAllWikis() : schema=["xcontext.getMainWikiName()"]
+@
+
+
+42.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374569880000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374569880000&lt;/contentUpdateDate&gt;
+&lt;version&gt;42.1&lt;/version&gt;
+d70 1
+a70 1
+def wikis = services.wikimanager ? services.wikimanager.getAllWikis() : schema = [xcontext.getMainWikiName()]
+@
+
+
+41.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374569683000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374569683000&lt;/contentUpdateDate&gt;
+&lt;version&gt;41.1&lt;/version&gt;
+d70 1
+a70 2
+def wikis = services.wikimanager ? services.wikimanager.getAllWikis() : xcontext.getMainWikiName()
+schema = new List(wikis)
+@
+
+
+40.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374569667000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374569667000&lt;/contentUpdateDate&gt;
+&lt;version&gt;40.1&lt;/version&gt;
+d71 1
+a71 1
+schema = new ArrayList(wikis)
+@
+
+
+39.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374569387000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374569387000&lt;/contentUpdateDate&gt;
+&lt;version&gt;39.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+
+Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+
+{{groovy}}
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+def wikis = services.wikimanager ? services.wikimanager.getAllWikis() : xcontext.getMainWikiName()
+
+def tables = ['xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin', 'xwikircs', 'xwikirecyclebin']
+for(wiki in wikis){
+  for(table in tables){
+    Query(table,'xwiki')
+  }
+}
+
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+38.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374569323000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374569323000&lt;/contentUpdateDate&gt;
+&lt;version&gt;38.1&lt;/version&gt;
+a71 1
+println wikis
+d73 4
+a76 2
+for(table in tables){
+Query(table,'xwiki')
+@
+
+
+37.1
+log
+@Rollback to version 35.1
+@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374509466000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374509466000&lt;/contentUpdateDate&gt;
+&lt;version&gt;37.1&lt;/version&gt;
+d20 1
+a20 1
+&lt;comment&gt;Rollback to version 35.1&lt;/comment&gt;
+d70 2
+a71 5
+if(xwiki.wikimanager){
+wikis = xwiki.wikimanager.getAllWikis()
+} else {
+wikis = xcontext.getMainWikiName()
+}
+@
+
+
+36.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374509452000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374509452000&lt;/contentUpdateDate&gt;
+&lt;version&gt;36.1&lt;/version&gt;
+d20 1
+a20 1
+&lt;comment&gt;&lt;/comment&gt;
+d75 1
+a75 1
+
+d77 2
+a78 4
+for(schema in wikis) {
+  for(table in tables){
+    Query(table,schema)
+  }
+@
+
+
+35.1
+log
+@Rollback to version 28.1
+@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374508023000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374508023000&lt;/contentUpdateDate&gt;
+&lt;version&gt;35.1&lt;/version&gt;
+d20 1
+a20 1
+&lt;comment&gt;Rollback to version 28.1&lt;/comment&gt;
+d75 1
+a75 1
+println wikis
+d77 4
+a80 2
+for(table in tables){
+Query(table,'xwiki')
+@
+
+
+34.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374507990000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374507990000&lt;/contentUpdateDate&gt;
+&lt;version&gt;34.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+
+Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+
+{{groovy}}
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+if(xwiki.wikimanager){
+wikis = xwiki.wikimanager.getAllWikis()
+} else {
+wikis = xcontext.getMainWikiName()
+}
+def tables = ['xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin', 'xwikircs', 'xwikirecyclebin']
+for(schema in wikis){
+  for(table in tables){
+
+    Query(table,schema)
+    print ""
+  }
+}
+
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+33.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374507982000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374507982000&lt;/contentUpdateDate&gt;
+&lt;version&gt;33.1&lt;/version&gt;
+d78 1
+a78 1
+    println "${schema}|"
+@
+
+
+32.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374507973000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374507973000&lt;/contentUpdateDate&gt;
+&lt;version&gt;32.1&lt;/version&gt;
+d80 1
+a80 1
+    print ''
+@
+
+
+31.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374507896000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374507896000&lt;/contentUpdateDate&gt;
+&lt;version&gt;31.1&lt;/version&gt;
+d78 1
+d80 1
+@
+
+
+30.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374507875000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374507875000&lt;/contentUpdateDate&gt;
+&lt;version&gt;30.1&lt;/version&gt;
+d45 1
+a45 1
+            print "${schema}|=";
+@
+
+
+29.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374507858000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374507858000&lt;/contentUpdateDate&gt;
+&lt;version&gt;29.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+
+Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+
+{{groovy}}
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "${schema}|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+if(xwiki.wikimanager){
+wikis = xwiki.wikimanager.getAllWikis()
+} else {
+wikis = xcontext.getMainWikiName()
+}
+def tables = ['xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin', 'xwikircs', 'xwikirecyclebin']
+for(schema in wikis){
+  for(table in tables){
+    Query(table,schema)
+  }
+}
+
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+28.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374507779000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374507718000&lt;/contentUpdateDate&gt;
+&lt;version&gt;28.1&lt;/version&gt;
+d41 1
+a41 1
+       print "|="
+a74 1
+println wikis
+d76 4
+a79 2
+for(table in tables){
+Query(table,'xwiki')
+@
+
+
+27.1
+log
+@@
+text
+@d14 1
+a14 1
+&lt;date&gt;1374507718000&lt;/date&gt;
+d16 1
+a16 1
+&lt;version&gt;27.1&lt;/version&gt;
+@
+
+
+26.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374507170000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374507170000&lt;/contentUpdateDate&gt;
+&lt;version&gt;26.1&lt;/version&gt;
+d70 5
+a74 1
+wikis = xwiki.getAllWikis()
+@
+
+
+25.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374507157000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374507157000&lt;/contentUpdateDate&gt;
+&lt;version&gt;25.1&lt;/version&gt;
+d70 1
+a70 1
+wikis = xwiki.getWikis()
+@
+
+
+24.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374506930000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374506930000&lt;/contentUpdateDate&gt;
+&lt;version&gt;24.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+
+Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+
+{{groovy}}
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       println "";
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value}MB }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+def tables = ['xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin', 'xwikircs', 'xwikirecyclebin']
+for(table in tables){
+Query(table,'xwiki')
+}
+
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+23.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374506913000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374506913000&lt;/contentUpdateDate&gt;
+&lt;version&gt;23.1&lt;/version&gt;
+d50 1
+a50 1
+          print "|MB"
+d55 1
+a55 1
+           print "{{{ ${value} }}}"
+@
+
+
+22.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374506894000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374506894000&lt;/contentUpdateDate&gt;
+&lt;version&gt;22.1&lt;/version&gt;
+d50 1
+a50 1
+          print "MB|"
+@
+
+
+21.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374506882000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374506882000&lt;/contentUpdateDate&gt;
+&lt;version&gt;21.1&lt;/version&gt;
+d50 1
+a50 1
+          print "|"
+d57 1
+a57 1
+            print "MB|";
+@
+
+
+20.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374506846000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374506846000&lt;/contentUpdateDate&gt;
+&lt;version&gt;20.1&lt;/version&gt;
+d45 1
+a45 1
+            print "|MB=";
+d57 1
+a57 1
+            print "|";
+@
+
+
+19.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374506823000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374506823000&lt;/contentUpdateDate&gt;
+&lt;version&gt;19.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+
+Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+
+{{groovy}}
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       println "";
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value} }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+def tables = ['xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin', 'xwikircs', 'xwikirecyclebin']
+for(table in tables){
+Query(table,'xwiki')
+}
+
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+18.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374504748000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374504748000&lt;/contentUpdateDate&gt;
+&lt;version&gt;18.1&lt;/version&gt;
+d71 1
+a71 1
+def tables = ['xwikidoc','xwikiobjects']
+d76 1
+a76 2
+{{/groovy}}
+&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+17.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374504730000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374504730000&lt;/contentUpdateDate&gt;
+&lt;version&gt;17.1&lt;/version&gt;
+d45 1
+a45 1
+            print "MB|=";
+@
+
+
+16.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374504684000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374504684000&lt;/contentUpdateDate&gt;
+&lt;version&gt;16.1&lt;/version&gt;
+d45 1
+a45 1
+            print "|=";
+@
+
+
+15.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374504644000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374504644000&lt;/contentUpdateDate&gt;
+&lt;version&gt;15.1&lt;/version&gt;
+d37 1
+a37 1
+       sql = "select sum(round(data_length/1024/1024,2)) as Size_in_mb from information_schema.tables where table_name='${table}' and table_schema='${schema}';"
+@
+
+
+14.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374504629000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374504629000&lt;/contentUpdateDate&gt;
+&lt;version&gt;14.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+
+Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+
+{{groovy}}
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select sum(round(data_length/1024/1024,2)) as Size_in_mb from information_schema.tables where table_name="${table}" and table_schema="${schema}";"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       println "";
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value} }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+def tables = ['xwikidoc','xwikiobjects']
+for(table in tables){
+Query(table,'xwiki')
+}
+
+{{/groovy}}
+&lt;/content&gt;&lt;/xwikidoc&gt;@
+
+
+13.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374504585000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374504585000&lt;/contentUpdateDate&gt;
+&lt;version&gt;13.1&lt;/version&gt;
+d37 1
+a37 1
+       sql = "select sum(round(data_length/1024/1024,2)) as Size_in_mb from information_schema.tables where table_name=${table} and table_schema=${schema};"
+@
+
+
+12.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374504544000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374504544000&lt;/contentUpdateDate&gt;
+&lt;version&gt;12.1&lt;/version&gt;
+d71 2
+a72 2
+
+for(table in "[xwikidoc]"){
+@
+
+
+11.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374504519000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374504519000&lt;/contentUpdateDate&gt;
+&lt;version&gt;11.1&lt;/version&gt;
+d72 1
+a72 1
+for(table in "xwikidoc"){
+@
+
+
+10.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374504473000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374504473000&lt;/contentUpdateDate&gt;
+&lt;version&gt;10.1&lt;/version&gt;
+d37 1
+a37 1
+       sql = "select table_schema, sum(round(data_length/1024/1024,2)) as total_size_mb from information_schema.tables where table_name='xwikidoc' and table_schema='xwiki';"
+@
+
+
+9.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374504357000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374504357000&lt;/contentUpdateDate&gt;
+&lt;version&gt;9.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+
+Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+
+{{groovy}}
+String Query(table,schema){
+    def context = xcontext.getContext();
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(context);
+    def session = store.getSession(context);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    try {
+       sql = "select table_schema, sum(round(data_length/1024/1024,2)) as total_size_mb from information_schema.tables where table_name='xwikidoc' and table_schema='xwiki';"
+       def resultset = stmt.executeQuery(sql);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       print "|="
+       for (def i=1;i&amp;lt;=nbcols;i++) {
+         print  mdata.getColumnName(i);
+           if (i!=nbcols)
+            print "|=";
+       }
+       println "";
+       while (true) {
+          resultset.next();
+          print "|"
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getString(i);
+           if ((value==null)||(value==""))
+            value = " "
+           print "{{{ ${value} }}}"
+           if (i!=nbcols)
+            print "|";
+          }
+          println "";
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+    } catch (Exception e2) {
+       println "* Error running sql: {{{${sql}}}} - " + e2.getMessage();
+    } finally {
+      stmt.close();
+      store.endTransaction(context, true)
+    }
+}
+
+{{/groovy}}
+
+{{velocity}}
+
+Query('xwikidoc','xwiki')
+
+{{/velocity}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+8.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374504317000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374504317000&lt;/contentUpdateDate&gt;
+&lt;version&gt;8.1&lt;/version&gt;
+d72 4
+d78 1
+a78 1
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+7.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374504302000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374504302000&lt;/contentUpdateDate&gt;
+&lt;version&gt;7.1&lt;/version&gt;
+d72 1
+a72 1
+Query(xwikidoc,xwiki)
+@
+
+
+6.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374504286000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374504286000&lt;/contentUpdateDate&gt;
+&lt;version&gt;6.1&lt;/version&gt;
+d72 2
+@
+
+
+5.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374503476000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374503476000&lt;/contentUpdateDate&gt;
+&lt;version&gt;5.1&lt;/version&gt;
+d29 42
+a70 3
+import com.xpn.xwiki.store.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+a71 16
+if (request.get('confirm')=='1') {
+
+
+     def hibStore = services.component.getInstance(XWikiStoreInterface.class, "hibernate")
+     def ctx = xcontext.context
+
+     hibStore.checkHibernate(ctx)
+     def bTransaction = hibStore.beginTransaction(false, ctx)
+     def session = hibStore.getSession(ctx)
+
+     def statement = session.connection().createStatement();
+     statement.executeUpdate("select table_schema, sum(round(data_length/1024/1024,2)) as total_size_mb from information_schema.tables where table_name=xwiki and table_schema=xwikidoc;");
+
+     hibStore.endTransaction(ctx, true);
+
+}
+@
+
+
+4.1
+log
+@@
+text
+@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xwikidoc&gt;
+&lt;web&gt;Admin&lt;/web&gt;
+&lt;name&gt;UsedSpace&lt;/name&gt;
+&lt;language&gt;&lt;/language&gt;
+&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
+&lt;translation&gt;0&lt;/translation&gt;
+&lt;parent&gt;Admin.Tools&lt;/parent&gt;
+&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
+&lt;author&gt;XWiki.Admin&lt;/author&gt;
+&lt;customClass&gt;&lt;/customClass&gt;
+&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
+&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
+&lt;date&gt;1374502963000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374502963000&lt;/contentUpdateDate&gt;
+&lt;version&gt;4.1&lt;/version&gt;
+&lt;title&gt;Space Used&lt;/title&gt;
+&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
+&lt;validationScript&gt;&lt;/validationScript&gt;
+&lt;comment&gt;&lt;/comment&gt;
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
+&lt;hidden&gt;false&lt;/hidden&gt;
+&lt;content&gt;This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+
+Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+
+{{velocity}}
+#if($hasProgramming)
+  #set($sqlTools = $xwiki.parseGroovyFromPage('SQLTools.SQLToolsGroovy'))
+  #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
+  Your database is: **$system**
+  #if($system == "HSQL Database Engine")
+    {{warning}}$system is not supported for this action{{/warning}}
+  #end
+  #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
+  #set($results = $sqlTools.getTablesSize($connection,xwiki,xwikidoc))
+  = Table of content =
+  {{toc /}}
+
+  = Tables =
+  $results
+#else
+{{error}}Sorry, you need the programming rights to use this tool{{/error}}
+#end
+{{/velocity}}
+&lt;/content&gt;&lt;/xwikidoc&gt;@
+
+
+3.2
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374502589000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374502589000&lt;/contentUpdateDate&gt;
+&lt;version&gt;3.2&lt;/version&gt;
+d21 1
+a21 1
+&lt;minorEdit&gt;true&lt;/minorEdit&gt;
+d30 5
+a34 8
+  #set($sqlTools = $xwiki.parseGroovyFromPage('SQLTools.SQLToolsGroovy2'))
+  $sqlTools.getForm($request, $doc, true, true)
+  #if($request.query)
+    #set($connection = $sqlTools.getConnectionFromRequest($request))
+    #set($query = "select table_schema, sum(round(data_length/1024/1024,2)) as total_size_mb from information_schema.tables where table_name='xwikidoc' and table_schema='xwiki';")
+    #set($results = $sqlTools.getResults($connection, $query, true))
+    = Results =
+    $results
+d36 7
+d46 2
+a47 4
+
+
+
+{{/velocity}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+
+
+3.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374501969000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374501969000&lt;/contentUpdateDate&gt;
+&lt;version&gt;3.1&lt;/version&gt;
+d21 1
+a21 1
+&lt;minorEdit&gt;false&lt;/minorEdit&gt;
+d30 1
+a30 1
+  #set($sqlTools = $xwiki.parseGroovyFromPage('SQLTools.SQLToolsGroovy'))
+@
+
+
+2.1
+log
+@@
+text
+@d14 3
+a16 3
+&lt;date&gt;1374501951000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1374501951000&lt;/contentUpdateDate&gt;
+&lt;version&gt;2.1&lt;/version&gt;
+d34 1
+a34 1
+    #set($query = "select table_schema, sum(round(data_length/1024/1024,2)) as total_size_mb from information_schema.tables where table_name="xwikidoc" and table_schema="xwiki";")
+@
+
+
+1.1
+log
+@Imported from XAR
+@
+text
+@d14 3
+a16 3
+&lt;date&gt;1262300400000&lt;/date&gt;
+&lt;contentUpdateDate&gt;1262300400000&lt;/contentUpdateDate&gt;
+&lt;version&gt;1.1&lt;/version&gt;
+d20 1
+a20 1
+&lt;comment&gt;Imported from XAR&lt;/comment&gt;
+d28 14
+a41 1
+{{groovy}}
+a42 35
+total = 0
+def runQuery(query) {
+    def context2 = xcontext.getContext();
+    def store = xwiki.getXWiki().getStore().getStore();
+    store.beginTransaction(context2);
+    def session = store.getSession(context2);
+    def connection = session.connection();
+    def stmt = connection.createStatement();
+    def list = new ArrayList()
+    try {
+       sql = request.query;
+       def resultset = stmt.executeQuery(query);
+       def mdata = resultset.getMetaData();
+       def nbcols = mdata.getColumnCount();
+       while (true) {
+          resultset.next();
+          def map = new HashMap()
+          for (i=1;i&amp;lt;=nbcols;i++) {
+           def value = resultset.getObject(i);
+           if ((value==null)||(value==""))
+            value = ""
+           map.put(mdata.getColumnName(i), value)
+          }
+          list.add(map);
+          if (resultset.isLast())         
+            break;
+       } 
+       stmt.close();
+       return list;
+    } catch (Exception e2) {
+       return "Error running sql: ${sql} " + e2.getMessage();
+    } finally {
+      stmt.close();
+    }
+ }
+a43 15
+def showSpaceUsed(message, table, wiki) {
+ def mwikiquery = (wiki=="") ? "" : "AND TABLE_SCHEMA = '${wiki}'"
+ def query = (table=="") ? "SELECT SUM(DATA_LENGTH)/1024/1024 as 'space' FROM INFORMATION_SCHEMA.TABLES  WHERE 1=1 ${mwikiquery}" : "SELECT SUM(DATA_LENGTH)/1024/1024 as 'space' FROM INFORMATION_SCHEMA.TABLES  WHERE TABLE_NAME='${table}' ${mwikiquery}"
+ def spaceleftresult = runQuery(query)
+ if (spaceleftresult.size()==0 || spaceleftresult.get(0).get("space")==null)
+  return "** ${message}: ?"
+ def spaceleft = spaceleftresult.get(0).get("space")
+ try {
+  spaceleft = Math.floor(spaceleft * 10) / 10;
+  total += spaceleft
+  return "** ${message}: ${spaceleft}MB"
+ } catch (Exception e) {
+  return "** ${message}: ${spaceleft} ? (${e.getMessage()}"
+ }
+}
+d45 1
+a45 30
+def showWikiSpace(wiki) {
+ if (wiki=="")
+  println "* All Wikis" 
+ else
+  println "* Wiki ${wiki}"
+ total = 0
+ println showSpaceUsed("Total Space used",  "", wiki)
+ def fulltotal = total
+ total = 0
+ println showSpaceUsed("Attachment Space used",  "xwikiattachment_content", wiki)
+ println showSpaceUsed("Attachment History Space used",  "xwikiattachment_archive", wiki)
+ println showSpaceUsed("Attachment Recycle bin Space used",  "xwikiattrecyclebin", wiki)
+ println showSpaceUsed("History Space used",  "xwikircs", wiki)
+ println showSpaceUsed("Recycle bin Space used",  "xwikirecyclebin", wiki)
+ def pagesspace = fulltotal - total
+ pagesspace = Math.floor(pagesspace * 10) / 10
+ println "** Other Space used ${pagesspace}MB"
+}
+
+if (xwiki.isVirtual()) {
+  def wikilist = xwiki.wikimanager.getAllWikis()
+  showWikiSpace("")
+  for (wiki in wikilist) {
+     showWikiSpace(wiki.toString())
+  }
+} else {
+  showWikiSpace(xcontext.database)
+}
+
+{{/groovy}}&lt;/content&gt;&lt;/xwikidoc&gt;
+@
+</versions></xwikidoc>
