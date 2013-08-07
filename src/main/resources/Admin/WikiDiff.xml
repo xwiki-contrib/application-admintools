@@ -10,16 +10,16 @@
 <author>XWiki.Admin</author>
 <customClass></customClass>
 <contentAuthor>XWiki.Admin</contentAuthor>
-<creationDate>1374224647000</creationDate>
-<date>1374675690000</date>
-<contentUpdateDate>1374675690000</contentUpdateDate>
-<version>2.1</version>
+<creationDate>1375188483000</creationDate>
+<date>1375894544000</date>
+<contentUpdateDate>1375894544000</contentUpdateDate>
+<version>3.1</version>
 <title>Wiki Diff</title>
 <defaultTemplate></defaultTemplate>
 <validationScript></validationScript>
 <comment></comment>
 <minorEdit>false</minorEdit>
-<syntaxId>xwiki/2.1</syntaxId>
+<syntaxId>xwiki/2.0</syntaxId>
 <hidden>false</hidden>
 <content>{{velocity}}
 #if($request.source)
@@ -64,22 +64,12 @@
 #end
 #else
 #set($version = $xwiki.version)
-#set($pos = $version.lastIndexOf("."))
-#set($version = $version.substring(0, $pos))
-#set($pos1 = $version.indexOf("."))
-#set($major = $xwiki.parseInt($version.substring(0, $pos1)))
-#set($pos1 = $pos1 + 1)
-#set($pos2 = $version.indexOf(".", $pos1))
-#if($pos2==-1)
-#set($minor = $xwiki.parseInt($version.substring($pos1)))
+#if($services.wikimanager)
+  #set($mode="manager")
 #else
-#set($minor = $xwiki.parseInt($version.substring($pos1, $pos2)))
+  #set($mode="enterprise")
 #end
-#if($major&lt;2 || ($minor&lt;6 &amp;&amp; $major==2))
-#set($source = "http://maven.xwiki.org/releases/com/xpn/xwiki/products/xwiki-enterprise-wiki/$version/xwiki-enterprise-wiki-${version}.xar")
-#else
-#set($source = "http://maven.xwiki.org/releases/org/xwiki/enterprise/xwiki-enterprise-wiki/$version/xwiki-enterprise-wiki-${version}.xar")
-#end
+#set($source = "http://maven.xwiki.org/releases/org/xwiki/${mode}/xwiki-${mode}-ui-all/5.1/xwiki-${mode}-ui-all-${version}.xar")
 {{html clean=false}}
 &lt;form action=""&gt;
 &lt;strong&gt;Source URL:&lt;/strong&gt;&lt;br /&gt;
@@ -93,147 +83,4 @@ leave empty to compare to current wiki&lt;br /&gt;
 &lt;/form&gt;
 {{/html}}
 #end
-{{/velocity}}</content>
-<versions>head	2.1;
-access;
-symbols;
-locks; strict;
-comment	@# @;
-
-
-2.1
-date	2013.07.24.16.21.30;	author XWiki_2EAdmin;	state full;
-branches;
-next	1.1;
-
-1.1
-date	2010.01.01.00.00.00;	author XWiki_2EAdmin;	state diff;
-branches;
-next	;
-
-
-desc
-@@
-
-
-2.1
-log
-@@
-text
-@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;xwikidoc&gt;
-&lt;web&gt;Admin&lt;/web&gt;
-&lt;name&gt;WikiDiff&lt;/name&gt;
-&lt;language&gt;&lt;/language&gt;
-&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
-&lt;translation&gt;0&lt;/translation&gt;
-&lt;parent&gt;Admin.Tools&lt;/parent&gt;
-&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
-&lt;author&gt;XWiki.Admin&lt;/author&gt;
-&lt;customClass&gt;&lt;/customClass&gt;
-&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
-&lt;creationDate&gt;1374224647000&lt;/creationDate&gt;
-&lt;date&gt;1374675690000&lt;/date&gt;
-&lt;contentUpdateDate&gt;1374675690000&lt;/contentUpdateDate&gt;
-&lt;version&gt;2.1&lt;/version&gt;
-&lt;title&gt;Wiki Diff&lt;/title&gt;
-&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
-&lt;validationScript&gt;&lt;/validationScript&gt;
-&lt;comment&gt;&lt;/comment&gt;
-&lt;minorEdit&gt;false&lt;/minorEdit&gt;
-&lt;syntaxId&gt;xwiki/2.1&lt;/syntaxId&gt;
-&lt;hidden&gt;false&lt;/hidden&gt;
-&lt;content&gt;{{velocity}}
-#if($request.source)
-#set ($diffTool = $xwiki.parseGroovyFromPage("Admin.WikiDiffGroovy"))
-#set ($ok = $diffTool.setContext($context, $xwiki))
-#set ($oldURL = $request.source)
-#set ($newURL = $request.target)
-#set ($oldContents = $diffTool.getZipContent($oldURL))
-#if($newURL &amp;amp;&amp;amp; $newURL!="")
- #set($newContents = $diffTool.getZipContent($newURL))
-#end
-#foreach ($key in $oldContents.keySet())
- #if($key != "package.xml")
-  #set($oldDoc = $diffTool.getDocument($oldContents.get($key)))
-  #if(!$oldDoc.getObject("XWiki.XWikiPreferences")&amp;amp;&amp;amp;!$oldDoc.getObject("XWiki.XWikiGroups"))
-   #set($oldContent = $diffTool.getXML($oldDoc))
-   #if($newContents)
-    #set($newContent = $diffTool.getXMLFromString($newContents.get($key)))
-   #else
-    #set($page = $oldDoc.getFullName())
-    #set($newDoc = $xwiki.getDocument($page))
-    #if($oldDoc.getLanguage()!="")
-     #set($newDoc = $newDoc.getTranslatedDocument($oldDoc.getLanguage()))
-    #end
-    #set($newContent = $diffTool.getXML($newDoc))
-   #end
-   #if ($oldContent &amp;amp;&amp;amp; $diffTool.compare($oldContent, $newContent))
-* $key has changed [[View Diff&amp;gt;&amp;gt;?page=${key}&amp;amp;source=${request.source}&amp;amp;target=${request.target}]]
-#if($request.page==$key)
-**Differences**:
-{{html clean="false"}}$diffTool.diff($oldContent, $newContent){{/html}}
-#if($request.debug)
-#set($ok = $diffTool.save("file1.txt", $oldContent, true))
-#set($ok = $diffTool.save("file1b.txt", $oldContent, false))
-#set($ok = $diffTool.save("file2.txt", $newContent, true))
-#set($ok = $diffTool.save("file2b.txt", $newContent, false))
-#end
-#end
-   #end
-  #end
- #end
-#end
-#else
-#set($version = $xwiki.version)
-#set($pos = $version.lastIndexOf("."))
-#set($version = $version.substring(0, $pos))
-#set($pos1 = $version.indexOf("."))
-#set($major = $xwiki.parseInt($version.substring(0, $pos1)))
-#set($pos1 = $pos1 + 1)
-#set($pos2 = $version.indexOf(".", $pos1))
-#if($pos2==-1)
-#set($minor = $xwiki.parseInt($version.substring($pos1)))
-#else
-#set($minor = $xwiki.parseInt($version.substring($pos1, $pos2)))
-#end
-#if($major&amp;lt;2 || ($minor&amp;lt;6 &amp;amp;&amp;amp; $major==2))
-#set($source = "http://maven.xwiki.org/releases/com/xpn/xwiki/products/xwiki-enterprise-wiki/$version/xwiki-enterprise-wiki-${version}.xar")
-#else
-#set($source = "http://maven.xwiki.org/releases/org/xwiki/enterprise/xwiki-enterprise-wiki/$version/xwiki-enterprise-wiki-${version}.xar")
-#end
-{{html clean=false}}
-&amp;lt;form action=""&amp;gt;
-&amp;lt;strong&amp;gt;Source URL:&amp;lt;/strong&amp;gt;&amp;lt;br /&amp;gt;
-&amp;lt;input type="text" name="source" value="$source" size="120" /&amp;gt;
-&amp;lt;br /&amp;gt;
-&amp;lt;strong&amp;gt;Target URL:&amp;lt;/strong&amp;gt;&amp;lt;br /&amp;gt;
-leave empty to compare to current wiki&amp;lt;br /&amp;gt;
-&amp;lt;input type="text" name="target" value="" size="120" /&amp;gt;
-&amp;lt;br /&amp;gt;
-&amp;lt;input type="submit" value="Go" /&amp;gt;
-&amp;lt;/form&amp;gt;
-{{/html}}
-#end
-{{/velocity}}&lt;/content&gt;&lt;/xwikidoc&gt;
-@
-
-
-1.1
-log
-@Imported from XAR
-@
-text
-@d14 3
-a16 3
-&lt;date&gt;1262300400000&lt;/date&gt;
-&lt;contentUpdateDate&gt;1262300400000&lt;/contentUpdateDate&gt;
-&lt;version&gt;1.1&lt;/version&gt;
-d20 1
-a20 1
-&lt;comment&gt;Imported from XAR&lt;/comment&gt;
-d22 1
-a22 1
-&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
-@
-</versions></xwikidoc>
+{{/velocity}}</content></xwikidoc>

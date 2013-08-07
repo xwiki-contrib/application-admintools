@@ -10,14 +10,14 @@
 <author>XWiki.Admin</author>
 <customClass></customClass>
 <contentAuthor>XWiki.Admin</contentAuthor>
-<creationDate>1374224642000</creationDate>
-<date>1374854680000</date>
-<contentUpdateDate>1374854680000</contentUpdateDate>
-<version>2.1</version>
+<creationDate>1375188480000</creationDate>
+<date>1375188480000</date>
+<contentUpdateDate>1375188480000</contentUpdateDate>
+<version>1.1</version>
 <title>Import Page</title>
 <defaultTemplate></defaultTemplate>
 <validationScript></validationScript>
-<comment></comment>
+<comment>Imported from XAR</comment>
 <minorEdit>false</minorEdit>
 <syntaxId>xwiki/1.0</syntaxId>
 <hidden>false</hidden>
@@ -110,164 +110,4 @@ if (request.get("name")!=null) {
 &lt;/form&gt;
 &lt;%
 }
-%&gt;</content>
-<versions>head	2.1;
-access;
-symbols;
-locks; strict;
-comment	@# @;
-
-
-2.1
-date	2013.07.26.18.04.40;	author XWiki_2EAdmin;	state full;
-branches;
-next	1.1;
-
-1.1
-date	2010.01.01.00.00.00;	author XWiki_2EAdmin;	state diff;
-branches;
-next	;
-
-
-desc
-@@
-
-
-2.1
-log
-@@
-text
-@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;xwikidoc&gt;
-&lt;web&gt;Admin&lt;/web&gt;
-&lt;name&gt;ImportPage&lt;/name&gt;
-&lt;language&gt;&lt;/language&gt;
-&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
-&lt;translation&gt;0&lt;/translation&gt;
-&lt;parent&gt;Admin.Tools&lt;/parent&gt;
-&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
-&lt;author&gt;XWiki.Admin&lt;/author&gt;
-&lt;customClass&gt;&lt;/customClass&gt;
-&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
-&lt;creationDate&gt;1374224642000&lt;/creationDate&gt;
-&lt;date&gt;1374854680000&lt;/date&gt;
-&lt;contentUpdateDate&gt;1374854680000&lt;/contentUpdateDate&gt;
-&lt;version&gt;2.1&lt;/version&gt;
-&lt;title&gt;Import Page&lt;/title&gt;
-&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
-&lt;validationScript&gt;&lt;/validationScript&gt;
-&lt;comment&gt;&lt;/comment&gt;
-&lt;minorEdit&gt;false&lt;/minorEdit&gt;
-&lt;syntaxId&gt;xwiki/1.0&lt;/syntaxId&gt;
-&lt;hidden&gt;false&lt;/hidden&gt;
-&lt;content&gt;1.1 Import Page
-
-&amp;lt;%
-
-import com.xpn.xwiki.*;
-import com.xpn.xwiki.doc.*;
-import com.xpn.xwiki.plugin.packaging.*;
-
-finalPageName = ""
-
-def updateDoc(String newname, String xml, String type, XWikiContext context) {
-    def prevDoc =  context.getWiki().getDocument(newname, context);
-    def prevArchive = prevDoc.getDocumentArchive();
-    if (prevDoc.isNew()||((type!="NOOVERVERSIONS")&amp;amp;&amp;amp;(type!="NOOVERNOVERSIONS"))) {
-     def fdoc = new XWikiDocument()
-     fdoc.fromXML(xml);
-     // We need to verify the document has the right name
-     // Otherwise we might override something we don't expect
-     if ((newname!="")&amp;amp;&amp;amp;(fdoc.fullName!=newname)) {
-       fdoc = fdoc.copyDocument(newname, context);
-     }
-     finalPageName =  fdoc.getFullName()
-    
-     if (type=="ADDVERSION") {
-       fdoc.setDocumentArchive(prevArchive);
-       context.getWiki().saveDocument(fdoc, context);
-       if (prevDoc.isNew()) {
-        fdoc.resetArchive(context);
-       }
-      return 1;
-     } else {
-      def pack = new Package()
-      if ((type=="NOOVERVERSIONS")||(type=="OVERVERSIONS"))
-       pack.setWithVersions(true)
-      else
-       pack.setWithVersions(false)
-      pack.setBackupPack(true)
-      pack.add(fdoc, 0, context)
-      return pack.install(context)
-     }    
-    } else {
-       return -1000;
-    }
- }
-
-if (request.get("name")!=null) {
- def fupl= xwiki.get("fileupload");
- def myfiles = fupl.getFileItems();
- def xml = fupl.getFileItem("file");
- def fName = fupl.getFileName("file");
- def docName = fupl.getFileItem("name");
- def type = fupl.getFileItem("type");
- def ret = updateDoc(docName, xml, type, context.context);
- if (ret &amp;lt; 0) {
-   if (ret==-1000)
-    println "Document already exists and overwrite was not specified."; 
-   else
-    println "Document could not be imported with error ${ret}."; 
- } else {
-   println "Document has been imported properly: [${finalPageName}]."
- }
-} else {
-%&amp;gt; 
-&amp;lt;form action="" enctype="multipart/form-data" method="post"&amp;gt;
-&amp;lt;table border="0"&amp;gt;
-&amp;lt;tr&amp;gt;
-&amp;lt;td&amp;gt;Page Name to save to:&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;input type="text" name="name" size="60" /&amp;gt;&amp;lt;/td&amp;gt;
-&amp;lt;/tr&amp;gt;
-&amp;lt;tr&amp;gt;
-&amp;lt;td&amp;gt;Type:&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;
-&amp;lt;input type="radio" name="type" value="NOOVERVERSIONS" checked /&amp;gt; Do Not overwrite with versions
-&amp;lt;input type="radio" name="type" value="NOOVERNOVERSIONS" /&amp;gt; Do Not overwrite without versions
-&amp;lt;br /&amp;gt;
-&amp;lt;input type="radio" name="type" value="ADDVERSION" /&amp;gt; Add version 
-&amp;lt;input type="radio" name="type" value="OVERVERSIONS" /&amp;gt; Overwrite with version 
-&amp;lt;input type="radio" name="type" value="OVERNOVERSIONS" /&amp;gt; Overwrite without versions  &amp;lt;/td&amp;gt;
-&amp;lt;/tr&amp;gt;
-&amp;lt;tr&amp;gt;
-&amp;lt;td&amp;gt;File:&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;input type="file" name="file" size="60" /&amp;gt;&amp;lt;/td&amp;gt;
-&amp;lt;/tr&amp;gt;
-&amp;lt;tr&amp;gt;
-&amp;lt;td colspan="2" align="center"&amp;gt;
-&amp;lt;input type="submit" name="Import" /&amp;gt;
-&amp;lt;/td&amp;gt;
-&amp;lt;/tr&amp;gt;
-&amp;lt;/table&amp;gt;
-&amp;lt;/form&amp;gt;
-&amp;lt;%
-}
-%&amp;gt;&lt;/content&gt;&lt;/xwikidoc&gt;
-@
-
-
-1.1
-log
-@Imported from XAR
-@
-text
-@d8 1
-a8 1
-&lt;parent&gt;Admin.ExportTools&lt;/parent&gt;
-d14 3
-a16 3
-&lt;date&gt;1262300400000&lt;/date&gt;
-&lt;contentUpdateDate&gt;1262300400000&lt;/contentUpdateDate&gt;
-&lt;version&gt;1.1&lt;/version&gt;
-d20 1
-a20 1
-&lt;comment&gt;Imported from XAR&lt;/comment&gt;
-@
-</versions></xwikidoc>
+%&gt;</content></xwikidoc>

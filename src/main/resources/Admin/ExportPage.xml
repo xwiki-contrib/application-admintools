@@ -10,14 +10,14 @@
 <author>XWiki.Admin</author>
 <customClass></customClass>
 <contentAuthor>XWiki.Admin</contentAuthor>
-<creationDate>1374224640000</creationDate>
-<date>1374854666000</date>
-<contentUpdateDate>1374854666000</contentUpdateDate>
-<version>2.1</version>
+<creationDate>1375188480000</creationDate>
+<date>1375188480000</date>
+<contentUpdateDate>1375188480000</contentUpdateDate>
+<version>1.1</version>
 <title>Export Page</title>
 <defaultTemplate></defaultTemplate>
 <validationScript></validationScript>
-<comment></comment>
+<comment>Imported from XAR</comment>
 <minorEdit>false</minorEdit>
 <syntaxId>xwiki/1.0</syntaxId>
 <hidden>false</hidden>
@@ -42,96 +42,4 @@ $response.getWriter().print($pdoc.document.toFullXML($context.context))
 #else
 $response.getWriter().print($pdoc.document.toXML(true, false, true, false, $context.context))
 #end
-#end</content>
-<versions>head	2.1;
-access;
-symbols;
-locks; strict;
-comment	@# @;
-
-
-2.1
-date	2013.07.26.18.04.26;	author XWiki_2EAdmin;	state full;
-branches;
-next	1.1;
-
-1.1
-date	2010.01.01.00.00.00;	author XWiki_2EAdmin;	state diff;
-branches;
-next	;
-
-
-desc
-@@
-
-
-2.1
-log
-@@
-text
-@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;xwikidoc&gt;
-&lt;web&gt;Admin&lt;/web&gt;
-&lt;name&gt;ExportPage&lt;/name&gt;
-&lt;language&gt;&lt;/language&gt;
-&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
-&lt;translation&gt;0&lt;/translation&gt;
-&lt;parent&gt;Admin.Tools&lt;/parent&gt;
-&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
-&lt;author&gt;XWiki.Admin&lt;/author&gt;
-&lt;customClass&gt;&lt;/customClass&gt;
-&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
-&lt;creationDate&gt;1374224640000&lt;/creationDate&gt;
-&lt;date&gt;1374854666000&lt;/date&gt;
-&lt;contentUpdateDate&gt;1374854666000&lt;/contentUpdateDate&gt;
-&lt;version&gt;2.1&lt;/version&gt;
-&lt;title&gt;Export Page&lt;/title&gt;
-&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
-&lt;validationScript&gt;&lt;/validationScript&gt;
-&lt;comment&gt;&lt;/comment&gt;
-&lt;minorEdit&gt;false&lt;/minorEdit&gt;
-&lt;syntaxId&gt;xwiki/1.0&lt;/syntaxId&gt;
-&lt;hidden&gt;false&lt;/hidden&gt;
-&lt;content&gt;#if(!$request.type)
-1.1 Export Page
-
-#set($script = $xwiki.getURL("Admin.ExportPageSuggest", "view", "xpage=rdf"))
-&amp;lt;form id="choosepage" action=""&amp;gt;
-&amp;lt;input type="hidden" name="type" value="export" /&amp;gt;
-Choose page: &amp;lt;input type="text" name="name" value="" size="40"  onfocus="new ajaxSuggest(this, {script:'${script}&amp;amp;amp;', varname: 'input', seps:'', offsety: 13});" /&amp;gt;
-&amp;lt;br /&amp;gt;
-&amp;lt;input type="checkbox" name="versions" value="1" checked /&amp;gt; With versions
-&amp;lt;br /&amp;gt;
-&amp;lt;input type="submit" value="Export" /&amp;gt;
-&amp;lt;/form&amp;gt;
-#else
-#set($ok = $response.setContentType("text/xml"))
-#set($ok = $context.setFinished(true))
-#set($pdoc = $xwiki.getDocument($request.name))
-#if($request.versions=="1")
-$response.getWriter().print($pdoc.document.toFullXML($context.context))
-#else
-$response.getWriter().print($pdoc.document.toXML(true, false, true, false, $context.context))
-#end
-#end&lt;/content&gt;&lt;/xwikidoc&gt;
-@
-
-
-1.1
-log
-@Imported from XAR
-@
-text
-@d8 1
-a8 1
-&lt;parent&gt;Admin.ExportTools&lt;/parent&gt;
-d14 3
-a16 3
-&lt;date&gt;1262300400000&lt;/date&gt;
-&lt;contentUpdateDate&gt;1262300400000&lt;/contentUpdateDate&gt;
-&lt;version&gt;1.1&lt;/version&gt;
-d20 1
-a20 1
-&lt;comment&gt;Imported from XAR&lt;/comment&gt;
-@
-</versions></xwikidoc>
+#end</content></xwikidoc>

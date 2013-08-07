@@ -10,9 +10,9 @@
 <author>XWiki.Admin</author>
 <customClass></customClass>
 <contentAuthor>XWiki.Admin</contentAuthor>
-<creationDate>1374224641000</creationDate>
-<date>1262300400000</date>
-<contentUpdateDate>1262300400000</contentUpdateDate>
+<creationDate>1375188487000</creationDate>
+<date>1375188487000</date>
+<contentUpdateDate>1375188487000</contentUpdateDate>
 <version>1.1</version>
 <title>Tool to export a space as XAR</title>
 <defaultTemplate></defaultTemplate>
@@ -62,93 +62,4 @@ Space Name:&lt;input name="space" type="text" value="" /&gt;
 &lt;/form&gt;
 {{/html}}
 #end
-{{/velocity}}</content>
-<versions>head	1.1;
-access;
-symbols;
-locks; strict;
-comment	@# @;
-
-
-1.1
-date	2010.01.01.00.00.00;	author XWiki_2EAdmin;	state full;
-branches;
-next	;
-
-
-desc
-@@
-
-
-1.1
-log
-@Imported from XAR
-@
-text
-@&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;xwikidoc&gt;
-&lt;web&gt;Admin&lt;/web&gt;
-&lt;name&gt;ExportSpace&lt;/name&gt;
-&lt;language&gt;&lt;/language&gt;
-&lt;defaultLanguage&gt;&lt;/defaultLanguage&gt;
-&lt;translation&gt;0&lt;/translation&gt;
-&lt;parent&gt;Admin.WebHome&lt;/parent&gt;
-&lt;creator&gt;XWiki.Admin&lt;/creator&gt;
-&lt;author&gt;XWiki.Admin&lt;/author&gt;
-&lt;customClass&gt;&lt;/customClass&gt;
-&lt;contentAuthor&gt;XWiki.Admin&lt;/contentAuthor&gt;
-&lt;creationDate&gt;1374224641000&lt;/creationDate&gt;
-&lt;date&gt;1262300400000&lt;/date&gt;
-&lt;contentUpdateDate&gt;1262300400000&lt;/contentUpdateDate&gt;
-&lt;version&gt;1.1&lt;/version&gt;
-&lt;title&gt;Tool to export a space as XAR&lt;/title&gt;
-&lt;defaultTemplate&gt;&lt;/defaultTemplate&gt;
-&lt;validationScript&gt;&lt;/validationScript&gt;
-&lt;comment&gt;Imported from XAR&lt;/comment&gt;
-&lt;minorEdit&gt;false&lt;/minorEdit&gt;
-&lt;syntaxId&gt;xwiki/2.0&lt;/syntaxId&gt;
-&lt;hidden&gt;false&lt;/hidden&gt;
-&lt;content&gt;{{velocity}}
-#if("$!request.space" != '')
-#set($pages = "")
-#foreach($docName in $xwiki.searchDocuments("where doc.web='${request.space}'"))
-* $docName
-
-#set($pages = "${pages}&amp;amp;pages=$docName")
-#if("$!request.do" == "delete") 
-#set($ok = $xwiki.getDocument($docName).delete())
-#end
-#end
-#if("$!request.do" != "delete")
-#set($params = "name=${request.space}-${datetool.get('yyyy-M-d')}${pages}")
-
-{{html}}
-
-&amp;lt;a href="$doc.getURL('export',$params)"&amp;gt;Confirm Export Space $request.space&amp;lt;/a&amp;gt;
-&amp;lt;br /&amp;gt;
-
-#set($params = "space=$request.space&amp;amp;do=delete")
-&amp;lt;a href="$doc.getURL('view',$params)"&amp;gt;Delete Space $request.space&amp;lt;/a&amp;gt;
-
-{{/html}}
-
-#else
-
-[[Back&amp;gt;&amp;gt;$doc.fullName]]
-
-#end
-#else
-{{html wiki=false}}
-&amp;lt;form&amp;gt;
-&amp;lt;div&amp;gt;
-Space Name:&amp;lt;input name="space" type="text" value="" /&amp;gt;
-&amp;lt;span class="buttonwrapper"&amp;gt;
-&amp;lt;input type="submit" value="export space" class="button" /&amp;gt;
-&amp;lt;/span&amp;gt;
-&amp;lt;/div&amp;gt;
-&amp;lt;/form&amp;gt;
-{{/html}}
-#end
-{{/velocity}}&lt;/content&gt;&lt;/xwikidoc&gt;
-@
-</versions></xwikidoc>
+{{/velocity}}</content></xwikidoc>
