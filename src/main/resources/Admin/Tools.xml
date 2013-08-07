@@ -10,9 +10,9 @@
 <author>xwiki:XWiki.Admin</author>
 <customClass></customClass>
 <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1375188482000</creationDate>
-<date>1375893474000</date>
-<contentUpdateDate>1375893474000</contentUpdateDate>
+<creationDate>1375903650000</creationDate>
+<date>1375907466000</date>
+<contentUpdateDate>1375907466000</contentUpdateDate>
 <version>1.1</version>
 <title>XWiki Advanced Administration Tools</title>
 <defaultTemplate></defaultTemplate>
@@ -65,10 +65,12 @@ The following pages allow advanced administration of an XWiki or XWiki farm:
   #if($system == "MySQL")
 == MySQL Tools ==
 
-* [[MySQL Database Encoding Check&gt;&gt;CheckDBEncoding]]: tool to check the MySQL database encoding
-* [[MySQL Indexes Check&gt;&gt;CheckIndexes]]: tool to check MySQL indexes
-* [[Run Query&gt;&gt;Query]]: tool to run queries on the MySQL database
-* [[Sanity Check&gt;&gt;SanityCheck]]: tool to check the consistency of the database
+* [[MySQL Database Encoding Check&gt;&gt;CheckDBEncoding]]: Tool to check the MySQL database encoding
+* [[MySQL Indexes Check&gt;&gt;CheckIndexes]]: Tool to check MySQL indexes
+* [[Run Query&gt;&gt;Query]]: Tool to run queries on the MySQL database
+* [[Show Large History]]: Tool to list pages with large history 
+* [[Show Spammed Pages]]: Tool to list spammed pages (huge number of comments)
+* [[Sanity Check&gt;&gt;SanityCheck]]: Tool to check the consistency of the database
   #else
 {{info}}It seems you're not using a MySQL Database. According tools won't be listed.{{/info}}
   #end
