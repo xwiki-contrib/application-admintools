@@ -28,7 +28,7 @@
 {{info}}This script reads from the page $indexesDocument and only reports not found indexes.{{/info}}
 
 #if($hasProgramming)
-  #set($sqlTools = $xwiki.parseGroovyFromPage('SQLTools.SQLToolsGroovy'))
+  #set($sqlTools = $xwiki.parseGroovyFromPage('Admin.SQLToolsGroovy'))
   #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
   Your database is: **$system**
   #if($system == "HSQL Database Engine")

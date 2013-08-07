@@ -23,7 +23,7 @@
 <hidden>false</hidden>
 <content>{{velocity}}
 #if($hasProgramming)
-  #set($sqlTools = $xwiki.parseGroovyFromPage('SQLTools.SQLToolsGroovy'))
+  #set($sqlTools = $xwiki.parseGroovyFromPage('Admin.SQLToolsGroovy'))
   #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
   = Query =
   Your database is: **$system**

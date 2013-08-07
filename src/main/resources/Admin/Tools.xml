@@ -60,7 +60,7 @@ The following pages allow advanced administration of an XWiki or XWiki farm:
 * [[Large Import from Disk&gt;&gt;LargeImport]] (recommended for large wikis)
 
 #if($hasProgramming)
-  #set($sqlTools = $xwiki.parseGroovyFromPage('SQLTools.SQLToolsGroovy'))
+  #set($sqlTools = $xwiki.parseGroovyFromPage('Admin.SQLToolsGroovy'))
   #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
   #if($system == "MySQL")
 == MySQL Tools ==
