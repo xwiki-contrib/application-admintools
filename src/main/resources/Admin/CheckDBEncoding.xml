@@ -10,9 +10,9 @@
 <author>xwiki:XWiki.Admin</author>
 <customClass></customClass>
 <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1375188484000</creationDate>
-<date>1375188484000</date>
-<contentUpdateDate>1375188484000</contentUpdateDate>
+<creationDate>1375903656000</creationDate>
+<date>1375906464000</date>
+<contentUpdateDate>1375906397000</contentUpdateDate>
 <version>1.1</version>
 <title>MySQL Encoding Check</title>
 <defaultTemplate></defaultTemplate>
@@ -23,10 +23,16 @@
 <hidden>false</hidden>
 <content>{{groovy}}
 
+
 def context = xcontext.getContext();
 def store = xwiki.getXWiki().getStore().getStore();
-def wikilist =  services.wikimanager ? services.wikimanager.getAllWikis() : xcontext.getDatabase() ;
-def indexes = xwiki.getDocument("Admin.CheckIndexesSQL").getContent().split("n")
+if(services.wikimanager) {
+    wikilist = services.wikimanager.getAllWikis()
+} else {
+    wikilist = [xcontext.getDatabase()]
+}
+
+def indexes = xwiki.getDocument("Admin.CheckIndexesSQL").getContent().split("\n")
 
 println "== General db settings =="
 
@@ -48,7 +54,7 @@ try {
   }
   stmt.close();
 } catch (Exception e) {
-   println "* &lt;font color='red'&gt;Failed to check mysql encoding&lt;/font&gt;: " + e.getMessage()
+   println "* {{error}}Failed to check mysql encoding:{{/error}} " + e.getMessage()
 } finally { 
   store.endTransaction(context, false);
 }
@@ -71,7 +77,7 @@ try {
   }
   stmt.close();
 } catch (Exception e) {
-   println "* &lt;font color='red'&gt;Failed to check mysql encoding&lt;/font&gt;: " + e.getMessage()
+   println "* {{error}}Failed to check mysql encoding:{{/error}} " + e.getMessage()
 } finally { 
   store.endTransaction(context, false);
 }
@@ -79,6 +85,7 @@ try {
 println "== Encoding settings by wiki =="
 
 for(wiki in wikilist) {
+
 // check database encoding
 try {
   store.beginTransaction(context);
@@ -91,7 +98,7 @@ try {
   try {
     rset.first();
     result = rset.getString(2);
-  } catch (Exception e2) {}
+  } catch (Exception e2) { println '' }
 
   // println result
   def i1 = result.indexOf("DEFAULT CHARACTER SET")
@@ -100,14 +107,16 @@ try {
    def enc = result.substring(i1 + 22, i2);
    println "* database encoding of ${wiki} is ${enc}" 
   } else {
-   println "* &lt;font color='red'&gt;Could not find xwikidoc encoding for wiki ${wiki}&lt;/font&gt;"
+   println "* {{error}}Could not find xwikidoc encoding for wiki ${wiki}{{/error}}"
   }
   stmt.close();
 } catch (Exception e) {
-   println "* &lt;font color='red'&gt;Failed to check xwikidoc encoding for wiki ${wiki}&lt;/font&gt;: " + e.getMessage()
+   println "* {{error}}Failed to check xwikidoc encoding for wiki ${wiki}: {{/error}} " + e.getMessage()
 } finally { 
   store.endTransaction(context, false);
 }
+
+
 
 // check xwikidoc table encoding
 try {
@@ -127,29 +136,36 @@ try {
   def i1 = -1;
   def i2 = -1;
   i1 = result.indexOf("DEFAULT CHARSET=");
-  if (i1!=-1)
+  if (i1!=-1) {
    i2 = result.indexOf(" ", i1 + 16);
+  }
   if (result!=null &amp;&amp; i1!=-1) {
    def enc = (i2==-1) ? result.substring(i1 + 16) : result.substring(i1 + 8, i2);
    println "* encoding of xwikidoc of ${wiki} is ${enc}" 
   } else {
-   println "* &lt;font color='red'&gt;Could not find xwikidoc encoding for wiki ${wiki}&lt;/font&gt;"
+   println "* {{error}}Could not find xwikidoc encoding for wiki ${wiki}{{/error}}"
   }
 
   i1 = result.indexOf("COLLATE=")
-  if (i1!=-1)
+  if (i1!=-1) {
    i2 = result.indexOf(" ", i1+8)
+  }
   if (result!=null &amp;&amp; i1!=-1) {
    def enc = (i2==-1) ? result.substring(i1 + 8) : result.substring(i1 + 8, i2);
    println "* collation of xwikidoc of ${wiki} is ${enc}" 
   } else {
-   println "* &lt;font color='red'&gt;Could not find xwikidoc collation for wiki ${wiki}&lt;/font&gt;"
+   println "* {{error}}Could not find xwikidoc collation for wiki ${wiki}{{/error}}"
   }
 
   stmt.close();
 } catch (Exception e) {
-   println "* &lt;font color='red'&gt;Failed to check xwikidoc encoding or collation for wiki ${wiki}&lt;/font&gt;: " + e.getMessage()
+   println "* {{error}}Failed to check xwikidoc encoding or collation for wiki ${wiki}{{/error}}: " + e.getMessage()
 } finally { 
   store.endTransaction(context, false);
 }
+
+
+
+}
+
 {{/groovy}}</content></xwikidoc>
