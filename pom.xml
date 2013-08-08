@@ -77,6 +77,10 @@
       <id>oanat</id>
       <name>Oana Tabaranu</name>
     </developer>
+    <developer>
+      <id>guillaumefenollar</id>
+      <name>Guillaume Fenollar</name>
+    </developer>
   </developers>
   <properties>
     <!-- Don't run CLIRR here since there's no Java code. -->
