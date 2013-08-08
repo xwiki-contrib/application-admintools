@@ -1,114 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <xwikidoc>
-  <web>Admin</web>
-  <name>UsedSpace</name>
-  <language/>
-  <defaultLanguage/>
-  <translation>0</translation>
-  <parent>Admin.Tools</parent>
-  <creator>xwiki:XWiki.Admin</creator>
-  <author>xwiki:XWiki.Admin</author>
-  <customClass/>
-  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-  <creationDate>1262300400000</creationDate>
-  <date>1262300400000</date>
-  <contentUpdateDate>1262300400000</contentUpdateDate>
-  <version>1.1</version>
-  <title>Space Used</title>
-  <template/>
-  <defaultTemplate/>
-  <validationScript/>
-  <comment/>
-  <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/2.0</syntaxId>
-  <hidden>false</hidden>
-  <content>This amount represent all space consumed on the XWiki servers including documents, pages, attachments but also the recycle bin and history of pages and attachments
+<web>Admin</web>
+<name>UsedSpace</name>
+<language></language>
+<defaultLanguage></defaultLanguage>
+<translation>0</translation>
+<parent>Admin.WebHome</parent>
+<creator>xwiki:XWiki.Admin</creator>
+<author>xwiki:XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+<creationDate>1375188479000</creationDate>
+<date>1375188560000</date>
+<contentUpdateDate>1375188560000</contentUpdateDate>
+<version>1.1</version>
+<title>Space Used</title>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.1</syntaxId>
+<hidden>false</hidden>
+<content>The following page shows the space used in MegaBytes by usually biggest tables.
 
-Keep in mind that the recycle bin of attachments and the history of pages and attachments are using up the most space and this space can be recovered.
+__xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&gt;&gt;Admin.ShrinkRecycleBins]].
+__xwikircs__ : Versioning of documents.
 
-{{groovy}}
+{{warning}}The following tables will not be shown if you're using [[Filesystem Attachment feature&gt;&gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]].{{/warning}}
+__xwikiattachment_content__ : Stores the content of attachments in database.
+__xwikiattachment_archive__ : Versioning of attachments
+__xwikiattrecyclebin__ : Recycle bin of attachments.
 
-total = 0
-def runQuery(query) {
-    def context2 = xcontext.getContext();
-    def store = xwiki.getXWiki().getStore().getStore();
-    store.beginTransaction(context2);
-    def session = store.getSession(context2);
-    def connection = session.connection();
-    def stmt = connection.createStatement();
-    def list = new ArrayList()
-    try {
-       sql = request.query;
-       def resultset = stmt.executeQuery(query);
-       def mdata = resultset.getMetaData();
-       def nbcols = mdata.getColumnCount();
-       while (true) {
-          resultset.next();
-          def map = new HashMap()
-          for (i=1;i&lt;=nbcols;i++) {
-           def value = resultset.getObject(i);
-           if ((value==null)||(value==""))
-            value = ""
-           map.put(mdata.getColumnName(i), value)
-          }
-          list.add(map);
-          if (resultset.isLast())         
-            break;
-       } 
-       stmt.close();
-       return list;
-    } catch (Exception e2) {
-       return "Error running sql: ${sql} " + e2.getMessage();
-    } finally {
-      stmt.close();
-    }
- }
+{{velocity}}
 
-def showSpaceUsed(message, table, wiki) {
- def mwikiquery = (wiki=="") ? "" : "AND TABLE_SCHEMA = '${wiki}'"
- def query = (table=="") ? "SELECT SUM(DATA_LENGTH)/1024/1024 as 'space' FROM INFORMATION_SCHEMA.TABLES  WHERE 1=1 ${mwikiquery}" : "SELECT SUM(DATA_LENGTH)/1024/1024 as 'space' FROM INFORMATION_SCHEMA.TABLES  WHERE TABLE_NAME='${table}' ${mwikiquery}"
- def spaceleftresult = runQuery(query)
- if (spaceleftresult.size()==0 || spaceleftresult.get(0).get("space")==null)
-  return "** ${message}: ?"
- def spaceleft = spaceleftresult.get(0).get("space")
- try {
-  spaceleft = Math.floor(spaceleft * 10) / 10;
-  total += spaceleft
-  return "** ${message}: ${spaceleft}MB"
- } catch (Exception e) {
-  return "** ${message}: ${spaceleft} ? (${e.getMessage()}"
- }
-}
+## Check if Filesystem Storage is enabled at the moment.
+#set($fsstore = false)
+#if($xcontext.getContext().getWiki().getAttachmentStore().getClass().getName().contains("Filesystem"))
+  #set($fsstore = true)
+#end
 
-def showWikiSpace(wiki) {
- if (wiki=="")
-  println "* All Wikis" 
- else
-  println "* Wiki ${wiki}"
- total = 0
- println showSpaceUsed("Total Space used",  "", wiki)
- def fulltotal = total
- total = 0
- println showSpaceUsed("Attachment Space used",  "xwikiattachment_content", wiki)
- println showSpaceUsed("Attachment History Space used",  "xwikiattachment_archive", wiki)
- println showSpaceUsed("Attachment Recycle bin Space used",  "xwikiattrecyclebin", wiki)
- println showSpaceUsed("History Space used",  "xwikircs", wiki)
- println showSpaceUsed("Recycle bin Space used",  "xwikirecyclebin", wiki)
- def pagesspace = fulltotal - total
- pagesspace = Math.floor(pagesspace * 10) / 10
- println "** Other Space used ${pagesspace}MB"
-}
 
-if (xwiki.isVirtual()) {
-  def wikilist = xwiki.wikimanager.getAllWikis()
-  showWikiSpace("")
-  for (wiki in wikilist) {
-     showWikiSpace(wiki.toString())
-  }
-} else {
-  showWikiSpace(xcontext.database)
-}
+#if($hasProgramming)
+  #set($sqlTools = $xwiki.parseGroovyFromPage('Admin.SQLToolsGroovy'))
+  #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
+  Your database is: **$system**
+  #if($system == "HSQL Database Engine")
+    {{warning}}$system is not supported for this action{{/warning}}
+  #end
 
-{{/groovy}}</content>
-</xwikidoc>
+ #if($services.wikimanager)
+    #set($dbs = $services.wikimanager.getAllWikis())
+ #else
+    #set($dbs = ["$xcontext.getDatabase()"])
+ #end
+
+ #if($fsstore)
+  #set($tables = ['xwikirecyclebin','xwikircs'])
+ #else
+  #set($tables = ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin'])
+ #end
+
+ #foreach($schema in $dbs)
+ #set($alltables = "")
+  $xcontext.setDatabase($schema)
+  == Used space of wiki ${schema} in MB ==
+  #foreach($table in $tables)
+    #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
+    #set($query = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';")
+    #set($results = $sqlTools.getResults($connection, $query, true))
+    #set($alltables = $alltables + $results)
+  #end
+  $alltables
+ #end
+
+#else
+{{error}}Sorry, you need the programming rights to use this tool{{/error}}
+#end 
+
+== Recommandations ==
+
+
+#if($fsstore != true)
+{{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&gt;&gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
+#end
+
+{{/velocity}}</content></xwikidoc>
