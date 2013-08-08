@@ -32,19 +32,20 @@ The following pages allow advanced administration of an XWiki or XWiki farm:
 
 == Configuration Tools ==
 
-* [[XWiki Configuration Check&gt;&gt;CheckXWikiConfig]]: tool to check the XWiki configuration and have recommandations.
-* [[Programming Rights Check&gt;&gt;CheckProgrammingRights]]: tool to check that proper programming rights are set on standard pages
+* [[XWiki Configuration Check&gt;&gt;CheckXWikiConfig]]: Tool to check the XWiki configuration and have recommandations.
+* [[Programming Rights Check&gt;&gt;CheckProgrammingRights]]: Tool to check that proper programming rights are set on standard pages
 
 == Activity Tools ==
 
 * [[Show Logs&gt;&gt;ShowLogs]] : Show n number of log lines
-* [[User Rights Check&gt;&gt;CheckRights]]: tool to check the rights of a specific user
-* [[Flush XWiki Cache&gt;&gt;FlushCache]]: tool to flush the cache
+* [[Show Rights&gt;&gt;ShowRights]]: Tool to give an overview of wiki, spaces and pages rights.
+* [[Flush XWiki Cache&gt;&gt;FlushCache]]: Tool to flush the cache
 
 == Storage Management Tools ==
 
-* [[Used Space&gt;&gt;UsedSpace]]: tool to check the disk space used by your wikis
+* [[Used Space&gt;&gt;UsedSpace]]: Tool to check the disk space used by your wikis
 * [[Shrink Recycle Bins&gt;&gt;ShrinkRecycleBins]]: tool to empty the recycle bins of your wikis
+* [[Database to Filesystem porter&gt;&gt;DB2FS]]: Move attachments to filesystem from DB (needs filesystem storage feature)
 
 == Upgrade Tools ==
 
