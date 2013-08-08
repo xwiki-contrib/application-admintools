@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>Admin</web>
+<name>Query</name>
+<language></language>
+<defaultLanguage></defaultLanguage>
+<translation>0</translation>
+<parent>Admin.WebHome</parent>
+<creator>xwiki:XWiki.Admin</creator>
+<author>xwiki:XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+<creationDate>1375188485000</creationDate>
+<date>1375188485000</date>
+<contentUpdateDate>1375188485000</contentUpdateDate>
+<version>1.1</version>
+<title></title>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.1</syntaxId>
+<hidden>false</hidden>
+<content>{{velocity}}
+#if($hasProgramming)
+  #set($sqlTools = $xwiki.parseGroovyFromPage('Admin.SQLToolsGroovy'))
+  = Query =
+  $sqlTools.getForm($request, $doc, true, true)
+  #if($request.query)
+    #set($connection = $sqlTools.getConnectionFromRequest($request))
+    #set($results = $sqlTools.getResults($connection, $request.query, true))
+    = Results =
+    $results
+  #end
+#else
+{{error}}Sorry, you need the programming rights to use this tool{{/error}}
+#end
+{{/velocity}}
+</content></xwikidoc>

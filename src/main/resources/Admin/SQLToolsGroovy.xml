@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>Admin</web>
+<name>SQLToolsGroovy</name>
+<language></language>
+<defaultLanguage></defaultLanguage>
+<translation>0</translation>
+<parent>Admin.WebHome</parent>
+<creator>xwiki:XWiki.Admin</creator>
+<author>xwiki:XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+<creationDate>1375188484000</creationDate>
+<date>1375188484000</date>
+<contentUpdateDate>1375188484000</contentUpdateDate>
+<version>1.1</version>
+<title>SQLToolsGroovy</title>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.1</syntaxId>
+<hidden>false</hidden>
+<object>
+<class>
+<name>XWiki.RequiredRightClass</name>
+<customClass></customClass>
+<customMapping></customMapping>
+<defaultViewSheet></defaultViewSheet>
+<defaultEditSheet></defaultEditSheet>
+<defaultWeb></defaultWeb>
+<nameField></nameField>
+<validationScript></validationScript>
+<level>
+<cache>0</cache>
+<disabled>0</disabled>
+<displayType>select</displayType>
+<multiSelect>0</multiSelect>
+<name>level</name>
+<number>1</number>
+<picker>0</picker>
+<prettyName>level</prettyName>
+<relationalStorage>0</relationalStorage>
+<separator> </separator>
+<separators> ,|</separators>
+<size>1</size>
+<sort>none</sort>
+<unmodifiable>0</unmodifiable>
+<validationMessage></validationMessage>
+<validationRegExp></validationRegExp>
+<values>edit|programming</values>
+<classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+</level>
+</class>
+<name>Admin.SQLToolsGroovy</name>
+<number>0</number>
+<className>XWiki.RequiredRightClass</className>
+<guid>47f1dd58-f20a-4799-a2e1-e1cfd0f0d61b</guid>
+<property>
+<level>programming</level>
+</property>
+</object>
+<content>/**
+ * Import
+ */ 
+import org.apache.velocity.tools.generic.EscapeTool;
+import java.sql.*
+
+/**
+ * Class 
+ */
+class SQLTools{
+
+  /**
+   * Get Form
+   */
+  String getForm(request, doc, withJDBCForm, withQuery){    
+    def escapeTool = new EscapeTool();
+    def spageUrl = escapeTool.xml(doc.getURL());    
+    
+    // &lt;form&gt;
+    def toReturn = """
+      {{html clean=="false"}}
+      &lt;form action="${spageUrl}#HResults" class="xform" method="post"&gt;
+    """;
+    // JDB Form (user, password driver, url)
+    if(withJDBCForm){
+      // Get the data
+      def user = request.user;
+      if (user==null)
+        user = "xwiki";
+      def password = request.password;
+      if (password==null)
+        password = "xwiki";
+      def url = request.url;
+      if (url==null)
+        url = "jdbc:mysql://localhost/xwiki?useServerPrepStmts=false&amp;useUnicode=true&amp;characterEncoding=UTF-8";
+      def driver = request.driver;
+      if (driver==null)
+        driver = "com.mysql.jdbc.Driver";
+        
+      // Escape datas
+      def surl = escapeTool.xml(url);
+      def suser = escapeTool.xml(user);
+      def spassword = escapeTool.xml(password);
+      def sdriver = escapeTool.xml(driver);      
+    
+      // Print form
+      toReturn += """
+        &lt;dl&gt;
+          &lt;dt&gt;
+            &lt;label for="user"&gt;User:&lt;/label&gt;
+          &lt;/dt&gt;
+          &lt;dd&gt;
+            &lt;input type="text" name="user" id="user" value="${suser}" size="80" /&gt;
+          &lt;/dd&gt;    
+        &lt;/dl&gt;
+        &lt;dl&gt;
+          &lt;dt&gt;
+            &lt;label for="password"&gt;Password:&lt;/label&gt;
+          &lt;/dt&gt;
+          &lt;dd&gt;
+            &lt;input type="text" name="password" id="password" value="${spassword}" size="80" /&gt;
+          &lt;/dd&gt;    
+        &lt;/dl&gt;
+        &lt;dl&gt;
+          &lt;dt&gt;
+            &lt;label for="url"&gt;URL:&lt;/label&gt;
+          &lt;/dt&gt;
+          &lt;dd&gt;
+            &lt;input type="text" name="url" id="url" value="${surl}" size="80" /&gt;
+          &lt;/dd&gt;    
+        &lt;/dl&gt;
+        &lt;dl&gt;
+          &lt;dt&gt;
+            &lt;label for="Driver"&gt;Driver:&lt;/label&gt;
+          &lt;/dt&gt;
+          &lt;dd&gt;
+            &lt;input type="text" name="driver" id="driver" value="${sdriver}" size="80" /&gt;
+          &lt;/dd&gt;    
+        &lt;/dl&gt;
+      """;
+    }
+    // &lt;texteare&gt;Query&lt;/textarea&gt;
+    if(withQuery){
+      // Get the datas
+      def query = request.query;
+      if (query==null)
+        query = "SHOW TABLES";
+      def squery = escapeTool.xml(query);
+      
+      // Print the form
+      toReturn += """
+        &lt;dl&gt;
+          &lt;dt&gt;
+            &lt;label for="query"&gt;Query:&lt;/label&gt;
+          &lt;/dt&gt;
+          &lt;dd&gt;
+            &lt;textarea name="query" id="query" cols="100" rows="10"/&gt;${squery}&lt;/textarea&gt;
+          &lt;/dd&gt;    
+        &lt;/dl&gt; 
+      """;
+    }
+    
+    // &lt;/form&gt;
+    toReturn += """
+      &lt;p&gt;&lt;span class="buttonwrapper"&gt;&lt;input type="submit" value="Go" class="button"/&gt;&lt;/span&gt;&lt;/p&gt;
+      &lt;/form&gt;
+      {{/html}}
+    """;
+    
+    return toReturn;
+  }
+  
+  /**
+   * Get connection from request
+   */
+  Connection getConnectionFromRequest(request){
+    String userName = request.user;
+    String password = request.password;
+    String url = request.url;
+    if(!request.user)
+      throw new Exception("You must fill the field 'user'");
+    if(!request.url)
+      throw new Exception("You must fill the field 'url'");
+    if(!request.driver)
+      throw new Exception("You must fill the field 'driver'");
+    Class.forName (request.driver).newInstance ();
+    def conn = DriverManager.getConnection (url, userName, password);
+    return conn;
+  }
+  
+  /**
+   * Get XWiki Database System
+   */
+  String getXWikiDatabaseSystem(xwiki, xcontext){
+    def store = xwiki.getXWiki().getHibernateStore();
+    def db = store.getDatabaseProductName(xcontext.getContext());
+    return db.getProductName();
+  }
+  
+  /**
+   * Get XWiki Connection
+   */
+  def getXWikiConnection(xwiki, xcontext){    
+    def store = xwiki.getXWiki().getHibernateStore();
+    store.beginTransaction(xcontext.getContext());
+    def session = store.getSession(xcontext.getContext());
+    return session.connection();    
+  }
+  
+  
+  /**
+   * Get results
+   */
+  String getResults(connection, sql, closeConnectionAtTheEnd){     
+    def toReturn = "";
+    try{
+      def stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+      try {
+        def sqlLower = sql.toLowerCase().trim();
+        if(sqlLower.startsWith("delete") || sqlLower.startsWith("update") || sqlLower.startsWith("insert") || sqlLower.startsWith("drop")){
+          int results = stmt.executeUpdate(sql);
+          return "\n{{success}}$results lines changed{{/success}}\n";
+        }else{
+          def resultset = stmt.executeQuery(sql);
+          def mdata = resultset.getMetaData();
+          def nbcols = mdata.getColumnCount();
+          for (def i=1;i&lt;=nbcols;i++) {
+            toReturn += "|=";
+            toReturn += mdata.getColumnName(i);          
+          }
+          toReturn +=  "\n";
+          while (resultset.next()) {          
+            for (def i=1;i&lt;=nbcols;i++) {
+              def value = resultset.getString(i);
+              if ((value==null)||(value==""))
+                value = " ";
+              toReturn += "|"
+              toReturn += "{{{${value}}}}";
+            }
+            toReturn +=  "\n";
+          }
+        }
+      }
+      catch (Exception e2) {
+        toReturn += "\n{{error}} **Error running sql: {{{${sql}}}}**\n" + e2.getMessage() + "{{/error}}\n";
+      } finally {
+        stmt.close();
+        if(closeConnectionAtTheEnd)   
+          connection.close();
+      }
+    }
+    catch(Exception e){
+      toReturn += "\n{{error}} Error: " + e.getMessage() + "{{/error}}\n";
+    }
+    return toReturn;
+  }  
+  
+  /**
+   * Get Tables
+   */
+  String getTables(connection){    
+    def sql = "SHOW TABLES";
+    def stmt1 = connection.createStatement();
+    def toReturn = "";
+    try {
+      // Get Tables list
+      def rs = stmt1.executeQuery(sql);
+      while(rs.next()){
+        def table = rs.getString(1);        
+        toReturn += "== ${table} ==\n";
+        toReturn += getResults(connection, "DESCRIBE ${table}", false);                       
+      }
+    }
+    catch (Exception e2) {
+      toReturn += "{{error}} **Error running sql: {{{${sql}}}}**\n" + e2.getMessage() + "{{/error}}\n";
+    } finally {
+      stmt1.close();      
+      connection.close();
+    }
+    
+    return toReturn;
+  }
+
+};</content></xwikidoc>

@@ -1,94 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <xwikidoc>
-  <web>Admin</web>
-  <name>CheckIndexes</name>
-  <language/>
-  <defaultLanguage/>
-  <translation>0</translation>
-  <parent>Admin.Tools</parent>
-  <creator>xwiki:XWiki.Admin</creator>
-  <author>xwiki:XWiki.Admin</author>
-  <customClass/>
-  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-  <creationDate>1350546420000</creationDate>
-  <date>1357143512000</date>
-  <contentUpdateDate>1357143512000</contentUpdateDate>
-  <version>1.1</version>
-  <title>XWiki Database Indexes Check</title>
-  <template/>
-  <defaultTemplate/>
-  <validationScript/>
-  <comment/>
-  <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/1.0</syntaxId>
-  <hidden>false</hidden>
-  <content>&lt;%
-def context2 = context.getContext();
-def store = xwiki.getXWiki().getStore().getStore();
-def wikilist =  xwiki.isVirtual() ? xwiki.getXWiki().getVirtualWikisDatabaseNames(xcontext.context) : [ "xwiki" ];
-def indexes = xwiki.getDocument("Admin.CheckIndexesSQL").getContent().split("\n")
+<web>Admin</web>
+<name>CheckIndexes</name>
+<language></language>
+<defaultLanguage></defaultLanguage>
+<translation>0</translation>
+<parent>Admin.WebHome</parent>
+<creator>xwiki:XWiki.Admin</creator>
+<author>xwiki:XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+<creationDate>1375188481000</creationDate>
+<date>1375188481000</date>
+<contentUpdateDate>1375188481000</contentUpdateDate>
+<version>1.1</version>
+<title>XWiki Database Indexes Check</title>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.1</syntaxId>
+<hidden>false</hidden>
+<content>{{velocity}}
 
-if (!wikilist.contains("xwiki"))
- wikilist.add(0, "xwiki")
-def creationNeeded = false;
-for(wiki in wikilist) {
- creationNeededForThisWiki = false;
-try {
-  store.beginTransaction(context2);
-  def session = store.getSession(context2);
-  def connection = session.connection();
-  def stmt = connection.createStatement();
-  stmt.execute("show indexes from ${wiki}.xwikiattrecyclebin where column_name='xda_deleter'");
-  def rset = stmt.getResultSet();
-  def result = null;
-  try {
-    rset.first();
-    result = rset.getObject(1);
-  } catch (Exception e2) {}
-  if (result!=null &amp;&amp; result.equals("xwikiattrecyclebin")) {
-   println "* Indexes created for wiki ${wiki}" 
-  } else {
-   println "* &lt;font color='red'&gt;Indexes not created for wiki ${wiki}&lt;/font&gt;"
-   creationNeeded = true;
-   creationNeededForThisWiki = true;
-  }
-  stmt.close();
-} catch (Exception e) {
-   println "* &lt;font color='red'&gt;Failed to check indexes for wiki ${wiki}&lt;/font&gt;: " + e.getMessage()
-} finally { 
-  store.endTransaction(context2, false);
-}
- if (creationNeededForThisWiki &amp;&amp; request.confirm=="1") {
-  try {
-    println "* Indexes will be created for wiki ${wiki}"
-    store.beginTransaction(context2);
-    def session = store.getSession(context2);
-    def connection = session.connection();
-    connection.setCatalog(wiki.toString());
-    for (sql in indexes) {
-     println "* Running sql: ${sql}";
-    def stmt = connection.createStatement();
-    try {
-       stmt.execute(sql.replaceAll(";", ""));
-       stmt.close();
-    } catch (Exception e2) {
-       println "* Error running sql: ${sql} " + e2.getMessage();
-    } finally {
-      stmt.close();
-    }
-   }
-  } catch (Exception e) {
-    println "* &lt;font color='red'&gt;Error creating indexes for wiki ${wiki}: &lt;/font&gt;" + e.getMessage();
-  } finally { 
-    store.endTransaction(context2, false);
-  }
- }
+#set($indexesDocument = "Admin.CheckIndexesSQL")
 
-}
+{{info}}This script reads from the page $indexesDocument and only reports not found indexes.{{/info}}
 
-if (creationNeeded &amp;&amp; request.confirm!="1") {
-  println "[Confirm creation of indexes&gt;$doc.fullName?confirm=1]"
-}
-%&gt;</content>
-</xwikidoc>
+#if($hasProgramming)
+  #set($sqlTools = $xwiki.parseGroovyFromPage('Admin.SQLToolsGroovy'))
+  #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
+  Your database is: **$system**
+  #if($system == "HSQL Database Engine")
+    {{warning}}$system is not supported for this action{{/warning}}
+  #end
+
+ #if($services.wikimanager)
+    #set($dbs = $services.wikimanager.getAllWikis())
+ #else
+    #set($dbs = ["$xcontext.getDatabase()"])
+ #end
+
+ #set($indexes = $xwiki.getDocument($indexesDocument).getContent())
+
+ #foreach($wiki in $dbs)
+== Working on wiki $wiki ==
+  #foreach($line in $indexes.split('\n'))
+   #set($arrayline = $line.split(':'))
+   #set($tab=$arrayline[0].trim())
+   #set($key=$arrayline[1].trim().toUpperCase())
+   #set($col=$arrayline[2].trim().toUpperCase())
+   #set($query = "show index from $tab from $wiki where key_name='$key';")
+   #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
+   #set($results = $sqlTools.getResults($connection, $query, true))
+   ## We only list this index if it's there
+   #if(! $results.contains($tab))
+     * Index $key on column $col from table $tab doesn't exist!
+   #end
+  #end
+ #end
+#end
+{{/velocity}}</content></xwikidoc>

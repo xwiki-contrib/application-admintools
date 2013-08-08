@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>Admin</web>
+<name>DB2FS</name>
+<language></language>
+<defaultLanguage></defaultLanguage>
+<translation>0</translation>
+<parent>Admin.WebHome</parent>
+<creator>xwiki:XWiki.Admin</creator>
+<author>xwiki:XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+<creationDate>1358767943000</creationDate>
+<date>1358767949000</date>
+<contentUpdateDate>1358767949000</contentUpdateDate>
+<version>1.1</version>
+<title>DB2FS</title>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.1</syntaxId>
+<hidden>false</hidden>
+<content>{{groovy}}
+import com.xpn.xwiki.doc.XWikiAttachment;
+import com.xpn.xwiki.doc.XWikiDocument;
+import com.xpn.xwiki.doc.DeletedAttachment;
+import org.xwiki.store.legacy.doc.internal.ListAttachmentArchive;
+import com.xpn.xwiki.store.XWikiAttachmentStoreInterface;
+import org.xwiki.store.legacy.store.internal.FilesystemAttachmentStore;
+import com.xpn.xwiki.store.AttachmentVersioningStore;
+import org.xwiki.store.legacy.store.internal.XWikiHibernateTransaction;
+import com.xpn.xwiki.store.AttachmentRecycleBinStore;
+import com.xpn.xwiki.web.Utils;
+import com.xpn.xwiki.XWikiContext;
+import com.xpn.xwiki.XWiki;
+import com.xpn.xwiki.XWikiException;
+import org.xwiki.store.filesystem.internal.FilesystemStoreTools;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.ObjectNotFoundException;
+
+private void printIntro(final XWiki wiki)
+{
+    println("= Filesystem attachment storage porting script =");
+
+    println("== Step 1: Switch to Filesystem attachments. ==");
+
+    boolean ret = isFilesystemStore(wiki.getAttachmentStore()) \
+        &amp;&amp; isFilesystemStore(wiki.getAttachmentVersioningStore()) \
+        &amp;&amp; isFilesystemStore(wiki.getAttachmentRecycleBinStore());
+
+    println(getStoreLine(isFilesystemStore(wiki.getAttachmentStore()),
+                         wiki.getAttachmentStore()));
+    println(getStoreLine(isFilesystemStore(wiki.getAttachmentVersioningStore()),
+                         wiki.getAttachmentVersioningStore()));
+    println(getStoreLine(isFilesystemStore(wiki.getAttachmentRecycleBinStore()),
+                         wiki.getAttachmentRecycleBinStore()));
+
+    if (!ret) {
+        println("Please edit your xwiki.cfg file by modifying "
+            + "the attachment store lines to read as follows:");
+        println("xwiki.store.attachment.hint = file");
+        println("xwiki.store.attachment.versioning.hint = file");
+        println("xwiki.store.attachment.recyclebin.hint = file");
+        println("Also make sure they are not commented out.");
+    }
+
+    println("== Step 2: Add this directory to your backup routine. ==");
+    println("This is your storage directory, "
+        + "when filesystem attachments are enabled you have to back this up "
+        + "as part of your data backup routine.\n");
+    println(Utils.getComponent(FilesystemStoreTools.class).storageDir.getAbsolutePath());
+
+    println("== Step 3: Copy attachments from database to filesystem. ==");
+    println("Now you are ready to copy the data over from your database to the filesystem. "
+        + "It is prudent to leave the attachments in the database since this is still experimental "
+        + "and in most situations the attachment data is not bothersome just sitting in the "
+        + "database. As such, this script contains no facility to delete entries from the database.");
+    println("If anything goes wrong in this function, it will fail with an error message, "
+        + "you should get the stack trace (probably in the log file) and keep it to "
+        + "confuse and humiliate the developers with. No harm should be done since this only loads "
+        + "from the database and only saves to the filesystem.");
+}
+
+main();
+private void main()
+{
+    final XWikiContext xc = xcontext.getContext();
+    final XWiki wiki = xc.getWiki();
+
+    int startAt = 0;
+    int seconds = 20;
+    boolean dryRun = true;
+    boolean verbose = false;
+    boolean go = request.getMethod().equals("POST") &amp;&amp; request.getParameter("doIt") != null;
+    boolean ajax = "plain".equals(request.getParameter("xpage"));
+    int endedAt = 0;
+
+    if (!ajax) {
+        this.printIntro(wiki);
+    }
+
+    if (go) {
+        startAt = Integer.parseInt(request.getParameter("startAt"));
+        seconds = Integer.parseInt(request.getParameter("seconds"));
+        dryRun = "on".equals(request.getParameter("dryRun"));
+        verbose = "on".equals(request.getParameter("verbose"));
+        endedAt = this.doIt(startAt, seconds, dryRun, verbose, ajax);
+        if (ajax) {
+            if (endedAt == -1) {
+                this.printFooter();
+            } else {
+                println("\n{{html clean=false}}&lt;meta name='endedAt' content='"
+                        + endedAt + "' /&gt;{{/html}}");
+            }
+            return;
+        }
+    }
+
+    this.printJs();
+
+    if (!go || endedAt &gt; startAt) {
+        println("\n{{html clean=false}}");
+        println("&lt;div id='javascriptSpace'&gt;&lt;/div&gt;");
+        println("&lt;form action='?time=" + System.nanoTime()
+                + "#doItForm' id='doItForm' method='POST'&gt;");
+        println("&lt;input type='hidden' name='seconds' value='" + seconds + "' /&gt;");
+        println("&lt;input type='hidden' id='startAt' name='startAt' value='" + endedAt + "' /&gt;");
+        println("&lt;dl&gt;");
+        println("&lt;dt&gt;&lt;label for='dryRun'&gt;Dry Run, don't save any files.&lt;/label&gt;&lt;/dt&gt;");
+        println("&lt;dd&gt;&lt;input type='checkbox' name='dryRun' checked='"
+            + ((dryRun) ? "checked" : "") + "' /&gt;&lt;/dd&gt;");
+
+        println("&lt;dt&gt;&lt;label for='verbose'&gt;Verbose, show every attachment.&lt;/label&gt;&lt;/dt&gt;");
+        println("&lt;dd&gt;&lt;input type='checkbox' name='verbose' checked='"
+            + ((verbose) ? "checked" : "") + "' /&gt;&lt;/dd&gt;");
+        println("&lt;/dl&gt;");
+        println("&lt;input type='hidden' name='doIt' value='yes' /&gt;")
+        println("&lt;input type='submit' name='start' value='"
+            + ((endedAt &gt; startAt) ? "Continue" : "Start") + "' /&gt;");
+        println("&lt;/form&gt;");
+        println("&lt;style&gt;#xwikidata { display:none }&lt;/style&gt;")
+        println("{{/html}}\n");
+        return;
+    }
+
+    this.printFooter();
+}
+
+private void printFooter()
+{
+    println("== Step 4: make sure everything is working. ==");
+    println("Check to make sure your attachments are still there, if an attachment is broken, "
+        + "it will appear to be there but on opening it will tell you the attachment does not exist. "
+        + "If something goes terribly wrong with filesystem attachments, you may have your old "
+        + "attachment system back simply by changing the lines in the xwiki.cfg file and restarting "
+        + "the container. HOWEVER: This will not preserve attachments which were uploaded **after** "
+        + "switching to filesystem attachments so as users edit the system you will become "
+        + "locked in to filesystem attachments unless a script is written to do the "
+        + "inverse of this one.");
+    println("Despite being experimental, the filesystem attachment storage is quite stable and the "
+        + "risk of actually losing something so that it is unrecoverable is very remote.");
+    println("NOTE: This must be run seperately in each subwiki.");
+    println("\n\nEnjoy and give feedback.");
+
+}
+
+private static boolean isFilesystemStore(final Object store)
+{
+    return store.getClass().getName().contains("Filesystem");
+}
+
+private static String getStoreLine(final boolean isFilesystem, final Object store)
+{
+    return "(%style='color:" + (isFilesystem ? "#080" : "#d00") + "'%)(((* " + store + ")))";
+}
+
+private void printJs()
+{
+println("""\n{{html}}&lt;script&gt;
+        var isAtBottom = function() {
+            var vp = document.viewport;
+            return vp.getScrollOffsets().top + vp.getHeight() + 30 &gt; window.body.getHeight();
+        };
+
+        Event.observe(document, "dom:loaded", function() {
+            var doItForm = document.getElementById("doItForm");
+            var workspace = document.getElementById("javascriptSpace");
+            var params = {
+                xpage: "plain",
+                seconds: doItForm.seconds.value,
+                startAt: doItForm.startAt.value,
+                doIt: "yes"
+            };
+            var shouldContinue;
+
+            var doBlock = function(startAt) {
+                params.startAt = startAt;
+                new Ajax.Request(window.location.href, {
+                    method: "POST",
+                    parameters: params,
+                    onSuccess: function(transport) {
+                        var div = document.createElement("div");
+                        div.innerHTML = transport.responseText;
+
+                        var wasAtBottom = isAtBottom();
+                        workspace.innerHTML += transport.responseText;
+                        if (wasAtBottom || startAt == 0) {
+                            doItForm.scrollTo();
+                        }
+
+                        var metas = div.getElementsByTagName("meta");
+                        if (metas.length &gt; 0 &amp;&amp; shouldContinue) {
+                            doBlock(metas[0].content);
+                            return;
+                        } else if (metas.length &gt; 0) {
+                            doItForm.startAt.value = metas[0].content;
+                            doItForm.start.value = "Continue";
+                        } else {
+                            doItForm.parentNode.removeChild(doItForm);
+                        }
+                        reachedEnd();
+                    }
+                });
+            };
+
+            var reachedEnd = function() {
+                Event.observe(doItForm, "submit", start);
+                Event.stopObserving(doItForm, "submit", stop);
+            };
+
+            var stop = function(ev) {
+                event.stop();
+                shouldContinue = false;
+                reachedEnd();
+            };
+
+            var start = function(ev) {
+                event.stop();
+                params.dryRun = (doItForm.dryRun.checked) ? "on" : undefined;
+                params.verbose = (doItForm.verbose.checked) ? "on" : undefined;
+                workspace.innerHTML = "";
+                shouldContinue = true;
+                doBlock(doItForm.startAt.value);
+                doItForm.start.value = "Abort";
+                Event.stopObserving(doItForm, "submit", start);
+                Event.observe(doItForm, "submit", stop);
+            };
+
+            Event.observe(doItForm, "submit", start);
+        });
+        &lt;/script&gt;{{/html}}""");
+}
+
+/**
+ * Port all attachments from the original form to filesystem attachment store.
+ * Do one batch at a time so the user can see the progress and it won't time out.
+ *
+ * @param startAt the index of the first job to do, 0 to start at the beginning.
+ * @param seconds the number of seconds to run for before returning.
+ * @param dryRun don't save any files if this is true.
+ * @return the number of the first job which was not done. This can be startAt in the next call.
+ *         -1 if the operation is complete.
+ */
+private int doIt(int startAt, int seconds, boolean dryRun, boolean verbose, boolean ajax)
+{
+    final XWikiContext xc = this.xcontext.getContext();
+    final XWiki wiki = xc.getWiki();
+    final FilesystemAttachmentStore fileAttachStore =
+        Utils.getComponent(XWikiAttachmentStoreInterface.class, "file");
+    final XWikiAttachmentStoreInterface defAttachStore =
+        Utils.getComponent(XWikiAttachmentStoreInterface.class, "hibernate");
+    final AttachmentVersioningStore defAttachmentVersioningStore =
+        Utils.getComponent(AttachmentVersioningStore.class, "hibernate");
+
+    int count = 0;
+    long stopTime = System.currentTimeMillis() + (1000 * seconds);
+
+    println("(%style='color:#00d'%)(((");
+    if (verbose &amp;&amp; startAt == 0) {
+        println("\n== Attachments ==\n");
+    }
+    for (String docName : xwiki.searchDocuments("where 1=1")) {
+        if (count &lt; startAt) {
+            count++;
+            continue;
+        } else if (stopTime &lt; System.currentTimeMillis()) {
+            println(")))");
+            return count;
+        } else {
+            count++;
+        }
+        final XWikiDocument doc = xwiki.getDocument(docName).getDocument();
+        try {
+            final XWikiHibernateTransaction transaction = new XWikiHibernateTransaction(xc);
+
+            if (verbose) {
+                println("* [[" + doc.getFullName() + "]]");
+            }
+            // This is the equivilant of doc.getAttachmentList() but there is an issue which
+            // causes some attachments to be lost.
+            // http://jira.xwiki.org/browse/XWIKI-7936
+            def hql = "select att from XWikiAttachment att WHERE att.docId=?";
+            for (XWikiAttachment attach : xwiki.search(hql, [doc.getId()])) {
+                attach.setDoc(doc);
+                if (verbose) {
+                    println("** [[attach:" + doc.getFullName() + "@" + attach.getFilename() + "]]");
+                }
+                try {
+                    fileAttachStore.loadAttachmentContent(attach, xc, false);
+                    continue;
+                } catch (XWikiException noAttachmentInFilesystem) {
+                    // no such attachment, let's save it.
+                }
+                try {
+                    try {
+                        defAttachStore.loadAttachmentContent(attach, xc, true);
+                    } catch (XWikiException notInHibernate) {
+                         final Throwable wrapped = notInHibernate.getException();
+                         if (wrapped &amp;&amp; wrapped instanceof ObjectNotFoundException) {
+                             println("(%style='color:#c80'%)(((");
+                             println("Unable to find this attachment [[attach:" + attach.getFilename()
+                                     + "@" + doc.getFullName() + "]] in the database, "
+                                     + "it may be the result of database corruption from a failed "
+                                     + "upload prior to the fixing of "
+                                     + "[[http://jira.xwiki.org/browse/XWIKI-5055]]");
+                             println("xwikiattachment_content.XWA_ID = " + attach.getId());
+                             println(")))");
+                         }
+                    }
+                    defAttachmentVersioningStore.loadArchive(attach, xc, true);
+                    try {
+                        // http://jira.xwiki.org/jira/browse/XWIKI-6199
+                        attach.getAttachment_archive().getVersions();
+                    } catch (NullPointerException e) {
+                        attach.setAttachment_archive(new ListAttachmentArchive([attach]));
+                    }
+                    // Setup the runnables to do the save but don't save just yet.
+                    fileAttachStore.getAttachmentContentSaveRunnable(attach, false, xc)
+                        .runIn(transaction);
+                } catch (Exception e) {
+                    println("(%style='color:#d00'%)(((");
+                    println("Error in [" + doc.getFullName() + ":" + attach.getFilename() + "]"
+                            + e.getMessage());
+                    println(ExceptionUtils.getStackTrace(e));
+                    println(")))");
+                }
+            }
+            if (!dryRun) {
+                transaction.start();
+            }
+        } catch (Exception e) {
+            println("(%style='color:#d00'%)(((");
+            println("Failed to port attachments for document [" + doc.getFullName() + "]");
+            println(e.getMessage());
+            println(ExceptionUtils.getStackTrace(e));
+            println(")))");
+        }
+    }
+    println(")))");
+    if (startAt &lt; count) {
+        int attachCount =
+            xwiki.search("select count(at) from XWikiDocument as doc, "
+                         + "XWikiAttachment as at where at.docId = doc.id").get(0).intValue();
+        println("**[" + attachCount + "] attachments.**");
+    }
+
+
+    // And now for the deleted attachments.
+    final AttachmentRecycleBinStore fileBin =
+        Utils.getComponent(AttachmentRecycleBinStore.class, "file");
+    final AttachmentRecycleBinStore defaultBin =
+        Utils.getComponent(AttachmentRecycleBinStore.class, "hibernate");
+
+    if (verbose &amp;&amp; startAt &lt; count) {
+        println("\n== Deleted Attachments ==\n");
+    }
+    List&lt;Object[]&gt; entries =
+        xwiki.search("select da.id, da.docName, da.filename, da.date from DeletedAttachment as da");
+    if (verbose &amp;&amp; entries.size() == 0) {
+        println("\nnone.");
+    }
+    int delAttachCount = 0;
+    for (Object[] o : entries) {
+        long delAttachId = o[0];
+        final String docName = o[1];
+        final String fileName = o[2];
+        final Date deleteDate = o[3];
+        delAttachCount++;
+        if (count &lt; startAt) {
+            if (verbose &amp;&amp; !ajax) {
+                println("* [[" + docName + "]] - " + fileName);
+            }
+            count++;
+            continue;
+        } else if (stopTime &lt; System.currentTimeMillis()) {
+            return count;
+        }
+        count++;
+
+        try {
+            final DeletedAttachment delAttach = 
+                defaultBin.getDeletedAttachment(delAttachId, xc, true);
+            // Can't use the transaction runnable here because (non-filesystem)
+            // deleted attachments hold all content in memory so they have to be
+            // handled one at a time.
+            final XWikiAttachment attach = delAttach.restoreAttachment(null, xc);
+            try {
+                // http://jira.xwiki.org/jira/browse/XWIKI-6199
+                attach.getAttachment_archive().getVersions();
+            } catch (NullPointerException e) {
+                attach.setAttachment_archive(new ListAttachmentArchive([attach]));
+            }
+            if (!dryRun) {
+                fileBin.saveToRecycleBin(attach,
+                                         delAttach.getDeleter(),
+                                         delAttach.getDate(),
+                                         xc,
+                                         false);
+            }
+
+            if (verbose) {
+                println("* [[" + docName + "]]");
+                println("** " + fileName + " - Deleted: " + deleteDate);
+            }
+        } catch (Exception e) {
+            println("(%style='color:#d00'%)(((");
+            println("* [[" + docName + "]] - " + fileName + " - Deleted: " + deleteDate);
+            println(e.getMessage());
+            println(")))");
+            println(ExceptionUtils.getStackTrace(e));
+        }
+    }
+    println("\n**[" + delAttachCount + "] deleted attachments.**");
+    return -1;
+}
+{{/groovy}}</content></xwikidoc>
