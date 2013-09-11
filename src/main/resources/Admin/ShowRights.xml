@@ -62,7 +62,7 @@ $xcontext.unsetLinksAction()
       #if($obj.allow=="Allow")
         #set($auth="{{success}}Allowed{{/success}}")
       #else
-        #set($auth="{{error}}Denied{{/error}}")
+        #set($auth="{{error}}Denied{{/error}}")
       #end
       |[[$obj.name||queryString="editor=spaceadmin&amp;section=Rights&amp;space=$currentSpace"]]|$obj.levels|$obj.groups|$obj.users|$auth
     #end
@@ -89,7 +89,7 @@ $xcontext.unsetLinksAction()
         #else
           #set($auth="{{error}}Denied{{/error}}")
         #end
-        |[[$obj.name&gt;&gt;$obj.name]]|$obj.levels|$obj.groups|$obj.users|$auth       
+        |[[$obj.name&gt;&gt;$xwiki.getDocument($obj.name).getExternalURL('edit','editor=rights')]]|$obj.levels|$obj.groups|$obj.users|$auth       
       #end
     #end
 #end</content></xwikidoc>

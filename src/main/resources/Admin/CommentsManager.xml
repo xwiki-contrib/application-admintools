@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>Admin</web>
+<name>CommentsManager</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent>Admin.Tools</parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.GuillaumeFenollar</contentAuthor>
+<creationDate>1378887785000</creationDate>
+<date>1378888133000</date>
+<contentUpdateDate>1378888133000</contentUpdateDate>
+<version>1.1</version>
+<title>CommentsManager</title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.1</syntaxId>
+<hidden>false</hidden>
+<content>{{velocity}}
+
+#if(! $request.delete)
+{{info}}This app intends to show every comment and delete them if needed.
+Click on a grey line to show the related comment.{{/info}}
+
+#set($xwql = "select obj.author,obj.date,obj.comment,doc.space,obj.id,doc.name from Document doc, doc.object(XWiki.XWikiComments) as obj order by obj.date DESC")
+#set($results = $services.query.xwql($xwql).execute() )
+$results.size() comments in this wiki, most recent first :
+
+{{html wiki=true}}
+&lt;form action="" method="get"&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;input type="submit" value="Delete selected comments"&gt;
+&lt;/td&gt;&lt;/tr&gt;
+#foreach($row in $results)
+  #foreach($col in $row)
+    #if ($velocityCount == 1)
+      #set($author = $col)
+    #elseif ($velocityCount == 2)
+      #set($date = $col)
+    #elseif ($velocityCount == 3)
+      #set($comment = $col)
+    #elseif ($velocityCount == 4)
+      #set($space = $col)
+    #elseif ($velocityCount == 5)
+      #set($id = $col)
+    #elseif ($velocityCount == 6)
+      #set($page = $col)
+    #end
+  #end
+&lt;tr&gt;&lt;td&gt;
+{{spoiler title="[[$space.$page]] by $author the $date"}}
+$comment
+{{/spoiler}}
+#set($path = "$space;$page;$author")
+&lt;input type="checkbox" name='delete' value="$path"&gt; Delete this comment
+
+&lt;br /&gt;
+&lt;/td&gt;&lt;/tr&gt;
+#end
+&lt;tr&gt;&lt;td&gt;
+&lt;input type="submit" value="Delete selected comments"&gt;
+&lt;/td&gt;&lt;/tr&gt;
+
+&lt;/table&gt;
+&lt;/form&gt;
+{{/html}}
+
+#else
+
+ #set($comsToDelete = $request.getParameterValues("delete"))
+ Deleting $comsToDelete.size() comments ...
+
+ #foreach($compath in $comsToDelete)
+  #set($space = $compath.split(';')[0])
+  #set($page = $compath.split(';')[1])
+  #set($author = $compath.split(';')[2])
+  #set($docRef = $services.model.createDocumentReference('',$space,$page))
+  #set($doc = $xwiki.getDocument($docRef))
+  #set($obj = $doc.getObject('XWiki.XWikiComments','author',"$author"))
+  #if($obj)
+    #set($bool = $doc.removeObject($obj))
+    #if($bool == "true")
+       * {{success}}Comment on page $page from author $author has been deleted successfully.{{/success}}
+       $doc.save()
+    #else
+       * {{error}}Comment on page $page hasn't been deleted properly...{{/error}}
+    #end
+  #else
+    * {{error}}Comment on page $page not found :({{/error}}
+  #end
+ #end
+#end
+
+{{/velocity}}</content></xwikidoc>

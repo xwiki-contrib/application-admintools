@@ -39,6 +39,7 @@ The following pages allow advanced administration of an XWiki or XWiki farm:
 
 * [[Show Logs&gt;&gt;ShowLogs]] : Show n number of log lines
 * [[Show Rights&gt;&gt;ShowRights]]: Tool to give an overview of wiki, spaces and pages rights.
+* [[Manage Comments&gt;&gt;CommentsManager]]: Tool to list, select and delete comments of the whole wiki.
 * [[Flush XWiki Cache&gt;&gt;FlushCache]]: Tool to flush the cache
 
 == Storage Management Tools ==
