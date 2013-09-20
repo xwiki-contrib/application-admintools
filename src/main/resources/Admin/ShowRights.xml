@@ -34,7 +34,7 @@ $xcontext.unsetLinksAction()
 (% style="width:99%" %)
 |=Page Name|=(% style="width:25%" %)Levels|=(% style="width:15%" %)Groups|=(% style="width:15%" %)Users|=(% style="width:10%" %)Policy
 #foreach($obj in $currentDoc.getObjects('XWiki.XWikiGlobalRights'))
-  #if($obj.allow=="Allow")
+  #if($obj.getProperty('allow').getValue() == 1)
     #set($auth="{{success}}Allowed{{/success}}")
   #else
     #set($auth="{{error}}Denied{{/error}}")
@@ -59,7 +59,7 @@ $xcontext.unsetLinksAction()
     (% style="width:99%" %)
     |=Page Name|=(% style="width:25%" %)Levels|=(% style="width:15%" %)Groups|=(% style="width:15%" %)Users|=(% style="width:10%" %)Policy
     #foreach($obj in $currentDoc.getObjects('XWiki.XWikiGlobalRights'))
-      #if($obj.allow=="Allow")
+      #if($obj.getProperty('allow').value == 1)
         #set($auth="{{success}}Allowed{{/success}}")
       #else
         #set($auth="{{error}}Denied{{/error}}")
@@ -84,7 +84,7 @@ $xcontext.unsetLinksAction()
     #set($currentDoc=$xwiki.getDocument($docobj))
     #if($request.showhidden == '1'||!$currentDoc.isHidden())
       #foreach($obj in $currentDoc.getObjects('XWiki.XWikiRights'))
-        #if($obj.allow=="Allow")
+        #if($obj.getProperty('allow').value == 1)
           #set($auth="{{success}}Allowed{{/success}}")
         #else
           #set($auth="{{error}}Denied{{/error}}")
