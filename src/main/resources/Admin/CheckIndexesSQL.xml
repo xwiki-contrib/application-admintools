@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>Admin</web>
-<name>CheckIndexesSQL</name>
-<language></language>
-<defaultLanguage></defaultLanguage>
-<translation>0</translation>
-<parent>Admin.WebHome</parent>
-<creator>xwiki:XWiki.Admin</creator>
-<author>xwiki:XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1375188481000</creationDate>
-<date>1375188481000</date>
-<contentUpdateDate>1375188481000</contentUpdateDate>
-<version>1.1</version>
-<title></title>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/2.0</syntaxId>
-<hidden>false</hidden>
-<content>xwikidoc:DOC_NAME:(XWD_NAME)
+  <web>Admin</web>
+  <name>CheckIndexesSQL</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>Admin.WebHome</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1375188481000</creationDate>
+  <date>1375188481000</date>
+  <contentUpdateDate>1375188481000</contentUpdateDate>
+  <version>1.1</version>
+  <title/>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.0</syntaxId>
+  <hidden>false</hidden>
+  <content>xwikidoc:DOC_NAME:(XWD_NAME)
 xwikidoc:DOC_FULLNAME:(XWD_FULLNAME)
 xwikidoc:DOC_SPACE:(XWD_WEB)
-</content></xwikidoc>
+</content>
+</xwikidoc>

@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>Admin</web>
-<name>Export</name>
-<language></language>
-<defaultLanguage></defaultLanguage>
-<translation>0</translation>
-<parent>Admin.WebHome</parent>
-<creator>XWiki.Admin</creator>
-<author>XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>XWiki.Admin</contentAuthor>
-<creationDate>1384949611000</creationDate>
-<date>1384949708000</date>
-<contentUpdateDate>1384949708000</contentUpdateDate>
-<version>2.1</version>
-<title>Export</title>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/1.0</syntaxId>
-<hidden>false</hidden>
-<content>#set($action = $request.action)
+  <web>Admin</web>
+  <name>Export</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>Admin.WebHome</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1384949611000</creationDate>
+  <date>1384949708000</date>
+  <contentUpdateDate>1384949708000</contentUpdateDate>
+  <version>1.1</version>
+  <title>Export</title>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/1.0</syntaxId>
+  <hidden>false</hidden>
+  <content>#set($action = $request.action)
 #if ($action == "getdocs")
 $response.setContentType("text/xml")
 #set($space = $request.spacename)
@@ -350,4 +351,5 @@ Ajax.XWikiRequest = Class.create(Ajax.Request, {
 
 &lt;/script&gt;
 {/pre}
-#end</content></xwikidoc>
+#end</content>
+</xwikidoc>

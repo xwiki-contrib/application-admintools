@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>Admin</web>
-<name>ToolsInstall</name>
-<language></language>
-<defaultLanguage></defaultLanguage>
-<translation>0</translation>
-<parent>Admin.WebHome</parent>
-<creator>xwiki:XWiki.Admin</creator>
-<author>xwiki:XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1375188479000</creationDate>
-<date>1375188479000</date>
-<contentUpdateDate>1375188479000</contentUpdateDate>
-<version>1.1</version>
-<title>XWiki Advanced Administration Install</title>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/1.0</syntaxId>
-<hidden>false</hidden>
-<content>#if(!$xwiki.hasAdminRights())
+  <web>Admin</web>
+  <name>ToolsInstall</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>Admin.WebHome</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1375188479000</creationDate>
+  <date>1375188479000</date>
+  <contentUpdateDate>1375188479000</contentUpdateDate>
+  <version>1.1</version>
+  <title>XWiki Advanced Administration Install</title>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/1.0</syntaxId>
+  <hidden>false</hidden>
+  <content>#if(!$xwiki.hasAdminRights())
 You are running this script as a non admin. It will have no effect. Login as admin.
 #else
 This script automatically set the owner of the pages of the check Configuration Tool. This will allow the priviledged scripts included in them to work.
@@ -45,4 +46,5 @@ $itemdoc.save("save for programming rights") done #end
 [Access the configuration check pages&gt;Admin.Tools].
 #else
 [Return to the configuration check pages&gt;Admin.Tools].
-#end</content></xwikidoc>
+#end</content>
+</xwikidoc>

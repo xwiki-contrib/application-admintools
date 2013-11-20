@@ -1,111 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>Main</web>
-<name>AdminUIExtension</name>
-<language></language>
-<defaultLanguage>en</defaultLanguage>
-<translation>0</translation>
-<parent>Main.WebHome</parent>
-<creator>XWiki.Admin</creator>
-<author>XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>XWiki.Admin</contentAuthor>
-<creationDate>1384934491000</creationDate>
-<date>1384934754000</date>
-<contentUpdateDate>1384934510000</contentUpdateDate>
-<version>3.1</version>
-<title>AdminUIExtension</title>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/2.1</syntaxId>
-<hidden>false</hidden>
-<object>
-<class>
-<name>XWiki.UIExtensionClass</name>
-<customClass></customClass>
-<customMapping></customMapping>
-<defaultViewSheet></defaultViewSheet>
-<defaultEditSheet></defaultEditSheet>
-<defaultWeb></defaultWeb>
-<nameField></nameField>
-<validationScript></validationScript>
-<content>
-<disabled>0</disabled>
-<name>content</name>
-<number>3</number>
-<prettyName>Extension Content</prettyName>
-<rows>10</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</content>
-<extensionPointId>
-<disabled>0</disabled>
-<name>extensionPointId</name>
-<number>1</number>
-<prettyName>Extension Point ID</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</extensionPointId>
-<name>
-<disabled>0</disabled>
-<name>name</name>
-<number>2</number>
-<prettyName>Extension ID</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</name>
-<parameters>
-<disabled>0</disabled>
-<name>parameters</name>
-<number>4</number>
-<prettyName>Extension Parameters</prettyName>
-<rows>10</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</parameters>
-<scope>
-<cache>0</cache>
-<disabled>0</disabled>
-<displayType>select</displayType>
-<multiSelect>0</multiSelect>
-<name>scope</name>
-<number>5</number>
-<prettyName>Extension Scope</prettyName>
-<relationalStorage>0</relationalStorage>
-<separator> </separator>
-<separators> ,|</separators>
-<size>1</size>
-<unmodifiable>0</unmodifiable>
-<values>wiki=Current Wiki|user=Current User|global=Global</values>
-<classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
-</scope>
-</class>
-<name>Main.AdminUIExtension</name>
-<number>0</number>
-<className>XWiki.UIExtensionClass</className>
-<guid>92f1d6d6-3f92-4f01-9468-cb9d3b1424f8</guid>
-<property>
-<content></content>
-</property>
-<property>
-<extensionPointId>org.xwiki.platform.panels.Applications</extensionPointId>
-</property>
-<property>
-<name>platform.panels.AdminApplication</name>
-</property>
-<property>
-<parameters>label=Admin Tools
+  <web>Main</web>
+  <name>AdminUIExtension</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>Main.WebHome</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1384934491000</creationDate>
+  <date>1384934754000</date>
+  <contentUpdateDate>1384934510000</contentUpdateDate>
+  <version>1.1</version>
+  <title>AdminUIExtension</title>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>false</hidden>
+  <object>
+    <class>
+      <name>XWiki.UIExtensionClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <content>
+        <disabled>0</disabled>
+        <name>content</name>
+        <number>3</number>
+        <prettyName>Extension Content</prettyName>
+        <rows>10</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </content>
+      <extensionPointId>
+        <disabled>0</disabled>
+        <name>extensionPointId</name>
+        <number>1</number>
+        <prettyName>Extension Point ID</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </extensionPointId>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>2</number>
+        <prettyName>Extension ID</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parameters>
+        <disabled>0</disabled>
+        <name>parameters</name>
+        <number>4</number>
+        <prettyName>Extension Parameters</prettyName>
+        <rows>10</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </parameters>
+      <scope>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>scope</name>
+        <number>5</number>
+        <prettyName>Extension Scope</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators> ,|</separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>wiki=Current Wiki|user=Current User|global=Global</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </scope>
+    </class>
+    <name>Main.AdminUIExtension</name>
+    <number>0</number>
+    <className>XWiki.UIExtensionClass</className>
+    <guid>92f1d6d6-3f92-4f01-9468-cb9d3b1424f8</guid>
+    <property>
+      <content/>
+    </property>
+    <property>
+      <extensionPointId>org.xwiki.platform.panels.Applications</extensionPointId>
+    </property>
+    <property>
+      <name>platform.panels.AdminApplication</name>
+    </property>
+    <property>
+      <parameters>label=Admin Tools
 target=Admin.WebHome
 icon=icon:world</parameters>
-</property>
-<property>
-<scope>wiki</scope>
-</property>
-</object>
-<content></content></xwikidoc>
+    </property>
+    <property>
+      <scope>wiki</scope>
+    </property>
+  </object>
+  <content/>
+</xwikidoc>

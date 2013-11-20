@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>Admin</web>
-<name>Tools</name>
-<language></language>
-<defaultLanguage></defaultLanguage>
-<translation>0</translation>
-<parent>Admin.WebHome</parent>
-<creator>xwiki:XWiki.Admin</creator>
-<author>xwiki:XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1375903650000</creationDate>
-<date>1375907466000</date>
-<contentUpdateDate>1375907466000</contentUpdateDate>
-<version>1.1</version>
-<title>XWiki Advanced Administration Tools</title>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/2.0</syntaxId>
-<hidden>false</hidden>
-<content>
+  <web>Admin</web>
+  <name>Tools</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>Admin.WebHome</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1375903650000</creationDate>
+  <date>1375907466000</date>
+  <contentUpdateDate>1375907466000</contentUpdateDate>
+  <version>1.1</version>
+  <title>XWiki Advanced Administration Tools</title>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.0</syntaxId>
+  <hidden>false</hidden>
+  <content>
 The following pages allow advanced administration of an XWiki or XWiki farm:
 
 {{velocity}}
@@ -76,4 +77,5 @@ The following pages allow advanced administration of an XWiki or XWiki farm:
 {{info}}It seems you're not using a MySQL Database. According tools won't be listed.{{/info}}
   #end
 #end
-{{/velocity}}</content></xwikidoc>
+{{/velocity}}</content>
+</xwikidoc>
