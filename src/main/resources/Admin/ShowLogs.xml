@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>Admin</web>
-<name>ShowLogs</name>
-<language></language>
-<defaultLanguage></defaultLanguage>
-<translation>0</translation>
-<parent>Admin.WebHome</parent>
-<creator>xwiki:XWiki.Admin</creator>
-<author>xwiki:XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1375188482000</creationDate>
-<date>1375188482000</date>
-<contentUpdateDate>1375188482000</contentUpdateDate>
-<version>1.1</version>
-<title>Show Logs</title>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/2.1</syntaxId>
-<hidden>false</hidden>
-<content>{{groovy}}
+  <web>Admin</web>
+  <name>ShowLogs</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>Admin.WebHome</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1375188482000</creationDate>
+  <date>1375188482000</date>
+  <contentUpdateDate>1375188482000</contentUpdateDate>
+  <version>1.1</version>
+  <title>Show Logs</title>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>false</hidden>
+  <content>{{groovy}}
 if (request.lines) {
   lines = request.lines;
 } else {
@@ -58,4 +59,5 @@ if(request.showlog == "1") {
   print(line.execute().getText()) 
   print("{{/code}}")
 }
-{{/groovy}}</content></xwikidoc>
+{{/groovy}}</content>
+</xwikidoc>

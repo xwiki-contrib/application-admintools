@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>Admin</web>
-<name>WikiDiff</name>
-<language></language>
-<defaultLanguage></defaultLanguage>
-<translation>0</translation>
-<parent>Admin.WebHome</parent>
-<creator>xwiki:XWiki.Admin</creator>
-<author>xwiki:XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1375188483000</creationDate>
-<date>1375894544000</date>
-<contentUpdateDate>1375894544000</contentUpdateDate>
-<version>1.1</version>
-<title>Wiki Diff</title>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/2.0</syntaxId>
-<hidden>false</hidden>
-<content>{{velocity}}
+  <web>Admin</web>
+  <name>WikiDiff</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>Admin.WebHome</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1375188483000</creationDate>
+  <date>1375894544000</date>
+  <contentUpdateDate>1375894544000</contentUpdateDate>
+  <version>1.1</version>
+  <title>Wiki Diff</title>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.0</syntaxId>
+  <hidden>false</hidden>
+  <content>{{velocity}}
 #if($request.source)
 #set ($diffTool = $xwiki.parseGroovyFromPage("Admin.WikiDiffGroovy"))
 #set ($ok = $diffTool.setContext($context, $xwiki))
@@ -83,4 +84,5 @@ leave empty to compare to current wiki&lt;br /&gt;
 &lt;/form&gt;
 {{/html}}
 #end
-{{/velocity}}</content></xwikidoc>
+{{/velocity}}</content>
+</xwikidoc>

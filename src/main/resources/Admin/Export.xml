@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>Admin</web>
-<name>Export</name>
-<language></language>
-<defaultLanguage></defaultLanguage>
-<translation>0</translation>
-<parent>Admin.WebHome</parent>
-<creator>xwiki:XWiki.Admin</creator>
-<author>xwiki:XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1375188480000</creationDate>
-<date>1375188480000</date>
-<contentUpdateDate>1375188480000</contentUpdateDate>
-<version>1.1</version>
-<title>Export</title>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/1.0</syntaxId>
-<hidden>false</hidden>
-<content>#set($action = $request.action)
+  <web>Admin</web>
+  <name>Export</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>Admin.WebHome</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1384949611000</creationDate>
+  <date>1384949708000</date>
+  <contentUpdateDate>1384949708000</contentUpdateDate>
+  <version>1.1</version>
+  <title>Export</title>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/1.0</syntaxId>
+  <hidden>false</hidden>
+  <content>#set($action = $request.action)
 #if ($action == "getdocs")
 $response.setContentType("text/xml")
 #set($space = $request.spacename)
+{pre}
 &lt;response&gt;
   #set($docs = $xwiki.searchDocuments("where doc.web='$request.spacename' order by doc.date desc"))
   #foreach ($docname in $docs)
     &lt;value&gt;$escapetool.xml("${docname}")&lt;/value&gt;
   #end
 &lt;/response&gt;
+{/pre}
 #elseif ($action == "getPackageList")
   $response.setContentType("text/xml")
   #set($alist = $doc.getAttachmentList())
@@ -263,7 +266,7 @@ Ajax.XWikiRequest = Class.create(Ajax.Request, {
 
       function insertTableRow(id, name, type){
          if (type == "doc")
-           new Insertion.Bottom(id, "&lt;tr&gt;&lt;td&gt;" + name + "&lt;/td&gt;&lt;td&gt;&lt;input type='checkbox' value='"+name+"' id='check_" + name + "' class='checkedDoc'/&gt;&lt;/td&gt;&lt;/tr&gt;");
+           new Insertion.Bottom(id, "&lt;tr&gt;&lt;td&gt;" + name + "&lt;/td&gt;&lt;td&gt;&lt;input type='checkbox' value=\""+name+"\" id='check_" + name + "' class='checkedDoc'/&gt;&lt;/td&gt;&lt;/tr&gt;");
          else if (type == "pack")
            new Insertion.Bottom(id, "&lt;tr&gt;&lt;td&gt;&lt;a onclick='selectPackage(\""+ name +"\")' class='Exportlink'&gt;" + name + "&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;");
       }
@@ -348,4 +351,5 @@ Ajax.XWikiRequest = Class.create(Ajax.Request, {
 
 &lt;/script&gt;
 {/pre}
-#end</content></xwikidoc>
+#end</content>
+</xwikidoc>

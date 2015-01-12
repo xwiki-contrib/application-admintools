@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>Admin</web>
-<name>WebHome</name>
-<language></language>
-<defaultLanguage></defaultLanguage>
-<translation>0</translation>
-<parent>Admin.WebHome</parent>
-<creator>xwiki:XWiki.Admin</creator>
-<author>xwiki:XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1374224647000</creationDate>
-<date>1375188489000</date>
-<contentUpdateDate>1375188489000</contentUpdateDate>
-<version>1.1</version>
-<title>XWiki Advanced Administration Tools</title>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/2.0</syntaxId>
-<hidden>false</hidden>
-<content>{{include document="Tools" /}}</content></xwikidoc>
+  <web>Admin</web>
+  <name>WebHome</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>Admin.WebHome</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1374224647000</creationDate>
+  <date>1375188489000</date>
+  <contentUpdateDate>1375188489000</contentUpdateDate>
+  <version>1.1</version>
+  <title>XWiki Advanced Administration Tools</title>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.0</syntaxId>
+  <hidden>false</hidden>
+  <content>{{include document="Tools" /}}</content>
+</xwikidoc>

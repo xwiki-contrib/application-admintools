@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>Admin</web>
-<name>ImportPage</name>
-<language></language>
-<defaultLanguage></defaultLanguage>
-<translation>0</translation>
-<parent>Admin.WebHome</parent>
-<creator>xwiki:XWiki.Admin</creator>
-<author>xwiki:XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1375188480000</creationDate>
-<date>1375188480000</date>
-<contentUpdateDate>1375188480000</contentUpdateDate>
-<version>1.1</version>
-<title>Import Page</title>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/1.0</syntaxId>
-<hidden>false</hidden>
-<content>1.1 Import Page
+  <web>Admin</web>
+  <name>ImportPage</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>Admin.WebHome</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1375188480000</creationDate>
+  <date>1375188480000</date>
+  <contentUpdateDate>1375188480000</contentUpdateDate>
+  <version>1.1</version>
+  <title>Import Page</title>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/1.0</syntaxId>
+  <hidden>false</hidden>
+  <content>1.1 Import Page
 
 &lt;%
 
@@ -110,4 +111,5 @@ if (request.get("name")!=null) {
 &lt;/form&gt;
 &lt;%
 }
-%&gt;</content></xwikidoc>
+%&gt;</content>
+</xwikidoc>

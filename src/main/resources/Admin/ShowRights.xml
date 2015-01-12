@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>Admin</web>
-<name>ShowRights</name>
-<language></language>
-<defaultLanguage></defaultLanguage>
-<translation>0</translation>
-<parent>Admin.Tools</parent>
-<creator>xwiki:XWiki.Admin</creator>
-<author>xwiki:XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1375970488000</creationDate>
-<date>1375970402000</date>
-<contentUpdateDate>1375970402000</contentUpdateDate>
-<version>1.1</version>
-<title></title>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/2.1</syntaxId>
-<hidden>false</hidden>
-<content>{{info}}This page intends to present a global view of custom rights all over the wiki. Some pages may have special, forgotten rights. {{/info}}
+  <web>Admin</web>
+  <name>ShowRights</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>Admin.Tools</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1375970488000</creationDate>
+  <date>1375970402000</date>
+  <contentUpdateDate>1375970402000</contentUpdateDate>
+  <version>1.1</version>
+  <title/>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>false</hidden>
+  <content>{{info}}This page intends to present a global view of custom rights all over the wiki. Some pages may have special, forgotten rights. {{/info}}
 
 {{toc/}}
 
@@ -92,4 +93,5 @@ $xcontext.unsetLinksAction()
         |[[$obj.name&gt;&gt;$obj.name]]|$obj.levels|$obj.groups|$obj.users|$auth       
       #end
     #end
-#end</content></xwikidoc>
+#end</content>
+</xwikidoc>

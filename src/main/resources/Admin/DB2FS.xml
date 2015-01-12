@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>Admin</web>
-<name>DB2FS</name>
-<language></language>
-<defaultLanguage></defaultLanguage>
-<translation>0</translation>
-<parent>Admin.WebHome</parent>
-<creator>xwiki:XWiki.Admin</creator>
-<author>xwiki:XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1358767943000</creationDate>
-<date>1358767949000</date>
-<contentUpdateDate>1358767949000</contentUpdateDate>
-<version>1.1</version>
-<title>DB2FS</title>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/2.1</syntaxId>
-<hidden>false</hidden>
-<content>{{groovy}}
+  <web>Admin</web>
+  <name>DB2FS</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>Admin.WebHome</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1358767943000</creationDate>
+  <date>1358767949000</date>
+  <contentUpdateDate>1358767949000</contentUpdateDate>
+  <version>1.1</version>
+  <title>DB2FS</title>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>false</hidden>
+  <content>{{groovy}}
 import com.xpn.xwiki.doc.XWikiAttachment;
 import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.doc.DeletedAttachment;
@@ -434,4 +435,5 @@ private int doIt(int startAt, int seconds, boolean dryRun, boolean verbose, bool
     println("\n**[" + delAttachCount + "] deleted attachments.**");
     return -1;
 }
-{{/groovy}}</content></xwikidoc>
+{{/groovy}}</content>
+</xwikidoc>
