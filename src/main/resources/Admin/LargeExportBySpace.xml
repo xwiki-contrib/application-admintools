@@ -16,6 +16,7 @@
   <contentUpdateDate>1375188482000</contentUpdateDate>
   <version>1.1</version>
   <title>Large export on disk by space</title>
+  <template/>
   <defaultTemplate/>
   <validationScript/>
   <comment/>
@@ -77,10 +78,12 @@ def getXAR(String filename, XWikiContext context) {
     export.setBackupPack(true);
     export.setName("backup");
     def pack = export.getPackage();
-    for(space in spaces){
-        for(docName in xwiki.getSpaceDocsName(space)){
+    for(space in spaces) {
+        query = services.query.xwql('where doc.space=:space')
+        query.bindValue('space',space)
+        for(docName in query.execute()){
             println "* Exported ${docName} page of space ${space}."
-            pack.add(space+"."+docName, com.xpn.xwiki.plugin.packaging.DocumentInfo.ACTION_OVERWRITE, xcontext.getContext());
+            pack.add(docName, com.xpn.xwiki.plugin.packaging.DocumentInfo.ACTION_OVERWRITE, xcontext.getContext());
         }
     }
     if(request.dir){
@@ -112,7 +115,7 @@ if (request.filename) {
  &lt;/tr&gt;
  &lt;/table&gt;
  #foreach($space in $xwiki.getSpaces())
-    * $space &lt;input type="checkbox" name="spaces" value="$space"/&gt;
+    * $space &lt;input type="checkbox" name="spaces" value="$escapetool.html($space)"/&gt;
  #end
 
  * **Don't zip files, output to directory.** &lt;input type="checkbox" name="dir"/&gt;

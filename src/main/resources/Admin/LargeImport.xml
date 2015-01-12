@@ -16,6 +16,7 @@
   <contentUpdateDate>1375188483000</contentUpdateDate>
   <version>1.1</version>
   <title>LargeImport</title>
+  <template/>
   <defaultTemplate/>
   <validationScript/>
   <comment/>
@@ -28,6 +29,7 @@ import com.xpn.xwiki.doc.*;
 import com.xpn.xwiki.plugin.packaging.*;
 import java.util.zip.*;
 import com.xpn.xwiki.util.Util;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 finalPageName = ""
 exception = ""
@@ -154,7 +156,7 @@ println """
       filename = zipentry.name
       if (!filename.endsWith("package.xml") &amp;&amp; !zipentry.isDirectory()) {
         counter++;
-
+        filename = StringEscapeUtils.escapeHtml4(filename)
 println """
       &lt;tr&gt;&lt;td&gt;&lt;input class="selCheckedDoc" type="checkbox" name="file_${counter}" value="${filename}" checked /&gt;${filename}&lt;/td&gt;&lt;/tr&gt;
 """
