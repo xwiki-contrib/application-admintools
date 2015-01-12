@@ -16,6 +16,7 @@
   <contentUpdateDate>1384949708000</contentUpdateDate>
   <version>1.1</version>
   <title>Export</title>
+  <template/>
   <defaultTemplate/>
   <validationScript/>
   <comment/>
@@ -28,7 +29,7 @@ $response.setContentType("text/xml")
 #set($space = $request.spacename)
 {pre}
 &lt;response&gt;
-  #set($docs = $xwiki.searchDocuments("where doc.web='$request.spacename' order by doc.date desc"))
+  #set($docs = $xwiki.searchDocuments("where doc.space='$escapetool.sql($space)' order by doc.date desc"))
   #foreach ($docname in $docs)
     &lt;value&gt;$escapetool.xml("${docname}")&lt;/value&gt;
   #end
@@ -105,13 +106,13 @@ OK
   &lt;select name="spaceSelector" id="spaceSelector"&gt;
   &lt;option value="---"&gt;---&lt;/option&gt;
   #foreach ($space in $spaces)
-    &lt;option value="$space"&gt;$space&lt;/option&gt;
+    &lt;option value="$escapetool.html($space)"&gt;$escapetool.html($space)&lt;/option&gt;
   #end
   &lt;/select&gt;
   &lt;br /&gt;
   #set($script = $xwiki.getURL("Admin.ExportSpaceSuggest", "view", "xpage=rdf"))
  &lt;form action="" onsubmit="setSpace(this.space.value); return false;"&gt;
- Search space: &lt;input type="text" name="space" value="" size="20"  onfocus="new ajaxSuggest(this, {script:'${script}&amp;amp;', varname: 'input', seps:'', offsety: 13});" /&gt;
+ Search space: &lt;input type="text" name="space" value="" size="20"  onfocus="new XWiki.widgets.Suggest(this, {script:'${script}&amp;amp;', varname: 'input', seps:'', offsety: 13});" /&gt;
   &lt;input type="submit" value="Go" /&gt;
  &lt;/form&gt;
   &lt;br /&gt;
@@ -157,9 +158,9 @@ OK
 &lt;/tr&gt;
 ## ROW 3
 &lt;tr&gt;
-&lt;td class="td-docSelectorColumn" style="text-align: center;"&gt;&lt;input type="button" onclick="addDocs();" id="bttAdd" value="Add to my package &amp;gt;&amp;gt;"/&gt;&lt;/td&gt;
-&lt;td class="td-selectedColumn" style="text-align: center;"&gt;&lt;input type="button" onclick="deleteDocs();" id="bttAdd" value="&amp;lt;&amp;lt; Remove from my package"/&gt;&lt;/td&gt;
-&lt;td class="td-packageColumn" style="text-align: center;"&gt;&lt;input type="button" id="bttExport" onclick="bttExport()" value="Export" style=""/&gt;&lt;/td&gt;
+&lt;td class="td-docSelectorColumn" style="text-align: center;"&gt;&lt;input type="button" onclick="addDocs();" id="bttAdd" value="Add to my package &amp;gt;&amp;gt;" class="button" /&gt;&lt;/td&gt;
+&lt;td class="td-selectedColumn" style="text-align: center;"&gt;&lt;input type="button" onclick="deleteDocs();" id="bttRemove" value="&amp;lt;&amp;lt; Remove from my package" class="button" /&gt;&lt;/td&gt;
+&lt;td class="td-packageColumn" style="text-align: center;"&gt;&lt;input type="button" id="bttExport" onclick="bttExport()" value="Export" class="button" /&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
 &lt;/div&gt;
@@ -215,8 +216,8 @@ Ajax.XWikiRequest = Class.create(Ajax.Request, {
       
      function setSpace(space)
        {
-         var pars = "action=getdocs&amp;spacename=" + space + "&amp;xpage=rdf";
-         var myAjax = new Ajax.XWikiRequest( "$doc.web", "$doc.name", {method: 'get', parameters: pars, onComplete: showDocs} );
+         var pars = { action: 'getdocs', spacename: space, xpage: 'rdf' };
+         var myAjax = new Ajax.XWikiRequest( "$doc.space", "$doc.name", {method: 'get', parameters: pars, onComplete: showDocs} );
        }
 
       function showDocs(res)
@@ -240,7 +241,7 @@ Ajax.XWikiRequest = Class.create(Ajax.Request, {
        function showImportList()
        {
          var pars = "action=getPackageList&amp;xpage=rdf";
-         var myAjax = new Ajax.XWikiRequest( "$doc.web", "$doc.name", {method: 'get', parameters: pars, onComplete: showPackageList} );
+         var myAjax = new Ajax.XWikiRequest( "$doc.space", "$doc.name", {method: 'get', parameters: pars, onComplete: showPackageList} );
        }
 
       function showPackageList(res)
@@ -264,9 +265,10 @@ Ajax.XWikiRequest = Class.create(Ajax.Request, {
       }
 
 
-      function insertTableRow(id, name, type){
+      function insertTableRow(id, name, type) {
+         name = name.escapeHTML().replace(/"/g,'&amp;quot;').replace(/'/g,'&amp;#39;');
          if (type == "doc")
-           new Insertion.Bottom(id, "&lt;tr&gt;&lt;td&gt;" + name + "&lt;/td&gt;&lt;td&gt;&lt;input type='checkbox' value=\""+name+"\" id='check_" + name + "' class='checkedDoc'/&gt;&lt;/td&gt;&lt;/tr&gt;");
+           new Insertion.Bottom(id, "&lt;tr&gt;&lt;td&gt;" + name + "&lt;/td&gt;&lt;td&gt;&lt;input type='checkbox' value='"+name+"' class='checkedDoc'/&gt;&lt;/td&gt;&lt;/tr&gt;");
          else if (type == "pack")
            new Insertion.Bottom(id, "&lt;tr&gt;&lt;td&gt;&lt;a onclick='selectPackage(\""+ name +"\")' class='Exportlink'&gt;" + name + "&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;");
       }
@@ -278,7 +280,8 @@ Ajax.XWikiRequest = Class.create(Ajax.Request, {
 
       function insertNewDoc(id, value)
       {
-         new Insertion.Bottom(id, "&lt;tr class='selCheckedTR' id='tr_" + value + "'&gt;&lt;td&gt;&lt;input type='checkBox' value='" + value + "' class='selCheckedDoc' id='" + value + "' /&gt;&lt;span id='" + value + "' class='exportDocName'&gt;" + value + "&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;");
+         value = value.escapeHTML().replace(/"/g,'&amp;quot;').replace(/'/g,'&amp;#39;');
+         new Insertion.Bottom(id, "&lt;tr class='selCheckedTR' id='tr_" + value + "'&gt;&lt;td&gt;&lt;input type='checkBox' value='" + value + "' class='selCheckedDoc' /&gt;&lt;span id='" + value + "' class='exportDocName'&gt;" + value + "&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;");
       }
 
       function deleteDocs()
@@ -319,9 +322,9 @@ Ajax.XWikiRequest = Class.create(Ajax.Request, {
          for (i = 0; i &lt; docs.length; i++)
          {
              var docname = docs[i].innerHTML;
-             pars = pars + "&amp;toExport=" + docname;
-         } 
-         var myAjax = new Ajax.XWikiRequest( "$doc.web", "$doc.name", {method: 'post', parameters: pars, onComplete: bttExportComplete } );
+             pars = pars + "&amp;toExport=" + encodeURIComponent(docname);
+         }
+         var myAjax = new Ajax.XWikiRequest( "$doc.space", "$doc.name", {method: 'post', parameters: pars, onComplete: bttExportComplete } );
       }
 
       function bttExportComplete(xmlResponse) 

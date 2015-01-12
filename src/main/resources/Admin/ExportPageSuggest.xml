@@ -16,13 +16,14 @@
   <contentUpdateDate>1375188487000</contentUpdateDate>
   <version>1.1</version>
   <title/>
+  <template/>
   <defaultTemplate/>
   <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/1.0</syntaxId>
-  <hidden>false</hidden>
-  <content>#set($input = $request.get("input").toLowerCase())
+  <hidden>true</hidden>
+  <content>#set($input = $escapetool.sql($request.get("input").toLowerCase()))
 #set($sql =  "where lower(doc.fullName) like '%${input}%' order by doc.date desc")
 #set($queryResult = $xwiki.searchDocuments($sql, 30, 0))
 #set($results = $queryResult.toArray())

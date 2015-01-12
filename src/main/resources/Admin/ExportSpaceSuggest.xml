@@ -12,17 +12,18 @@
   <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <creationDate>1375188488000</creationDate>
-  <date>1375188488000</date>
-  <contentUpdateDate>1375188488000</contentUpdateDate>
+  <date>1375188487000</date>
+  <contentUpdateDate>1375188487000</contentUpdateDate>
   <version>1.1</version>
   <title/>
+  <template/>
   <defaultTemplate/>
   <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/1.0</syntaxId>
-  <hidden>false</hidden>
-  <content>#set($input = $request.get("input").toLowerCase())
+  <hidden>true</hidden>
+  <content>#set($input = $escapetool.sql($request.get("input").toLowerCase()))
 #set($sql =  "select distinct doc.web from XWikiDocument as doc where lower(doc.web) like '%${input}%' order by doc.web asc")
 #set($queryResult = $xwiki.search($sql, 30, 0))
 #set($results = $queryResult.toArray())
