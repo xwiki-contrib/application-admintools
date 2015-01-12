@@ -9,15 +9,12 @@
   <parent>Admin.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
   <author>xwiki:XWiki.Admin</author>
-  <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <creationDate>1375188486000</creationDate>
   <date>1375188486000</date>
   <contentUpdateDate>1375188486000</contentUpdateDate>
   <version>1.1</version>
   <title>Shrink Recycle Bins</title>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
@@ -51,7 +48,7 @@ def runQuery(query) {
       list.add(map)
     }
   } catch (Exception ex) {
-    println "Error running sql: ${sql} " + ex.getMessage()
+    println "Error running sql: ${query} " + ex.getMessage()
     return ex
   } finally {
     stmt.close()
@@ -73,6 +70,10 @@ def Float getMySQLSpaceUsed(table, wiki) {
   def mwikiquery = (wiki=="") ? "" : "AND TABLE_SCHEMA = '${wiki}'"
   def query = (table=="") ? "SELECT SUM(DATA_LENGTH)/1024/1024 as 'space' FROM INFORMATION_SCHEMA.TABLES  WHERE 1=1 ${mwikiquery}" : "SELECT SUM(DATA_LENGTH)/1024/1024 as 'space' FROM INFORMATION_SCHEMA.TABLES  WHERE TABLE_NAME='${table}' ${mwikiquery}"
   def spaceLeftResult = runQuery(query)
+  if (spaceLeftResult instanceof Exception) {
+    println ( "Error: " + spaceLeftResult );
+    return -0f;
+  }
   if (spaceLeftResult.size()==0 || spaceLeftResult.get(0).get("space")==null)
     return -1f
   return (Float)(spaceLeftResult.get(0).get('space'))
@@ -201,7 +202,10 @@ def displayRecycleBins() {
   println '&lt;tr class="sortHeader"&gt;&lt;th&gt;Wiki&lt;/th&gt;&lt;th&gt;Page Recycle bin&lt;/th&gt;&lt;th&gt;Attachment Recycle bin&lt;/th&gt;&lt;th&gt;Total&lt;/th&gt;&lt;/tr&gt;'
 
   def wikilist = ['xwiki'];
-  if (xwiki.wikimanager != null) // wiki is virtual but wikimanager is not installed
+  if (services.wiki != null) { // (xwiki &gt;= 6.x)
+     wikilist = services.wiki.getAll().collect( { wiki -&gt; wiki.id })
+  }
+  if (xwiki.wikimanager != null) // wiki is virtual but wikimanager is not installed (xwiki &lt; 6.x)
     wikilist = xwiki.wikimanager.getAllWikis().sort{it.toString()}
   for (wiki in wikilist) {
     showWikiBins(wiki.toString())
