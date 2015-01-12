@@ -16,6 +16,7 @@
   <contentUpdateDate>1375893290000</contentUpdateDate>
   <version>1.1</version>
   <title/>
+  <template/>
   <defaultTemplate/>
   <validationScript/>
   <comment/>
@@ -32,13 +33,19 @@ import java.lang.management.ManagementFactory;
 import javax.management.MBeanServer;
 
 if( System.getProperty('catalina.base') ) {
-appserverpath = System.getProperty('catalina.base')
+  appserverpath = System.getProperty('catalina.base')
 } else {
-appserverpath = ".."
+  // CONFIG: try to set the path to ypur application server if not found
+  appserverpath = ".."
 }
 
-def wiki = xcontext.getContext().getWiki()
+// CONFIG: set this manually here to the absolute path of your xwiki.cfg file, if not found autmatically
+def xwikicfgpath = "${appserverpath}/webapps${request.contextPath}/WEB-INF/xwiki.cfg"
 
+// edit this to the tomcats server.xml, if you are running inside tomcat
+def tomcatconfpath = "${appserverpath}/conf/server.xml"
+
+def wiki = xcontext.getContext().getWiki()
 
 def readableSize(size) {
     if(size &lt;= 0) return "0";
@@ -47,8 +54,10 @@ def readableSize(size) {
     return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 }
 
-def xwikicfgdir = new File("${appserverpath}/webapps/xwiki/WEB-INF/xwiki.cfg")
-if (xwikicfgdir.exists()) {
+def xwikicfgdir = new File(xwikicfgpath)
+def xwikicfgFound = xwikicfgdir.exists();
+def xwencodingActive = xwiki.getEncoding()
+if (xwikicfgFound) {
   def content = Util.getFileContent(xwikicfgdir)
   def is = new ByteArrayInputStream(content.getBytes());
   def props = new Properties();
@@ -93,7 +102,7 @@ def getEnvVars() {
   return envVars;
 }
 
-println "This script intends to show most important parameters for XWiki hosting. You can [[go directly to recommandations&gt;&gt;${doc}||anchor=HRecommandations]]"
+println "This script intends to show most important parameters for XWiki hosting. You can [[go directly to recommendations&gt;&gt;${doc}||anchor=HRecommendations]]"
 
 if (wiki!=null){
 println "== Memory Configuration =="
@@ -150,7 +159,7 @@ println "* file.encoding: ${fileenc}"
 def mimecharset = System.getProperty("mail.mime.charset")
 println "* mail.mime.charset: ${mimecharset}"
 
-def tomcatconffile = new File("${appserverpath}/conf/server.xml")
+def tomcatconffile = new File(tomcatconfpath)
 if (tomcatconffile.exists()) {
  def node = new XmlParser().parse(tomcatconffile)
 
@@ -167,16 +176,16 @@ for (connector in node.Service.Connector) {
 
 println "=== XWiki Configuration ==="
 
-
-if (xwencoding) {
-println "* XWiki encoding: ${xwencoding}";
+println "* XWiki encoding used on server: ${xwencodingActive}"
+if (xwikicfgFound) {
+println "* XWiki encoding from config file: ${xwencoding}";
 } else {
- println "{{error}}The XWiki configuration file could not be found. The app server path (appserverpath) variable need to be set (you can edit the page to set it){{/error}}"
+ println "{{error}}The XWiki configuration file could not be found at ${xwikicfgpath}. The app server path (appserverpath) variable need to be set (you can edit the page to set it){{/error}}"
 }
 
-println "= Recommandations ="
+println "= Recommendations ="
 
-println "Here will be shown our recommandations to increase wiki's performance and stability, if any :"
+println "Here will be shown our recommendations to increase wiki's performance and stability, if any :"
 
 if (wiki.maxMemory() &lt; 800000000) {
  println "* {{warning}}Amount of memory allocated to XWiki is too low for a production usage. Max memory available for the JVM is set to ${readableSize(wiki.maxMemory())}, it should be at least 800MB.{{/warning}}"
@@ -186,7 +195,7 @@ if (csize &lt; "1000") {
  println "* {{warning}}Your cache configuration is too low for a production usage. Your cache is set to ${csize} documents, it should be 1000 or more.{{/warning}}"
 }
 
-if (xwencoding &amp;&amp; xwencoding != "UTF-8") {
+if (xwencodingActive &amp;&amp; xwencodingActive != "UTF-8") {
  println "* {{warning}}XWiki encoding is not set properly. We advise to use UTF-8 encoding for every software used (Servlet container, front end, database...){{/warning}}"
 }
 
