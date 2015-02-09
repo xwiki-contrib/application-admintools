@@ -21,7 +21,7 @@
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
-  <hidden>false</hidden>
+  <hidden>true</hidden>
   <content>The following page shows the space used in MegaBytes by usually biggest tables.
 
 __xwikirecyclebin__ : Here is store the deleted documents. You can shrink the recycle bin [[here&gt;&gt;Admin.ShrinkRecycleBins]].

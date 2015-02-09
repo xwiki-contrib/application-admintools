@@ -21,7 +21,7 @@
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
-  <hidden>false</hidden>
+  <hidden>true</hidden>
   <content>xwikidoc:DOC_NAME:(XWD_NAME)
 xwikidoc:DOC_FULLNAME:(XWD_FULLNAME)
 xwikidoc:DOC_SPACE:(XWD_WEB)

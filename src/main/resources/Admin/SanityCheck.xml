@@ -21,7 +21,7 @@
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
-  <hidden>false</hidden>
+  <hidden>true</hidden>
   <content>This script is a sanity check of the database. There should be no results to the queries run if the database is in good state.
 The data listed are data that should be deleted or fixed.
 

@@ -21,7 +21,7 @@
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
-  <hidden>false</hidden>
+  <hidden>true</hidden>
   <content>#DOCUMENTS: checking for data with bad characters in document name
 select XWD_ID, XWD_FULLNAME from xwikidoc where (XWD_NAME like '% ' or XWD_NAME like '%?%' or XWD_NAME like '%+%' or XWD_NAME like '%\%%' or XWD_NAME like '%&amp;%' or XWD_NAME like '%#%'); 
 #OBJECTS: checking for objects where the document does not exist anymore

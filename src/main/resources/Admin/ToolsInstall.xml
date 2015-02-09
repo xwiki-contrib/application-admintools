@@ -21,7 +21,7 @@
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/1.0</syntaxId>
-  <hidden>false</hidden>
+  <hidden>true</hidden>
   <content>#if(!$xwiki.hasAdminRights())
 You are running this script as a non admin. It will have no effect. Login as admin.
 #else

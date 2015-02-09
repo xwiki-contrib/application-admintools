@@ -21,7 +21,7 @@
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
-  <hidden>false</hidden>
+  <hidden>true</hidden>
   <content>{{info}}This page intends to present a global view of custom rights all over the wiki. Some pages may have special, forgotten rights. {{/info}}
 
 {{toc/}}
