@@ -77,5 +77,6 @@ The following pages allow advanced administration of an XWiki or XWiki farm:
 {{info}}It seems you're not using a MySQL Database. According tools won't be listed.{{/info}}
   #end
 #end
+#set($docextras=[])
 {{/velocity}}</content>
 </xwikidoc>
