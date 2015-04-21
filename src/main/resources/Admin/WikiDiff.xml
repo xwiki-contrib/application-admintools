@@ -22,7 +22,106 @@
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
   <hidden>true</hidden>
+  <object>
+    <class>
+      <name>XWiki.StyleSheetExtension</name>
+      <customClass></customClass>
+      <customMapping></customMapping>
+      <defaultViewSheet></defaultViewSheet>
+      <defaultEditSheet></defaultEditSheet>
+      <defaultWeb></defaultWeb>
+      <nameField></nameField>
+      <validationScript></validationScript>
+      <cache>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators> ,|</separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <disabled>0</disabled>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators> ,|</separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage=Always on this page|onDemand=On demand|always=Always on this wiki</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <name>Admin.WikiDiff</name>
+    <number>0</number>
+    <className>XWiki.StyleSheetExtension</className>
+    <guid>86b6d323-1500-4d47-baa0-182919780a47</guid>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>.diffremoveword {
+  color: red;
+}
+
+.diffaddword {
+  color: green;
+}</code>
+    </property>
+    <property>
+      <name>Diff styles</name>
+    </property>
+    <property>
+      <parse>0</parse>
+    </property>
+    <property>
+      <use>onDemand</use>
+    </property>
+  </object>
   <content>{{velocity}}
+#set($discard = $xwiki.ssx.use($doc.fullName))
 #if($request.source)
 #set ($diffTool = $xwiki.parseGroovyFromPage("Admin.WikiDiffGroovy"))
 #set ($ok = $diffTool.setContext($context, $xwiki))
@@ -47,18 +146,28 @@
     #end
     #set($newContent = $diffTool.getXML($newDoc))
    #end
-   #if ($oldContent &amp;&amp; $diffTool.compare($oldContent, $newContent))
-* $key has changed [[View Diff&gt;&gt;?page=${key}&amp;source=${request.source}&amp;target=${request.target}]]
-#if($request.page==$key)
-**Differences**:
-{{html clean="false"}}$diffTool.diff($oldContent, $newContent){{/html}}
-#if($request.debug)
-#set($ok = $diffTool.save("file1.txt", $oldContent, true))
-#set($ok = $diffTool.save("file1b.txt", $oldContent, false))
-#set($ok = $diffTool.save("file2.txt", $newContent, true))
-#set($ok = $diffTool.save("file2b.txt", $newContent, false))
-#end
-#end
+   #set($comparedContent = $diffTool.compare($oldContent, $newContent))
+   #if ($oldContent &amp;&amp; $comparedContent)
+     #set($diffResult = $diffTool.diff($oldContent, $newContent))
+     #set($skipNewRev = "$!request.skipNewRev" == 'true')
+     #set($isOtherThanNewRevDiff = $diffTool.isOtherThanNewRevisonDiff($diffResult))
+     #if(!$skipNewRev || ($skipNewRev &amp;&amp; $isOtherThanNewRevDiff) || $request.debug)
+       * $key has changed [[View Diff&gt;&gt;?page=${key}&amp;source=${request.source}&amp;target=${request.target}&amp;skipNewRev=${request.skipNewRev}]]
+       #if($request.page==$key)
+         **Differences**:
+
+         {{html clean="false"}}
+           $diffResult
+         {{/html}}
+
+         #if($request.debug)
+           #set($ok = $diffTool.save("file1.txt", $oldContent, true))
+           #set($ok = $diffTool.save("file1b.txt", $oldContent, false))
+           #set($ok = $diffTool.save("file2.txt", $newContent, true))
+           #set($ok = $diffTool.save("file2b.txt", $newContent, false))
+         #end
+       #end
+     #end
    #end
   #end
  #end
@@ -79,6 +188,8 @@
 &lt;strong&gt;Target URL:&lt;/strong&gt;&lt;br /&gt;
 leave empty to compare to current wiki&lt;br /&gt;
 &lt;input type="text" name="target" value="" size="120" /&gt;
+&lt;br /&gt;
+&lt;input type="checkbox" name="skipNewRev" value="true"&gt; Skip changes that reflect only new revisions of the document and nothing else
 &lt;br /&gt;
 &lt;input type="submit" value="Go" /&gt;
 &lt;/form&gt;
