@@ -131,6 +131,7 @@
 #if($newURL &amp;&amp; $newURL!="")
  #set($newContents = $diffTool.getZipContent($newURL))
 #end
+#set($missingTargetDocList = [])
 #foreach ($key in $oldContents.keySet())
  #if($key != "package.xml")
   #set($oldDoc = $diffTool.getDocument($oldContents.get($key)))
@@ -152,25 +153,38 @@
      #set($skipNewRev = "$!request.skipNewRev" == 'true')
      #set($isOtherThanNewRevDiff = $diffTool.isOtherThanNewRevisonDiff($diffResult))
      #if(!$skipNewRev || ($skipNewRev &amp;&amp; $isOtherThanNewRevDiff) || $request.debug)
-       * $key has changed [[View Diff&gt;&gt;?page=${key}&amp;source=${request.source}&amp;target=${request.target}&amp;skipNewRev=${request.skipNewRev}]]
-       #if($request.page==$key)
-         **Differences**:
+       #if($newDoc.isNew())
+         #set($discard = $missingTargetDocList.add($key))
+       #else
+         * $key has changed [[View Diff&gt;&gt;?page=${key}&amp;source=${request.source}&amp;target=${request.target}&amp;skipNewRev=${request.skipNewRev}]]
+         #if($request.page==$key)
+           **Differences**:
 
-         {{html clean="false"}}
-           $diffResult
-         {{/html}}
+           {{html clean="false"}}
+             $diffResult
+           {{/html}}
 
-         #if($request.debug)
-           #set($ok = $diffTool.save("file1.txt", $oldContent, true))
-           #set($ok = $diffTool.save("file1b.txt", $oldContent, false))
-           #set($ok = $diffTool.save("file2.txt", $newContent, true))
-           #set($ok = $diffTool.save("file2b.txt", $newContent, false))
+           #if($request.debug)
+             #set($ok = $diffTool.save("file1.txt", $oldContent, true))
+             #set($ok = $diffTool.save("file1b.txt", $oldContent, false))
+             #set($ok = $diffTool.save("file2.txt", $newContent, true))
+             #set($ok = $diffTool.save("file2b.txt", $newContent, false))
+           #end
          #end
        #end
      #end
    #end
   #end
  #end
+#end
+#if($missingTargetDocList.size() &gt; 0)
+
+  {{warning}}
+    Documents that don't exist in the **target** XAR
+    #foreach($key in $missingTargetDocList)
+      * $key
+    #end
+  {{/warning}}
 #end
 #else
 #set($version = $xwiki.version)
