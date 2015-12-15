@@ -1,40 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xwikidoc>
+<xwikidoc version="1.1">
   <web>Admin</web>
   <name>Export</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
-  <parent>Admin.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
-  <author>xwiki:XWiki.Admin</author>
-  <customClass/>
-  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <creationDate>1384949611000</creationDate>
+  <parent>Admin.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <date>1384949708000</date>
   <contentUpdateDate>1384949708000</contentUpdateDate>
   <version>1.1</version>
   <title>Export</title>
-  <template/>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/1.0</syntaxId>
+  <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
-  <content>#set($action = $request.action)
+  <content>{{velocity}}
+{{html clean="false" wiki="false"}}
+#set($action = $request.action)
 #if ($action == "getdocs")
 $response.setContentType("text/xml")
 #set($space = $request.spacename)
-{pre}
 &lt;response&gt;
   #set($docs = $xwiki.searchDocuments("where doc.space='$escapetool.sql($space)' order by doc.date desc"))
   #foreach ($docname in $docs)
     &lt;value&gt;$escapetool.xml("${docname}")&lt;/value&gt;
   #end
 &lt;/response&gt;
-{/pre}
 #elseif ($action == "getPackageList")
   $response.setContentType("text/xml")
   #set($alist = $doc.getAttachmentList())
@@ -86,20 +82,11 @@ OK
   #end
   $export.export()
 #else
-{pre}
-&lt;style type="text/css"&gt;
-.main table tr td.td-docSelectorColumn, .main table tr td.td-selectedColumn,, .main table tr td.td-packageColumn {
- vertical-align: top;
-}
-#spaceDocs, #selectedDocs {
- height: 400px;
- overflow-y: scroll;
-}
-&lt;/style&gt;
+
 &lt;div id="exportApp"&gt;
-&lt;table style="width:100%; border-color:blue; border-spacing: 0; " border="0"&gt;
+&lt;table&gt;
 &lt;tr&gt;
-&lt;td class="td-docSelectorColumn"&gt;&lt;h3 style="text-align:center;" id="firstColumnTitle"&gt;Your Wiki&lt;/h3&gt;
+&lt;td class="td-docSelectorColumn"&gt;&lt;h3 id="firstColumnTitle"&gt;Your Wiki&lt;/h3&gt;
 &lt;span id="spaceSelectorEl"&gt;  
  Select a Space: 
   #set($spaces = $xwiki.getSpaces())
@@ -113,16 +100,16 @@ OK
   #set($script = $xwiki.getURL("Admin.ExportSpaceSuggest", "view", "xpage=rdf"))
  &lt;form action="" onsubmit="setSpace(this.space.value); return false;"&gt;
  Search space: &lt;input type="text" name="space" value="" size="20"  onfocus="new XWiki.widgets.Suggest(this, {script:'${script}&amp;amp;', varname: 'input', seps:'', offsety: 13});" /&gt;
-  &lt;input type="submit" value="Go" /&gt;
+  &lt;input type="submit" class="button btn" value="Go" /&gt;
  &lt;/form&gt;
   &lt;br /&gt;
-&lt;span class="selectDocsActions"&gt;Select &lt;a onclick="selectItems('checkedDoc', false);" class="Exportlink"&gt;none&lt;/a&gt;, &lt;a onclick="selectItems('checkedDoc', true);" class="Exportlink"&gt;all&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class="selectDocsActions"&gt;Select &lt;a onclick="selectItems('checkedDoc', false);" class="Exportlink btn btn-default"&gt;none&lt;/a&gt;, &lt;a onclick="selectItems('checkedDoc', true);" class="Exportlink btn btn-default"&gt;all&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;
 &lt;/td&gt;
-&lt;td class="td-selectedColumn"&gt;&lt;h3 style="text-align:center;" id="secondColumnTitle"&gt;Your Package&lt;/h3&gt;
-&lt;span class="selectDocsActions"&gt;Select &lt;a onclick="selectItems('selCheckedDoc', false);" class="Exportlink"&gt;none&lt;/a&gt;, &lt;a onclick="selectItems('selCheckedDoc', true);" class="Exportlink"&gt;all&lt;/a&gt;&lt;/span&gt;
+&lt;td class="td-selectedColumn"&gt;&lt;h3 id="secondColumnTitle"&gt;Your Package&lt;/h3&gt;
+&lt;span class="selectDocsActions"&gt;Select &lt;a onclick="selectItems('selCheckedDoc', false);" class="Exportlink btn btn-default"&gt;none&lt;/a&gt;, &lt;a onclick="selectItems('selCheckedDoc', true);" class="Exportlink btn btn-default"&gt;all&lt;/a&gt;&lt;/span&gt;
 &lt;/td&gt;
 &lt;td class="td-packageColumn"&gt;
-&lt;h3 style="text-align:center;" id="secondColumnTitle"&gt;Package Info&lt;/h3&gt;
+&lt;h3 id="thirdColumnTitle"&gt;Package Info&lt;/h3&gt;
 &lt;/td&gt;
 &lt;/tr&gt;
 ## ROW 2
@@ -138,7 +125,7 @@ OK
 &lt;div id="selectedColumn"&gt;
   &lt;div id="spaceDocs"&gt;
   &lt;table&gt;
-   &lt;tbody  id="selectedDocsTable"&gt;
+   &lt;tbody id="selectedDocsTable"&gt;
    &lt;/tbody&gt;
   &lt;/table&gt;
   &lt;/div&gt;
@@ -148,7 +135,7 @@ OK
 &lt;label for="appName"&gt;&lt;i&gt;Package Name&lt;/i&gt;&lt;/label&gt;&lt;br /&gt;&lt;input type="text" name="appName" id="appName" value="package"&gt;&lt;br /&gt;&lt;br /&gt;
 &lt;label for="appDesc"&gt;&lt;i&gt;Description&lt;/i&gt;&lt;/label&gt;&lt;br /&gt;&lt;textarea name="appDesc" id="appDesc"&gt;&lt;/textarea&gt;&lt;br /&gt;&lt;br /&gt;
 &lt;label for="appLicence"&gt;&lt;i&gt;Licence&lt;/i&gt;&lt;/label&gt;&lt;br /&gt;&lt;input type="text" name="appLicence" id="appLicence" value="LGPL"&gt;&lt;br /&gt;&lt;br /&gt;
-&lt;label for="appAuthor"&gt;&lt;i&gt;Author&lt;/i&gt;&lt;/label&gt;&lt;br /&gt;&lt;input type="text" name="appAuthor" id="appAuthor" value="$context.user"&gt;&lt;br /&gt;&lt;br /&gt;
+&lt;label for="appAuthor"&gt;&lt;i&gt;Author&lt;/i&gt;&lt;/label&gt;&lt;br /&gt;&lt;input type="text" name="appAuthor" id="appAuthor" value="$xcontext.user"&gt;&lt;br /&gt;&lt;br /&gt;
 &lt;label for="appVersion"&gt;&lt;i&gt;Version&lt;/i&gt;&lt;/label&gt;&lt;br /&gt;&lt;input type="text" name="appVersion" id="appVersion" value=""&gt;&lt;br /&gt;&lt;br /&gt;
 &lt;span id="historyEls"&gt;
 &lt;label for="appWithHistory"&gt;&lt;i&gt;Add history&lt;/i&gt;&lt;input type="checkbox" name="appWithHistory" id="appWithHistory" value="true"&gt;&lt;/label&gt;
@@ -164,21 +151,97 @@ OK
 &lt;/tr&gt;
 &lt;/table&gt;
 &lt;/div&gt;
-&lt;script type="text/javascript"&gt;
-Ajax.XWikiRequest = Class.create(Ajax.Request, {
-    initialize: function($super, space, docName, options, action) {
+#end
+{{/html}}
+{{/velocity}}</content>
+  <object>
+    <name>Admin.Export</name>
+    <number>0</number>
+    <className>XWiki.JavaScriptExtension</className>
+    <guid>d1f55fca-db4d-4b64-8f2c-cbef11a2f908</guid>
+    <class>
+      <name>XWiki.JavaScriptExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators> ,|</separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <disabled>0</disabled>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators> ,|</separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>Ajax.XWikiRequest = Class.create(Ajax.Request, {
+    initialize: function($super, space, docName, options) {
     this.transport = Ajax.getTransport();
-    if (action)
-      this.action = action;
-    else
-      this.action = "view";
-    this.baseUrl = "/${xwiki.webAppPath}/${xwiki.servletPath}/" + this.action;
 
     options = Object.clone(options);
     var onComplete = options.onComplete || Prototype.emptyFunction;
     options.onComplete = (function() {
        this.returnValue(onComplete);
-       //onComplete(this.transport);
     }).bind(this);
 
     $super(this.generateUrl(space, docName), options);
@@ -194,31 +257,36 @@ Ajax.XWikiRequest = Class.create(Ajax.Request, {
   }
 });
 
-	//declaring the class
-	var SelectWatcher = Class.create();
+    //declaring the class
+    var SelectWatcher = Class.create();
 
-	//defining the rest of the class implmentation
-	SelectWatcher.prototype = {
+    //defining the rest of the class implementation
+    SelectWatcher.prototype = {
 
 	   initialize: function(selBox, callBack) {
 			this.selBox = $(selBox);
 			//assigning our method to the event
 			this.selBox.onchange = callBack.bindAsEventListener(this);
 	   }
+    };
+    
+    // create the watcher
+    function initWatcher() {
+       new SelectWatcher("spaceSelector", selectOptionCallBack);
+    }
+    (XWiki &amp;&amp; XWiki.domIsLoaded &amp;&amp; initWatcher()) || document.observe("xwiki:dom:loaded", initWatcher);
 
-	};
-        var watcher = new SelectWatcher("spaceSelector", selectOptionCallBack);
 
-       function selectOptionCallBack(evt)
-       {
-         setSpace(this.selBox.options[this.selBox.selectedIndex].value);
-       }
+      function selectOptionCallBack(evt)
+      {
+          setSpace(this.selBox.options[this.selBox.selectedIndex].value);
+      }
       
-     function setSpace(space)
-       {
+      function setSpace(space)
+      {
          var pars = { action: 'getdocs', spacename: space, xpage: 'rdf' };
-         var myAjax = new Ajax.XWikiRequest( "$doc.space", "$doc.name", {method: 'get', parameters: pars, onComplete: showDocs} );
-       }
+         var myAjax = new Ajax.XWikiRequest( "Admin", "Export", {method: 'get', parameters: pars, onComplete: showDocs} );
+      }
 
       function showDocs(res)
       {
@@ -241,7 +309,7 @@ Ajax.XWikiRequest = Class.create(Ajax.Request, {
        function showImportList()
        {
          var pars = "action=getPackageList&amp;xpage=rdf";
-         var myAjax = new Ajax.XWikiRequest( "$doc.space", "$doc.name", {method: 'get', parameters: pars, onComplete: showPackageList} );
+         var myAjax = new Ajax.XWikiRequest( "Admin", "Export", {method: 'get', parameters: pars, onComplete: showPackageList} );
        }
 
       function showPackageList(res)
@@ -324,7 +392,7 @@ Ajax.XWikiRequest = Class.create(Ajax.Request, {
              var docname = docs[i].innerHTML;
              pars = pars + "&amp;toExport=" + encodeURIComponent(docname);
          }
-         var myAjax = new Ajax.XWikiRequest( "$doc.space", "$doc.name", {method: 'post', parameters: pars, onComplete: bttExportComplete } );
+         var myAjax = new Ajax.XWikiRequest( "Admin", "Export", {method: 'post', parameters: pars, onComplete: bttExportComplete } );
       }
 
       function bttExportComplete(xmlResponse) 
@@ -350,9 +418,126 @@ Ajax.XWikiRequest = Class.create(Ajax.Request, {
           return nodes[0].firstChild.data;
         else
           return "";
-      }
+      }</code>
+    </property>
+    <property>
+      <name/>
+    </property>
+    <property>
+      <parse>0</parse>
+    </property>
+    <property>
+      <use>currentPage</use>
+    </property>
+  </object>
+  <object>
+    <name>Admin.Export</name>
+    <number>0</number>
+    <className>XWiki.StyleSheetExtension</className>
+    <guid>443ba299-92f2-48c6-b8e7-922614a31eb6</guid>
+    <class>
+      <name>XWiki.StyleSheetExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators> ,|</separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <disabled>0</disabled>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators> ,|</separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>#exportApp table {
+  width: 100%;
+  border-color: blue;
+  border-spacing: 0;
+}
+#exportApp table tr td.td-docSelectorColumn,
+#exportApp table tr td.td-selectedColumn,
+#exportApp table tr td.td-packageColumn {
+  vertical-align: top;
+}
 
-&lt;/script&gt;
-{/pre}
-#end</content>
+#spaceDocs, #selectedDocs {
+  height: 400px;
+  overflow-y: scroll;
+}
+
+#exportApp h3 {
+  text-align: center;
+}</code>
+    </property>
+    <property>
+      <name>export rows styling</name>
+    </property>
+    <property>
+      <parse>0</parse>
+    </property>
+    <property>
+      <use>currentPage</use>
+    </property>
+  </object>
 </xwikidoc>
