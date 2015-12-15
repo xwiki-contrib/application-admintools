@@ -9,16 +9,12 @@
   <parent>Admin.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
   <author>xwiki:XWiki.Admin</author>
-  <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <creationDate>1375188483000</creationDate>
   <date>1375893290000</date>
   <contentUpdateDate>1375893290000</contentUpdateDate>
   <version>1.1</version>
   <title/>
-  <template/>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
@@ -122,7 +118,11 @@ println "* Store Page Cache Capacity : ${csize}"
 MBeanServer server = ManagementFactory.getPlatformMBeanServer()
 def mbean = null
 
-mbean = new GroovyMBean(server, 'org.xwiki.infinispan:type=Cache,name="xwiki.store.pagecache(local)",manager="XWikiCacheManager",component=Statistics')
+try {
+   mbean = new GroovyMBean(server, 'org.xwiki.infinispan:type=Cache,name="xwiki.store.pagecache(local)",manager="xwiki",component=Statistics')
+} catch (Exception e) {
+   mbean = new GroovyMBean(server, 'org.xwiki.infinispan:type=Cache,name="xwiki.store.pagecache(local)",manager="XWikiCacheManager",component=Statistics')
+}
 isize = (mbean==null) ? null : mbean.getProperty("numberOfEntries")
 println "* Store Page Cache in Use : ${isize}"
 
@@ -135,7 +135,9 @@ def provider = wiki.getStore().getStore().sessionFactory.connectionProvider
 def ds = wiki.getPrivateField(provider,"ds")
 def pool = wiki.getPrivateField(ds,"connectionPool")
 
-println "* Max Active (number of possible connections to the DB): $pool.maxActive"
+def maxTotal 
+try { maxTotal = pool.maxTotal } catch (Exception e) { maxTotal = pool.maxActive } 
+println "* Max Active (number of possible connections to the DB): $maxTotal"
 println "* Max Idle (number of possible idle connections to the DB): $pool.maxIdle"
 println "* Active (current active connections to the DB): $pool.numActive"
 println "* Idle (current idle connections to the DB): $pool.numIdle"
