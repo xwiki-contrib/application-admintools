@@ -24,44 +24,35 @@
   <hidden>true</hidden>
   <content>{{velocity}}
 #if("$!request.space" != '')
-#set($pages = "")
-#foreach($docName in $xwiki.searchDocuments("where doc.web='${request.space}'"))
-* $docName
+  #set($pages = '')
+  #foreach($docName in $services.query.xwql('where doc.web=:space').bindValue('space', $request.space).execute())
+    * $docName
 
-#set($pages = "${pages}&amp;pages=$docName")
-#if("$!request.do" == "delete") 
-#set($ok = $xwiki.getDocument($docName).delete())
-#end
-#end
-#if("$!request.do" != "delete")
-#set($params = "name=${request.space}-${datetool.get('yyyy-M-d')}${pages}")
+    #set($pages = "${pages}&amp;pages=$docName")
+    #if("$!request.do" == 'delete')
+      #set($discard = $xwiki.getDocument($docName).delete())
+    #end
+  #end
+  #if("$!request.do" != 'delete')
+    #set($params = "name=${request.space}-${datetool.get('yyyy-M-d')}${pages}")
+    [[Confirm Export Space $request.space&gt;&gt;path:$doc.getURL('export',$escapetool.url($params))]]
 
-{{html}}
-
-&lt;a href="$doc.getURL('export',$escapetool.url($params))"&gt;Confirm Export Space $request.space&lt;/a&gt;
-&lt;br /&gt;
-
-#set($params = "space=$request.space&amp;do=delete")
-&lt;a href="$doc.getURL('view',$escapetool.url($params))"&gt;Delete Space $request.space&lt;/a&gt;
-
-{{/html}}
-
+    #set($params = "space=$request.space&amp;do=delete")
+    [[Delete Space $request.space&gt;&gt;path:$doc.getURL('view',$escapetool.url($params))]]
+  #else
+    [[Back&gt;&gt;$doc.fullName]]
+  #end
 #else
-
-[[Back&gt;&gt;$doc.fullName]]
-
-#end
-#else
-{{html wiki=false}}
-&lt;form&gt;
-&lt;div&gt;
-Space Name:&lt;input name="space" type="text" value="" /&gt;
-&lt;span class="buttonwrapper"&gt;
-&lt;input type="submit" value="export space" class="button" /&gt;
-&lt;/span&gt;
-&lt;/div&gt;
-&lt;/form&gt;
-{{/html}}
+  {{html}}
+    &lt;form&gt;
+      &lt;div&gt;
+        Space Name:&lt;input name="space" type="text" value="" /&gt;
+        &lt;span class="buttonwrapper"&gt;
+          &lt;input type="submit" value="export space" class="button" /&gt;
+        &lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/form&gt;
+  {{/html}}
 #end
 {{/velocity}}</content>
 </xwikidoc>
