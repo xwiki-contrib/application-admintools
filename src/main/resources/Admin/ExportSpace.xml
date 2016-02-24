@@ -38,11 +38,11 @@
 
 {{html}}
 
-&lt;a href="$doc.getURL('export',$params)"&gt;Confirm Export Space $request.space&lt;/a&gt;
+&lt;a href="$doc.getURL('export',$escapetool.url($params))"&gt;Confirm Export Space $request.space&lt;/a&gt;
 &lt;br /&gt;
 
 #set($params = "space=$request.space&amp;do=delete")
-&lt;a href="$doc.getURL('view',$params)"&gt;Delete Space $request.space&lt;/a&gt;
+&lt;a href="$doc.getURL('view',$escapetool.url($params))"&gt;Delete Space $request.space&lt;/a&gt;
 
 {{/html}}
 
