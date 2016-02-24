@@ -45,45 +45,42 @@ __xwikiattrecyclebin__ : Recycle bin of attachments.
   #set($sqlTools = $xwiki.parseGroovyFromPage('Admin.SQLToolsGroovy'))
   #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
   Your database is: **$system**
-  #if($system == "HSQL Database Engine")
+  #if($system == 'HSQL Database Engine')
     {{warning}}$system is not supported for this action{{/warning}}
+  #else
+    #if($services.wikimanager)
+      #set($dbs = $services.wikimanager.getAllWikis())
+    #else
+      #set($dbs = ["$xcontext.getDatabase()"])
+    #end
+
+    #if($fsstore)
+      #set($tables = ['xwikirecyclebin','xwikircs'])
+    #else
+      #set($tables = ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin'])
+    #end
+
+    #foreach($schema in $dbs)
+      #set($alltables = '')
+      $xcontext.setDatabase($schema)
+      == Used space of wiki ${schema} in MB ==
+      #foreach($table in $tables)
+        #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
+        #set($query = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';")
+        #set($results = $sqlTools.getResults($connection, $query, true))
+        #set($alltables = $alltables + $results)
+      #end
+      $alltables
+    #end
   #end
-
- #if($services.wikimanager)
-    #set($dbs = $services.wikimanager.getAllWikis())
- #else
-    #set($dbs = ["$xcontext.getDatabase()"])
- #end
-
- #if($fsstore)
-  #set($tables = ['xwikirecyclebin','xwikircs'])
- #else
-  #set($tables = ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin'])
- #end
-
- #foreach($schema in $dbs)
- #set($alltables = "")
-  $xcontext.setDatabase($schema)
-  == Used space of wiki ${schema} in MB ==
-  #foreach($table in $tables)
-    #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
-    #set($query = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';")
-    #set($results = $sqlTools.getResults($connection, $query, true))
-    #set($alltables = $alltables + $results)
-  #end
-  $alltables
- #end
-
 #else
 {{error}}Sorry, you need the programming rights to use this tool{{/error}}
 #end 
 
 == Recommandations ==
 
-
 #if($fsstore != true)
 {{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&gt;&gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
 #end
-
 {{/velocity}}</content>
 </xwikidoc>
