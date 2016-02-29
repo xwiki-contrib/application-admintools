@@ -22,9 +22,7 @@
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
-  <content>== Import Page ==
-
-{{groovy}}
+  <content>{{groovy}}
 import com.xpn.xwiki.*;
 import com.xpn.xwiki.doc.*;
 import com.xpn.xwiki.plugin.packaging.*;
@@ -34,6 +32,13 @@ import java.util.zip.*;
 finalPageName = '';
 finalPageURL = '';
 
+/**
+ * Import a document described in XML to a specified location.
+ * @param newname the target of the document
+ * @param xml the XML description of the document
+ * @param type the type of change on document's version
+ * @param context the XWiki context
+ */
 def updateDoc(String newname, String xml, String type, XWikiContext context) {
   def prevDoc =  context.getWiki().getDocument(newname, context);
   def prevArchive = prevDoc.getDocumentArchive();
@@ -66,32 +71,34 @@ def updateDoc(String newname, String xml, String type, XWikiContext context) {
       pack.setBackupPack(true);
       pack.add(fdoc, 0, context);
       return pack.install(context);
-    }
+    }    
   } else {
     return -1000;
   }
 }
 
-if (request.get('name') != null) {
+def importDoc() {
   def fupl = xwiki.get('fileupload');
   def docName = fupl.getFileItem('name');
   def type = fupl.getFileItem('type');
   def data = fupl.getFileItemData("file");
-  def sb = new StringBuilder();
+  def xmlData = new StringBuilder();
 
+  // generate the xml data from byte data
   if ((data != null) &amp;&amp; (data.length &gt; 0)) {
-    def bais = new ByteArrayInputStream(data);
-    def zis = new ZipInputStream(bais);
+    def zipStream = new ZipInputStream(new ByteArrayInputStream(data));
     def buffer = new byte[1024];
-    while ((entry = zis.getNextEntry()) != null) {
-      if (entry.getName().compareTo('package.xml') != 0) {
-        while ((read = zis.read(buffer, 0, 1024)) &gt;= 0) {
-          sb.append(new String(buffer, 0, read));
+    while ((entry = zipStream.getNextEntry()) != null) {
+      if (entry.getName() != 'package.xml') {
+        while ((read = zipStream.read(buffer, 0, 1024)) &gt;= 0) {
+          xmlData.append(new String(buffer, 0, read));
         }
+        // If the xar contains more than one document, after package.xml is ignored, only first document will be imported.
+        break;
       }
     }
   }
-  def ret = updateDoc(docName, sb.toString(), type, xcontext.context);
+  def ret = updateDoc(docName, xmlData.toString(), type, xcontext.context);
   if (ret &lt; 0) {
     if (ret==-1000)
       println 'Document already exists and overwrite was not specified.';
@@ -100,9 +107,11 @@ if (request.get('name') != null) {
   } else {
     println "Document has been imported properly: [[${finalPageName}&gt;&gt;path:${finalPageURL}]].";
   }
-} else {
+}
+
+def displayForm() {
   println """
-    {{html clean='false' wiki='true'}}
+    {{html clean='false'}}
       &lt;form action="" enctype="multipart/form-data" method="post"&gt;
         &lt;table border="0"&gt;
           &lt;tr&gt;
@@ -138,8 +147,16 @@ if (request.get('name') != null) {
           &lt;/tr&gt;
         &lt;/table&gt;
       &lt;/form&gt;
-    {{/html}}
+    {{/html}} 
   """;
+}
+
+println 'This document allows you to import a single page XAR, with the possibility to change the name and the version of the new page.';
+
+if (request.get('name') != null) {
+  importDoc();
+} else {
+  displayForm();
 }
 {{/groovy}}</content>
 </xwikidoc>
