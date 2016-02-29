@@ -20,96 +20,143 @@
   <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/1.0</syntaxId>
+  <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
-  <content>1.1 Import Page
-
-&lt;%
-
+  <content>{{groovy}}
 import com.xpn.xwiki.*;
 import com.xpn.xwiki.doc.*;
 import com.xpn.xwiki.plugin.packaging.*;
 
-finalPageName = ""
+import java.util.zip.*;
 
+finalPageName = '';
+finalPageURL = '';
+
+/**
+ * Import a document described in XML to a specified location.
+ * @param newname the target of the document
+ * @param xml the XML description of the document
+ * @param type the type of change on document's version
+ * @param context the XWiki context
+ */
 def updateDoc(String newname, String xml, String type, XWikiContext context) {
-    def prevDoc =  context.getWiki().getDocument(newname, context);
-    def prevArchive = prevDoc.getDocumentArchive();
-    if (prevDoc.isNew()||((type!="NOOVERVERSIONS")&amp;&amp;(type!="NOOVERNOVERSIONS"))) {
-     def fdoc = new XWikiDocument()
-     fdoc.fromXML(xml);
-     // We need to verify the document has the right name
-     // Otherwise we might override something we don't expect
-     if ((newname!="")&amp;&amp;(fdoc.fullName!=newname)) {
-       fdoc = fdoc.copyDocument(newname, context);
-     }
-     finalPageName =  fdoc.getFullName()
-    
-     if (type=="ADDVERSION") {
-       fdoc.setDocumentArchive(prevArchive);
-       context.getWiki().saveDocument(fdoc, context);
-       if (prevDoc.isNew()) {
-        fdoc.resetArchive(context);
-       }
-      return 1;
-     } else {
-      def pack = new Package()
-      if ((type=="NOOVERVERSIONS")||(type=="OVERVERSIONS"))
-       pack.setWithVersions(true)
-      else
-       pack.setWithVersions(false)
-      pack.setBackupPack(true)
-      pack.add(fdoc, 0, context)
-      return pack.install(context)
-     }    
-    } else {
-       return -1000;
+  def prevDoc =  context.getWiki().getDocument(newname, context);
+  def prevArchive = prevDoc.getDocumentArchive();
+  if (prevDoc.isNew() || ((type != 'NOOVERVERSIONS') &amp;&amp; (type != 'NOOVERNOVERSIONS'))) {
+    def fdoc = new XWikiDocument();
+    fdoc.fromXML(xml);
+    // We need to verify the document has the right name
+    // Otherwise we might override something we don't expect
+    if ((newname != '') &amp;&amp; (fdoc.fullName != newname)) {
+      fdoc = fdoc.copyDocument(newname, context);
     }
- }
-
-if (request.get("name")!=null) {
- def fupl= xwiki.get("fileupload");
- def myfiles = fupl.getFileItems();
- def xml = fupl.getFileItem("file");
- def fName = fupl.getFileName("file");
- def docName = fupl.getFileItem("name");
- def type = fupl.getFileItem("type");
- def ret = updateDoc(docName, xml, type, context.context);
- if (ret &lt; 0) {
-   if (ret==-1000)
-    println "Document already exists and overwrite was not specified."; 
-   else
-    println "Document could not be imported with error ${ret}."; 
- } else {
-   println "Document has been imported properly: [${finalPageName}]."
- }
-} else {
-%&gt; 
-&lt;form action="" enctype="multipart/form-data" method="post"&gt;
-&lt;table border="0"&gt;
-&lt;tr&gt;
-&lt;td&gt;Page Name to save to:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="name" size="60" /&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Type:&lt;/td&gt;&lt;td&gt;
-&lt;input type="radio" name="type" value="NOOVERVERSIONS" checked /&gt; Do Not overwrite with versions
-&lt;input type="radio" name="type" value="NOOVERNOVERSIONS" /&gt; Do Not overwrite without versions
-&lt;br /&gt;
-&lt;input type="radio" name="type" value="ADDVERSION" /&gt; Add version 
-&lt;input type="radio" name="type" value="OVERVERSIONS" /&gt; Overwrite with version 
-&lt;input type="radio" name="type" value="OVERNOVERSIONS" /&gt; Overwrite without versions  &lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;File:&lt;/td&gt;&lt;td&gt;&lt;input type="file" name="file" size="60" /&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td colspan="2" align="center"&gt;
-&lt;input type="submit" name="Import" /&gt;
-&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/table&gt;
-&lt;/form&gt;
-&lt;%
+    finalPageName = fdoc.getFullName();
+    finalPageURL = fdoc.getURL('view', context);
+    
+    if (type == 'ADDVERSION') {
+      fdoc.setDocumentArchive(prevArchive);
+      context.getWiki().saveDocument(fdoc, context);
+      if (prevDoc.isNew()) {
+        fdoc.resetArchive(context);
+      }
+      return 1;
+    } else {
+      def pack = new Package();
+      if ((type == 'NOOVERVERSIONS') || (type == 'OVERVERSIONS')) {
+        pack.setWithVersions(true);
+      }
+      else {
+        pack.setWithVersions(false);
+      }
+      pack.setBackupPack(true);
+      pack.add(fdoc, 0, context);
+      return pack.install(context);
+    }    
+  } else {
+    return -1000;
+  }
 }
-%&gt;</content>
+
+def importDoc() {
+  def fupl = xwiki.get('fileupload');
+  def docName = fupl.getFileItem('name');
+  def type = fupl.getFileItem('type');
+  def data = fupl.getFileItemData("file");
+  def xmlData = new StringBuilder();
+
+  // generate the xml data from byte data
+  if ((data != null) &amp;&amp; (data.length &gt; 0)) {
+    def zipStream = new ZipInputStream(new ByteArrayInputStream(data));
+    def buffer = new byte[1024];
+    while ((entry = zipStream.getNextEntry()) != null) {
+      if (entry.getName() != 'package.xml') {
+        while ((read = zipStream.read(buffer, 0, 1024)) &gt;= 0) {
+          xmlData.append(new String(buffer, 0, read));
+        }
+        // If the xar contains more than one document, after package.xml is ignored, only first document will be imported.
+        break;
+      }
+    }
+  }
+  def ret = updateDoc(docName, xmlData.toString(), type, xcontext.context);
+  if (ret &lt; 0) {
+    if (ret==-1000)
+      println 'Document already exists and overwrite was not specified.';
+    else
+      println "Document could not be imported with error ${ret}.";
+  } else {
+    println "Document has been imported properly: [[${finalPageName}&gt;&gt;path:${finalPageURL}]].";
+  }
+}
+
+def displayForm() {
+  println """
+    {{html clean='false'}}
+      &lt;form action="" enctype="multipart/form-data" method="post"&gt;
+        &lt;table border="0"&gt;
+          &lt;tr&gt;
+            &lt;td&gt;
+              Page Name to save to:&lt;/td&gt;&lt;td&gt;&lt;input type="text" name="name" size="60" /&gt;
+            &lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td&gt;
+              Type:
+            &lt;/td&gt;
+            &lt;td&gt;
+              &lt;input type="radio" name="type" value="NOOVERVERSIONS" checked /&gt; Do Not overwrite with versions
+              &lt;input type="radio" name="type" value="NOOVERNOVERSIONS" /&gt; Do Not overwrite without versions
+              &lt;br /&gt;
+              &lt;input type="radio" name="type" value="ADDVERSION" /&gt; Add version
+              &lt;input type="radio" name="type" value="OVERVERSIONS" /&gt; Overwrite with version
+              &lt;input type="radio" name="type" value="OVERNOVERSIONS" /&gt; Overwrite without versions
+            &lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td&gt;
+              File:
+            &lt;/td&gt;
+            &lt;td&gt;
+              &lt;input type="file" name="file" size="60" /&gt;
+            &lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td colspan="2" align="center"&gt;
+              &lt;input type="submit" name="Import" /&gt;
+            &lt;/td&gt;
+          &lt;/tr&gt;
+        &lt;/table&gt;
+      &lt;/form&gt;
+    {{/html}} 
+  """;
+}
+
+println 'This document allows you to import a single page XAR, with the possibility to change the name and the version of the new page.';
+
+if (request.get('name') != null) {
+  importDoc();
+} else {
+  displayForm();
+}
+{{/groovy}}</content>
 </xwikidoc>
