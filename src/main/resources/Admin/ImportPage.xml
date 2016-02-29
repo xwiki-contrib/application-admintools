@@ -29,7 +29,10 @@ import com.xpn.xwiki.*;
 import com.xpn.xwiki.doc.*;
 import com.xpn.xwiki.plugin.packaging.*;
 
+import java.util.zip.*;
+
 finalPageName = '';
+finalPageURL = '';
 
 def updateDoc(String newname, String xml, String type, XWikiContext context) {
   def prevDoc =  context.getWiki().getDocument(newname, context);
@@ -43,6 +46,7 @@ def updateDoc(String newname, String xml, String type, XWikiContext context) {
       fdoc = fdoc.copyDocument(newname, context);
     }
     finalPageName = fdoc.getFullName();
+    finalPageURL = fdoc.getURL('view', context);
     
     if (type == 'ADDVERSION') {
       fdoc.setDocumentArchive(prevArchive);
@@ -70,19 +74,31 @@ def updateDoc(String newname, String xml, String type, XWikiContext context) {
 
 if (request.get('name') != null) {
   def fupl = xwiki.get('fileupload');
-  def myfiles = fupl.getFileItems();
-  def xml = fupl.getFileItem('file');
-  def fName = fupl.getFileName('file');
   def docName = fupl.getFileItem('name');
   def type = fupl.getFileItem('type');
-  def ret = updateDoc(docName, xml, type, xcontext.context);
+  def data = fupl.getFileItemData("file");
+  def sb = new StringBuilder();
+
+  if ((data != null) &amp;&amp; (data.length &gt; 0)) {
+    def bais = new ByteArrayInputStream(data);
+    def zis = new ZipInputStream(bais);
+    def buffer = new byte[1024];
+    while ((entry = zis.getNextEntry()) != null) {
+      if (entry.getName().compareTo('package.xml') != 0) {
+        while ((read = zis.read(buffer, 0, 1024)) &gt;= 0) {
+          sb.append(new String(buffer, 0, read));
+        }
+      }
+    }
+  }
+  def ret = updateDoc(docName, sb.toString(), type, xcontext.context);
   if (ret &lt; 0) {
     if (ret==-1000)
       println 'Document already exists and overwrite was not specified.';
     else
       println "Document could not be imported with error ${ret}.";
   } else {
-    println "Document has been imported properly: [${finalPageName}].";
+    println "Document has been imported properly: [[${finalPageName}&gt;&gt;path:${finalPageURL}]].";
   }
 } else {
   println """
