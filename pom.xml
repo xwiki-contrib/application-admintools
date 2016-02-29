@@ -31,7 +31,7 @@
   </parent>
   <groupId>org.xwiki.contrib</groupId>
   <artifactId>xwiki-application-admintools</artifactId>
-  <version>4.1.7-SNAPSHOT</version>
+  <version>4.1.7</version>
   <name>Admin Tools Application</name>
   <packaging>xar</packaging>
   <description>Contains administration tools for managing a running XWiki instance</description>
@@ -39,7 +39,7 @@
     <connection>scm:git:git://github.com/xwiki-contrib/application-admintools.git</connection>
     <developerConnection>scm:git:git@github.com:xwiki-contrib/application-admintools.git</developerConnection>
     <url>https://github.com/xwiki-contrib/application-admintools</url>
-    <tag>HEAD</tag>
+    <tag>xwiki-application-admintools-4.1.7</tag>
   </scm>
   <developers>
     <developer>
