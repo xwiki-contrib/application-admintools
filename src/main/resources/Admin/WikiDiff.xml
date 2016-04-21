@@ -1,48 +1,140 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xwikidoc>
+<xwikidoc version="1.2" reference="Admin.WikiDiff" locale="">
   <web>Admin</web>
   <name>WikiDiff</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
-  <parent>Admin.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
-  <author>xwiki:XWiki.Admin</author>
-  <customClass/>
-  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <creationDate>1375188483000</creationDate>
-  <date>1375894544000</date>
-  <contentUpdateDate>1375894544000</contentUpdateDate>
+  <parent>Admin.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <date>1461249079000</date>
+  <contentUpdateDate>1461249079000</contentUpdateDate>
   <version>1.1</version>
   <title>Wiki Diff</title>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
   <hidden>true</hidden>
+  <content>{{velocity}}
+#set ($discard = $xwiki.ssx.use($doc.fullName))
+#if ($request.source)
+  #set ($diffTool = $xwiki.parseGroovyFromPage("Admin.WikiDiffGroovy"))
+  #set ($discard = $diffTool.setContext($context, $xwiki))
+  #set ($oldURL = $request.source)
+  #set ($newURL = $request.target)
+  #set ($oldContents = $diffTool.getZipContent($oldURL))
+  #if ($newURL &amp;&amp; $newURL != '')
+    #set ($newContents = $diffTool.getZipContent($newURL))
+  #end
+  #set ($missingTargetDocList = [])
+  #foreach ($key in $oldContents.keySet())
+    #if ($key != 'package.xml')
+      #set ($oldDoc = $diffTool.getDocument($oldContents.get($key)))
+      #if (!$oldDoc.getObject('XWiki.XWikiPreferences') &amp;&amp; !$oldDoc.getObject('XWiki.XWikiGroups'))
+        #set ($oldContent = $diffTool.getXML($oldDoc))
+        #if ($newContents)
+          #set ($newContent = $diffTool.getXMLFromString($newContents.get($key)))
+        #else
+          #set ($page = $oldDoc.getFullName())
+          #set ($newDoc = $xwiki.getDocument($page))
+          #if ($oldDoc.getLanguage() != '')
+            #set ($newDoc = $newDoc.getTranslatedDocument($oldDoc.getLanguage()))
+          #end
+          #set ($newContent = $diffTool.getXML($newDoc))
+        #end
+        #set ($comparedContent = $diffTool.compare($oldContent, $newContent))
+        #if ($oldContent &amp;&amp; $comparedContent)
+          #set ($diffResult = $diffTool.diff($oldContent, $newContent))
+          #set ($skipNewRev = "$!request.skipNewRev" == 'true')
+          #set ($isOtherThanNewRevDiff = $diffTool.isOtherThanNewRevisonDiff($diffResult))
+          #if (!$skipNewRev || ($skipNewRev &amp;&amp; $isOtherThanNewRevDiff) || $request.debug)
+            #if ($newDoc.isNew())
+              #set ($discard = $missingTargetDocList.add($key))
+            #else
+              * $key has changed [[View Diff&gt;&gt;?page=${key}&amp;source=${request.source}&amp;target=${request.target}&amp;skipNewRev=$!{request.skipNewRev}]]
+              #if ($request.page == $key)
+                **Differences**:
+
+                 {{html clean="false"}}
+                   $diffResult
+                 {{/html}}
+
+                #if ($request.debug)
+                  #set ($discard = $diffTool.save('file1.txt', $oldContent, true))
+                  #set ($discard = $diffTool.save('file1b.txt', $oldContent, false))
+                  #set ($discard = $diffTool.save('file2.txt', $newContent, true))
+                  #set ($discard = $diffTool.save('file2b.txt', $newContent, false))
+                #end
+              #end
+            #end
+          #end
+        #end
+      #end
+    #end
+  #end
+  #if ($missingTargetDocList.size() &gt; 0)
+
+    {{warning}}
+      Documents that don't exist in the **target** XAR
+      #foreach ($key in $missingTargetDocList)
+        * $key
+      #end
+    {{/warning}}
+  #end
+#else
+  #set ($version = $xwiki.version)
+  #if ($services.wikimanager)
+    #set ($mode = 'manager')
+  #else
+    #set ($mode = 'enterprise')
+  #end
+  $version
+  #set ($source = "http://maven.xwiki.org/releases/org/xwiki/${mode}/xwiki-${mode}-ui-all/5.1/xwiki-${mode}-ui-all-${version}.xar")
+  {{html clean=false}}
+  &lt;form action=""&gt;
+    &lt;strong&gt;Source URL:&lt;/strong&gt;&lt;br /&gt;
+    &lt;input type="text" name="source" value="$source" size="120" /&gt;
+    &lt;br /&gt;
+    &lt;strong&gt;Target URL:&lt;/strong&gt;&lt;br /&gt;
+    leave empty to compare to current wiki&lt;br /&gt;
+    &lt;input type="text" name="target" value="" size="120" /&gt;
+    &lt;br /&gt;
+    &lt;input type="checkbox" name="skipNewRev" value="true"&gt; Skip changes that reflect only new revisions of the document and nothing else
+    &lt;br /&gt;
+    &lt;input type="submit" value="Go" /&gt;
+  &lt;/form&gt;
+  {{/html}}
+#end
+{{/velocity}}</content>
   <object>
+    <name>Admin.WikiDiff</name>
+    <number>0</number>
+    <className>XWiki.StyleSheetExtension</className>
+    <guid>86b6d323-1500-4d47-baa0-182919780a47</guid>
     <class>
       <name>XWiki.StyleSheetExtension</name>
-      <customClass></customClass>
-      <customMapping></customMapping>
-      <defaultViewSheet></defaultViewSheet>
-      <defaultEditSheet></defaultEditSheet>
-      <defaultWeb></defaultWeb>
-      <nameField></nameField>
-      <validationScript></validationScript>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
       <cache>
         <cache>0</cache>
         <disabled>0</disabled>
         <displayType>select</displayType>
         <multiSelect>0</multiSelect>
         <name>cache</name>
-        <number>5</number>
+        <number>6</number>
         <prettyName>Caching policy</prettyName>
         <relationalStorage>0</relationalStorage>
         <separator> </separator>
-        <separators> ,|</separators>
+        <separators>|, </separators>
         <size>1</size>
         <unmodifiable>0</unmodifiable>
         <values>long|short|default|forbid</values>
@@ -51,17 +143,33 @@
       <code>
         <disabled>0</disabled>
         <name>code</name>
-        <number>2</number>
+        <number>3</number>
         <prettyName>Code</prettyName>
         <rows>20</rows>
         <size>50</size>
         <unmodifiable>0</unmodifiable>
         <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
       </code>
+      <contentType>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>contentType</name>
+        <number>1</number>
+        <prettyName>Content Type</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>CSS|LESS</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </contentType>
       <name>
         <disabled>0</disabled>
         <name>name</name>
-        <number>1</number>
+        <number>2</number>
         <prettyName>Name</prettyName>
         <size>30</size>
         <unmodifiable>0</unmodifiable>
@@ -72,7 +180,7 @@
         <displayFormType>select</displayFormType>
         <displayType>yesno</displayType>
         <name>parse</name>
-        <number>4</number>
+        <number>5</number>
         <prettyName>Parse content</prettyName>
         <unmodifiable>0</unmodifiable>
         <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
@@ -83,21 +191,17 @@
         <displayType>select</displayType>
         <multiSelect>0</multiSelect>
         <name>use</name>
-        <number>3</number>
+        <number>4</number>
         <prettyName>Use this extension</prettyName>
         <relationalStorage>0</relationalStorage>
         <separator> </separator>
-        <separators> ,|</separators>
+        <separators>|, </separators>
         <size>1</size>
         <unmodifiable>0</unmodifiable>
-        <values>currentPage=Always on this page|onDemand=On demand|always=Always on this wiki</values>
+        <values>currentPage|onDemand|always</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </use>
     </class>
-    <name>Admin.WikiDiff</name>
-    <number>0</number>
-    <className>XWiki.StyleSheetExtension</className>
-    <guid>86b6d323-1500-4d47-baa0-182919780a47</guid>
     <property>
       <cache>long</cache>
     </property>
@@ -120,94 +224,4 @@
       <use>onDemand</use>
     </property>
   </object>
-  <content>{{velocity}}
-#set($discard = $xwiki.ssx.use($doc.fullName))
-#if($request.source)
-#set ($diffTool = $xwiki.parseGroovyFromPage("Admin.WikiDiffGroovy"))
-#set ($ok = $diffTool.setContext($context, $xwiki))
-#set ($oldURL = $request.source)
-#set ($newURL = $request.target)
-#set ($oldContents = $diffTool.getZipContent($oldURL))
-#if($newURL &amp;&amp; $newURL!="")
- #set($newContents = $diffTool.getZipContent($newURL))
-#end
-#set($missingTargetDocList = [])
-#foreach ($key in $oldContents.keySet())
- #if($key != "package.xml")
-  #set($oldDoc = $diffTool.getDocument($oldContents.get($key)))
-  #if(!$oldDoc.getObject("XWiki.XWikiPreferences")&amp;&amp;!$oldDoc.getObject("XWiki.XWikiGroups"))
-   #set($oldContent = $diffTool.getXML($oldDoc))
-   #if($newContents)
-    #set($newContent = $diffTool.getXMLFromString($newContents.get($key)))
-   #else
-    #set($page = $oldDoc.getFullName())
-    #set($newDoc = $xwiki.getDocument($page))
-    #if($oldDoc.getLanguage()!="")
-     #set($newDoc = $newDoc.getTranslatedDocument($oldDoc.getLanguage()))
-    #end
-    #set($newContent = $diffTool.getXML($newDoc))
-   #end
-   #set($comparedContent = $diffTool.compare($oldContent, $newContent))
-   #if ($oldContent &amp;&amp; $comparedContent)
-     #set($diffResult = $diffTool.diff($oldContent, $newContent))
-     #set($skipNewRev = "$!request.skipNewRev" == 'true')
-     #set($isOtherThanNewRevDiff = $diffTool.isOtherThanNewRevisonDiff($diffResult))
-     #if(!$skipNewRev || ($skipNewRev &amp;&amp; $isOtherThanNewRevDiff) || $request.debug)
-       #if($newDoc.isNew())
-         #set($discard = $missingTargetDocList.add($key))
-       #else
-         * $key has changed [[View Diff&gt;&gt;?page=${key}&amp;source=${request.source}&amp;target=${request.target}&amp;skipNewRev=${request.skipNewRev}]]
-         #if($request.page==$key)
-           **Differences**:
-
-           {{html clean="false"}}
-             $diffResult
-           {{/html}}
-
-           #if($request.debug)
-             #set($ok = $diffTool.save("file1.txt", $oldContent, true))
-             #set($ok = $diffTool.save("file1b.txt", $oldContent, false))
-             #set($ok = $diffTool.save("file2.txt", $newContent, true))
-             #set($ok = $diffTool.save("file2b.txt", $newContent, false))
-           #end
-         #end
-       #end
-     #end
-   #end
-  #end
- #end
-#end
-#if($missingTargetDocList.size() &gt; 0)
-
-  {{warning}}
-    Documents that don't exist in the **target** XAR
-    #foreach($key in $missingTargetDocList)
-      * $key
-    #end
-  {{/warning}}
-#end
-#else
-#set($version = $xwiki.version)
-#if($services.wikimanager)
-  #set($mode="manager")
-#else
-  #set($mode="enterprise")
-#end
-#set($source = "http://maven.xwiki.org/releases/org/xwiki/${mode}/xwiki-${mode}-ui-all/5.1/xwiki-${mode}-ui-all-${version}.xar")
-{{html clean=false}}
-&lt;form action=""&gt;
-&lt;strong&gt;Source URL:&lt;/strong&gt;&lt;br /&gt;
-&lt;input type="text" name="source" value="$source" size="120" /&gt;
-&lt;br /&gt;
-&lt;strong&gt;Target URL:&lt;/strong&gt;&lt;br /&gt;
-leave empty to compare to current wiki&lt;br /&gt;
-&lt;input type="text" name="target" value="" size="120" /&gt;
-&lt;br /&gt;
-&lt;input type="checkbox" name="skipNewRev" value="true"&gt; Skip changes that reflect only new revisions of the document and nothing else
-&lt;br /&gt;
-&lt;input type="submit" value="Go" /&gt;
-&lt;/form&gt;
-{{/html}}
-#end
-{{/velocity}}</content>
 </xwikidoc>
