@@ -92,7 +92,6 @@
   #else
     #set ($mode = 'enterprise')
   #end
-  $version
   #set ($source = "http://maven.xwiki.org/releases/org/xwiki/${mode}/xwiki-${mode}-ui-all/5.1/xwiki-${mode}-ui-all-${version}.xar")
   {{html clean=false}}
   &lt;form action=""&gt;
