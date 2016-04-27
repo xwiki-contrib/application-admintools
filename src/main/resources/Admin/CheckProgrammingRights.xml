@@ -301,7 +301,7 @@ if (!"post".equalsIgnoreCase(request.getMethod())) {
 
 def pageListPerWiki()
 {
-    def wikilist =  xwiki.isVirtualMode() ? xwiki.getPlugin("wikimanager")?.getAllWikis() : [ "xwiki" ];
+    def wikilist = xwiki.metaClass.respondsTo(xwiki, 'isVirtualMode') &amp;&amp; xwiki.isVirtualMode() ? xwiki.getPlugin("wikimanager")?.getAllWikis() : [ "xwiki" ];
     def knownpageslist = [
         "AnnotationCode.Script",
         "AnnotationCode.Settings",
