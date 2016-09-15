@@ -84,7 +84,7 @@ private void printIntro(final XWiki wiki)
 }
 
 main();
-private void main()
+public void main()
 {
     final XWikiContext xc = xcontext.getContext();
     final XWiki wiki = xc.getWiki();
