@@ -20,13 +20,14 @@
   <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/1.0</syntaxId>
+  <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
-  <content>1 Flush Cache
-
-#if($request.confirm)
-$xwiki.flushCache() Cache has been flushed
+  <content>{{velocity}}
+#if ($request.confirm)
+  $xwiki.flushCache()
+  {{success}}$services.localization.render('admintools.flushCache.confirmed'){{/success}}
 #else
-[Confirm cache flushing&gt;$doc.fullName?confirm=1]
-#end</content>
+  [[$services.localization.render('admintools.flushCache.confirm')&gt;&gt;$doc.fullName||queryString='confirm=1']]
+#end
+{{/velocity}}</content>
 </xwikidoc>

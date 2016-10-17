@@ -17,9 +17,12 @@
   <title>Translations</title>
   <comment/>
   <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/2.1</syntaxId>
+  <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
-  <content>admin.admintools=Admin Tools</content>
+  <content>admin.admintools=Admin Tools
+
+admintools.flushCache.confirm=Confirm cache flushing
+admintools.flushCache.confirmed=Cache has been flushed!</content>
   <object>
     <name>Admin.Translations</name>
     <number>0</number>
