@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.xwiki.contrib</groupId>
     <artifactId>parent-platform</artifactId>
-    <version>4.5</version>
+    <version>4.5-1</version>
   </parent>
   <groupId>org.xwiki.contrib</groupId>
   <artifactId>xwiki-application-admintools</artifactId>
@@ -91,11 +91,4 @@
       <scope>runtime</scope>
     </dependency>
   </dependencies>
-  <distributionManagement>
-    <repository>
-      <id>xwiki-staging</id>
-      <name>XWiki Staging Repository</name>
-      <url>http://nexus.xwiki.org/nexus/service/local/staging/deploy/maven2/</url>
-    </repository>
-  </distributionManagement>
 </project>
