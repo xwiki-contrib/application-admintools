@@ -19,8 +19,8 @@
   <minorEdit>false</minorEdit>
   <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
-  <content>### Missing: admin.admintools=Admin Tools
+  <content>admin.admintools=Pārvaldības rīki
 
-### Missing: admintools.flushCache.confirm=Confirm cache flushing
-### Missing: admintools.flushCache.confirmed=Cache has been flushed!</content>
+admintools.flushCache.confirm=Apstiprināt keša iztīrīšanu
+admintools.flushCache.confirmed=Kešs ir iztīrīts!</content>
 </xwikidoc>
