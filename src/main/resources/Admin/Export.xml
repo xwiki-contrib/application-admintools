@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xwikidoc version="1.1">
+<xwikidoc version="1.3" reference="Admin.Export" locale="">
   <web>Admin</web>
   <name>Export</name>
   <language/>
@@ -87,8 +87,8 @@ OK
 &lt;table&gt;
 &lt;tr&gt;
 &lt;td class="td-docSelectorColumn"&gt;&lt;h3 id="firstColumnTitle"&gt;Your Wiki&lt;/h3&gt;
-&lt;span id="spaceSelectorEl"&gt;  
- Select a Space: 
+&lt;span id="spaceSelectorEl"&gt;
+ Select a Space:
   #set($spaces = $xwiki.getSpaces())
   &lt;select name="spaceSelector" id="spaceSelector"&gt;
   &lt;option value="---"&gt;---&lt;/option&gt;
@@ -97,7 +97,7 @@ OK
   #end
   &lt;/select&gt;
   &lt;br /&gt;
-  #set($script = $xwiki.getURL("Admin.ExportSpaceSuggest", "view", "xpage=rdf"))
+  #set($script = $escapetool.xml($xwiki.getURL("Admin.ExportSpaceSuggest", "get", "xpage=plain&amp;outputSyntax=plain")))
  &lt;form action="" onsubmit="setSpace(this.space.value); return false;"&gt;
  Search space: &lt;input type="text" name="space" value="" size="20"  onfocus="new XWiki.widgets.Suggest(this, {script:'${script}&amp;amp;', varname: 'input', seps:'', offsety: 13});" /&gt;
   &lt;input type="submit" class="button btn" value="Go" /&gt;
@@ -178,14 +178,16 @@ OK
         <prettyName>Caching policy</prettyName>
         <relationalStorage>0</relationalStorage>
         <separator> </separator>
-        <separators> ,|</separators>
+        <separators>|, </separators>
         <size>1</size>
         <unmodifiable>0</unmodifiable>
         <values>long|short|default|forbid</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </cache>
       <code>
+        <contenttype>PureText</contenttype>
         <disabled>0</disabled>
+        <editor>PureText</editor>
         <name>code</name>
         <number>2</number>
         <prettyName>Code</prettyName>
@@ -223,7 +225,7 @@ OK
         <prettyName>Use this extension</prettyName>
         <relationalStorage>0</relationalStorage>
         <separator> </separator>
-        <separators> ,|</separators>
+        <separators>|, </separators>
         <size>1</size>
         <unmodifiable>0</unmodifiable>
         <values>currentPage|onDemand|always</values>
@@ -454,14 +456,16 @@ OK
         <prettyName>Caching policy</prettyName>
         <relationalStorage>0</relationalStorage>
         <separator> </separator>
-        <separators> ,|</separators>
+        <separators>|, </separators>
         <size>1</size>
         <unmodifiable>0</unmodifiable>
         <values>long|short|default|forbid</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </cache>
       <code>
+        <contenttype>PureText</contenttype>
         <disabled>0</disabled>
+        <editor>PureText</editor>
         <name>code</name>
         <number>2</number>
         <prettyName>Code</prettyName>
@@ -470,6 +474,22 @@ OK
         <unmodifiable>0</unmodifiable>
         <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
       </code>
+      <contentType>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>contentType</name>
+        <number>6</number>
+        <prettyName>Content Type</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>CSS|LESS</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </contentType>
       <name>
         <disabled>0</disabled>
         <name>name</name>
@@ -499,7 +519,7 @@ OK
         <prettyName>Use this extension</prettyName>
         <relationalStorage>0</relationalStorage>
         <separator> </separator>
-        <separators> ,|</separators>
+        <separators>|, </separators>
         <size>1</size>
         <unmodifiable>0</unmodifiable>
         <values>currentPage|onDemand|always</values>
