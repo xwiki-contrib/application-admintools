@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xwikidoc>
+<xwikidoc version="1.3" reference="Admin.UsedSpace" locale="">
   <web>Admin</web>
   <name>UsedSpace</name>
   <language/>
@@ -9,15 +9,12 @@
   <parent>Admin.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
   <author>xwiki:XWiki.Admin</author>
-  <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <creationDate>1375188479000</creationDate>
   <date>1375188560000</date>
   <contentUpdateDate>1375188560000</contentUpdateDate>
   <version>1.1</version>
   <title>Space Used</title>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
@@ -50,6 +47,8 @@ __xwikiattrecyclebin__ : Recycle bin of attachments.
   #else
     #if($services.wikimanager)
       #set($dbs = $services.wikimanager.getAllWikis())
+    #elseif($services.wiki)
+      #set($dbs = $services.wiki.getAllIds())
     #else
       #set($dbs = ["$xcontext.getDatabase()"])
     #end
@@ -60,13 +59,17 @@ __xwikiattrecyclebin__ : Recycle bin of attachments.
       #set($tables = ['xwikirecyclebin','xwikircs','xwikiattachment_content','xwikiattachment_archive','xwikiattrecyclebin'])
     #end
 
+    #set($prefix = $xwiki.getXWiki().Param('xwiki.db.prefix',''))
     #foreach($schema in $dbs)
       #set($alltables = '')
       $xcontext.setDatabase($schema)
       == Used space of wiki ${schema} in MB ==
+      #if($schema == "xwiki")
+        #set($schema = $xwiki.getXWiki().Param('xwiki.db', $schema))
+      #end
       #foreach($table in $tables)
         #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
-        #set($query = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${schema}';")
+        #set($query = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${prefix}${schema}';")
         #set($results = $sqlTools.getResults($connection, $query, true))
         #set($alltables = $alltables + $results)
       #end
@@ -75,9 +78,9 @@ __xwikiattrecyclebin__ : Recycle bin of attachments.
   #end
 #else
 {{error}}Sorry, you need the programming rights to use this tool{{/error}}
-#end 
+#end
 
-== Recommandations ==
+== Recommendations ==
 
 #if($fsstore != true)
 {{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&gt;&gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}

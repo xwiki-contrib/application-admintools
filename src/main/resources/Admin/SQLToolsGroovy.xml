@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xwikidoc>
+<xwikidoc version="1.3" reference="Admin.SQLToolsGroovy" locale="">
   <web>Admin</web>
   <name>SQLToolsGroovy</name>
   <language/>
@@ -9,75 +9,33 @@
   <parent>Admin.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
   <author>xwiki:XWiki.Admin</author>
-  <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <creationDate>1375188484000</creationDate>
   <date>1375188484000</date>
   <contentUpdateDate>1375188484000</contentUpdateDate>
   <version>1.1</version>
   <title>SQLToolsGroovy</title>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/2.1</syntaxId>
+  <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
-  <object>
-    <class>
-      <name>XWiki.RequiredRightClass</name>
-      <customClass/>
-      <customMapping/>
-      <defaultViewSheet/>
-      <defaultEditSheet/>
-      <defaultWeb/>
-      <nameField/>
-      <validationScript/>
-      <level>
-        <cache>0</cache>
-        <disabled>0</disabled>
-        <displayType>select</displayType>
-        <multiSelect>0</multiSelect>
-        <name>level</name>
-        <number>1</number>
-        <picker>0</picker>
-        <prettyName>level</prettyName>
-        <relationalStorage>0</relationalStorage>
-        <separator> </separator>
-        <separators> ,|</separators>
-        <size>1</size>
-        <sort>none</sort>
-        <unmodifiable>0</unmodifiable>
-        <validationMessage/>
-        <validationRegExp/>
-        <values>edit|programming</values>
-        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
-      </level>
-    </class>
-    <name>Admin.SQLToolsGroovy</name>
-    <number>0</number>
-    <className>XWiki.RequiredRightClass</className>
-    <guid>47f1dd58-f20a-4799-a2e1-e1cfd0f0d61b</guid>
-    <property>
-      <level>programming</level>
-    </property>
-  </object>
   <content>/**
  * Import
- */ 
+ */
 import org.apache.velocity.tools.generic.EscapeTool;
 import java.sql.*
 
 /**
- * Class 
+ * Class
  */
 class SQLTools{
 
   /**
    * Get Form
    */
-  String getForm(request, doc, withJDBCForm, withQuery){    
+  String getForm(request, doc, withJDBCForm, withQuery){
     def escapeTool = new EscapeTool();
-    def spageUrl = escapeTool.xml(doc.getURL());    
+    def spageUrl = escapeTool.xml(doc.getURL());
     
     // &lt;form&gt;
     def toReturn = """
@@ -99,12 +57,12 @@ class SQLTools{
       def driver = request.driver;
       if (driver==null)
         driver = "com.mysql.jdbc.Driver";
-        
+      
       // Escape datas
       def surl = escapeTool.xml(url);
       def suser = escapeTool.xml(user);
       def spassword = escapeTool.xml(password);
-      def sdriver = escapeTool.xml(driver);      
+      def sdriver = escapeTool.xml(driver);
     
       // Print form
       toReturn += """
@@ -114,7 +72,7 @@ class SQLTools{
           &lt;/dt&gt;
           &lt;dd&gt;
             &lt;input type="text" name="user" id="user" value="${suser}" size="80" /&gt;
-          &lt;/dd&gt;    
+          &lt;/dd&gt;
         &lt;/dl&gt;
         &lt;dl&gt;
           &lt;dt&gt;
@@ -122,7 +80,7 @@ class SQLTools{
           &lt;/dt&gt;
           &lt;dd&gt;
             &lt;input type="text" name="password" id="password" value="${spassword}" size="80" /&gt;
-          &lt;/dd&gt;    
+          &lt;/dd&gt;
         &lt;/dl&gt;
         &lt;dl&gt;
           &lt;dt&gt;
@@ -130,7 +88,7 @@ class SQLTools{
           &lt;/dt&gt;
           &lt;dd&gt;
             &lt;input type="text" name="url" id="url" value="${surl}" size="80" /&gt;
-          &lt;/dd&gt;    
+          &lt;/dd&gt;
         &lt;/dl&gt;
         &lt;dl&gt;
           &lt;dt&gt;
@@ -138,7 +96,7 @@ class SQLTools{
           &lt;/dt&gt;
           &lt;dd&gt;
             &lt;input type="text" name="driver" id="driver" value="${sdriver}" size="80" /&gt;
-          &lt;/dd&gt;    
+          &lt;/dd&gt;
         &lt;/dl&gt;
       """;
     }
@@ -203,18 +161,18 @@ class SQLTools{
   /**
    * Get XWiki Connection
    */
-  def getXWikiConnection(xwiki, xcontext){    
+  def getXWikiConnection(xwiki, xcontext){
     def store = xwiki.getXWiki().getHibernateStore();
     store.beginTransaction(xcontext.getContext());
     def session = store.getSession(xcontext.getContext());
-    return session.connection();    
+    return session.connection();
   }
   
   
   /**
    * Get results
    */
-  String getResults(connection, sql, closeConnectionAtTheEnd){     
+  String getResults(connection, sql, closeConnectionAtTheEnd){
     def toReturn = "";
     try{
       def stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
@@ -229,10 +187,10 @@ class SQLTools{
           def nbcols = mdata.getColumnCount();
           for (def i=1;i&lt;=nbcols;i++) {
             toReturn += "|=";
-            toReturn += mdata.getColumnName(i);          
+            toReturn += mdata.getColumnName(i);
           }
-          toReturn +=  "\n";
-          while (resultset.next()) {          
+          if (nbcols &gt; 1) toReturn +=  "\n";
+          while (resultset.next()) {
             for (def i=1;i&lt;=nbcols;i++) {
               def value = resultset.getString(i);
               if ((value==null)||(value==""))
@@ -248,7 +206,7 @@ class SQLTools{
         toReturn += "\n{{error}} **Error running sql: {{{${sql}}}}**\n" + e2.getMessage() + "{{/error}}\n";
       } finally {
         stmt.close();
-        if(closeConnectionAtTheEnd)   
+        if(closeConnectionAtTheEnd)
           connection.close();
       }
     }
@@ -256,12 +214,12 @@ class SQLTools{
       toReturn += "\n{{error}} Error: " + e.getMessage() + "{{/error}}\n";
     }
     return toReturn;
-  }  
-  
+  }
+
   /**
    * Get Tables
    */
-  String getTables(connection){    
+  String getTables(connection){
     def sql = "SHOW TABLES";
     def stmt1 = connection.createStatement();
     def toReturn = "";
@@ -269,20 +227,58 @@ class SQLTools{
       // Get Tables list
       def rs = stmt1.executeQuery(sql);
       while(rs.next()){
-        def table = rs.getString(1);        
+        def table = rs.getString(1);
         toReturn += "== ${table} ==\n";
-        toReturn += getResults(connection, "DESCRIBE ${table}", false);                       
+        toReturn += getResults(connection, "DESCRIBE ${table}", false);
       }
     }
     catch (Exception e2) {
       toReturn += "{{error}} **Error running sql: {{{${sql}}}}**\n" + e2.getMessage() + "{{/error}}\n";
     } finally {
-      stmt1.close();      
+      stmt1.close();
       connection.close();
     }
-    
     return toReturn;
   }
 
 };</content>
+  <object>
+    <name>Admin.SQLToolsGroovy</name>
+    <number>0</number>
+    <className>XWiki.RequiredRightClass</className>
+    <guid>47f1dd58-f20a-4799-a2e1-e1cfd0f0d61b</guid>
+    <class>
+      <name>XWiki.RequiredRightClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <level>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>level</name>
+        <number>1</number>
+        <picker>0</picker>
+        <prettyName>level</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators> ,|</separators>
+        <size>1</size>
+        <sort>none</sort>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <values>edit|programming</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </level>
+    </class>
+    <property>
+      <level>programming</level>
+    </property>
+  </object>
 </xwikidoc>
