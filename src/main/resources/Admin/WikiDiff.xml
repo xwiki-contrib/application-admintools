@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xwikidoc version="1.2" reference="Admin.WikiDiff" locale="">
+<xwikidoc version="1.3" reference="Admin.WikiDiff" locale="">
   <web>Admin</web>
   <name>WikiDiff</name>
   <language/>
@@ -87,12 +87,18 @@
   #end
 #else
   #set ($version = $xwiki.version)
-  #if ($services.wikimanager)
+  #if ($services.flavor) ##that is not really correct. parse $version instead?
+    #set ($mode = 'platform')
+    ##TODO: this does not check dependencies and is pretty worthless ATM
+    #set ($artifactId = 'xwiki-platform-distribution-flavor-common')
+  #elseif ($services.wikimanager)
     #set ($mode = 'manager')
+    #set ($artifactId = 'xwiki-manager-ui-all')
   #else
     #set ($mode = 'enterprise')
+    #set ($artifactId = 'xwiki-enterprise-ui-all')
   #end
-  #set ($source = "http://maven.xwiki.org/releases/org/xwiki/${mode}/xwiki-${mode}-ui-all/5.1/xwiki-${mode}-ui-all-${version}.xar")
+  #set ($source = "http://maven.xwiki.org/releases/org/xwiki/${mode}/${artifactId}/${version}/${artifactId}-${version}.xar")
   {{html clean=false}}
   &lt;form action=""&gt;
     &lt;strong&gt;Source URL:&lt;/strong&gt;&lt;br /&gt;
@@ -129,7 +135,7 @@
         <displayType>select</displayType>
         <multiSelect>0</multiSelect>
         <name>cache</name>
-        <number>6</number>
+        <number>5</number>
         <prettyName>Caching policy</prettyName>
         <relationalStorage>0</relationalStorage>
         <separator> </separator>
@@ -140,9 +146,11 @@
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </cache>
       <code>
+        <contenttype>PureText</contenttype>
         <disabled>0</disabled>
+        <editor>PureText</editor>
         <name>code</name>
-        <number>3</number>
+        <number>2</number>
         <prettyName>Code</prettyName>
         <rows>20</rows>
         <size>50</size>
@@ -155,7 +163,7 @@
         <displayType>select</displayType>
         <multiSelect>0</multiSelect>
         <name>contentType</name>
-        <number>1</number>
+        <number>6</number>
         <prettyName>Content Type</prettyName>
         <relationalStorage>0</relationalStorage>
         <separator> </separator>
@@ -168,7 +176,7 @@
       <name>
         <disabled>0</disabled>
         <name>name</name>
-        <number>2</number>
+        <number>1</number>
         <prettyName>Name</prettyName>
         <size>30</size>
         <unmodifiable>0</unmodifiable>
@@ -179,7 +187,7 @@
         <displayFormType>select</displayFormType>
         <displayType>yesno</displayType>
         <name>parse</name>
-        <number>5</number>
+        <number>4</number>
         <prettyName>Parse content</prettyName>
         <unmodifiable>0</unmodifiable>
         <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
@@ -190,7 +198,7 @@
         <displayType>select</displayType>
         <multiSelect>0</multiSelect>
         <name>use</name>
-        <number>4</number>
+        <number>3</number>
         <prettyName>Use this extension</prettyName>
         <relationalStorage>0</relationalStorage>
         <separator> </separator>
