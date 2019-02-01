@@ -83,8 +83,7 @@ private void printIntro(final XWiki wiki)
         + "from the database and only saves to the filesystem.");
 }
 
-main();
-public void main()
+private void start()
 {
     final XWikiContext xc = xcontext.getContext();
     final XWiki wiki = xc.getWiki();
@@ -435,5 +434,13 @@ private int doIt(int startAt, int seconds, boolean dryRun, boolean verbose, bool
     println("\n**[" + delAttachCount + "] deleted attachments.**");
     return -1;
 }
+
+def version910 = services.extension.parseVersion('9.10-rc-1')
+def versionEnvironment = services.extension.core.repository.environmentExtension.id.version;
+
+if (versionEnvironment.compareTo(version910) &gt;= 0)
+  print '{{error}}This tool cannot be used in XWiki &gt;= 9.11RC11{{/error}}'
+else
+  start();
 {{/groovy}}</content>
 </xwikidoc>
