@@ -35,6 +35,10 @@
   <name>Admin Tools Application</name>
   <packaging>xar</packaging>
   <description>Contains administration tools for managing a running XWiki instance</description>
+  <properties>
+    <!-- Disable the automatic Jira release after the clone -->
+    <xwiki.release.jira.skip>true</xwiki.release.jira.skip>
+  </properties>
   <scm>
     <connection>scm:git:git://github.com/xwiki-contrib/application-admintools.git</connection>
     <developerConnection>scm:git:git@github.com:xwiki-contrib/application-admintools.git</developerConnection>
