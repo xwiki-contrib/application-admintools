@@ -38,6 +38,8 @@
   <properties>
     <!-- Disable the automatic Jira release after the clone -->
     <xwiki.release.jira.skip>true</xwiki.release.jira.skip>
+    <!-- Don't run CLIRR here since there's no Java code. -->
+    <xwiki.clirr.skip>true</xwiki.clirr.skip>
   </properties>
   <scm>
     <connection>scm:git:git://github.com/xwiki-contrib/application-admintools.git</connection>
@@ -83,10 +85,6 @@
       <name>Guillaume Fenollar</name>
     </developer>
   </developers>
-  <properties>
-    <!-- Don't run CLIRR here since there's no Java code. -->
-    <xwiki.clirr.skip>true</xwiki.clirr.skip>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
