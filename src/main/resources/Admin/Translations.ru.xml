@@ -19,6 +19,9 @@
   <minorEdit>false</minorEdit>
   <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
-  <content></content>
+  <content>admin.admintools=Инструменты администратора
+
+admintools.flushCache.confirm=Подтвердите очистку кеша
+admintools.flushCache.confirmed=Кэш был очищен!</content>
   
 </xwikidoc>
