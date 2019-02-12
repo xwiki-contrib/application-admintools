@@ -21,7 +21,7 @@
   <hidden>true</hidden>
   <content>admin.admintools=Инструменты администратора
 
-admintools.flushCache.confirm=Подтвердите очистку кеша
+admintools.flushCache.confirm=Подтвердите очистку кэша
 admintools.flushCache.confirmed=Кэш был очищен!</content>
   
 </xwikidoc>
