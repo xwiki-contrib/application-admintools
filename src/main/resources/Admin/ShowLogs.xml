@@ -1,28 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xwikidoc>
+<xwikidoc version="1.3" reference="Admin.ShowLogs" locale="">
   <web>Admin</web>
   <name>ShowLogs</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
-  <parent>Admin.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
-  <author>xwiki:XWiki.Admin</author>
-  <customClass/>
-  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <creationDate>1375188482000</creationDate>
-  <date>1375188482000</date>
-  <contentUpdateDate>1375188482000</contentUpdateDate>
+  <parent>Admin.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <date>1593081975000</date>
+  <contentUpdateDate>1593081975000</contentUpdateDate>
   <version>1.1</version>
   <title>Show Logs</title>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content>{{groovy}}
+  if( System.getProperty('catalina.base') ) {
+  appserverpath = System.getProperty('catalina.base')
+} else {
+  // CONFIG: try to set the path to ypur application server if not found
+  appserverpath = ".."
+}
+
+def tomcatLog = ["${appserverpath}/logs/catalina.out", "/usr/local/tomcat/logs/catalina.out", "/var/log/tomcat8/catalina.out", "/var/log/tomcat9/catalina.out", "/var/log/tomcat/catalina.out"]
+
+def tomcatLogPath = "/usr/local/tomcat/logs/catalina.out"
+for (path in tomcatLog) {
+  if ((new File(path)).exists()) {
+    tomcatLogPath = path
+    break;
+  }
+}
+
+  
+  
 if (request.lines) {
   lines = request.lines;
 } else {
@@ -31,7 +47,7 @@ if (request.lines) {
 if (request.logfile) {
   logfile = request.logfile;
 } else {
-  logfile = "/usr/local/tomcat/logs/catalina.out"
+  logfile = tomcatLogPath
 }
 {{/groovy}}
 
