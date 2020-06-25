@@ -6,13 +6,13 @@
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
-  <parent>Admin.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
+  <creationDate>1375188479000</creationDate>
+  <parent>Admin.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-  <creationDate>1375188479000</creationDate>
-  <date>1375188560000</date>
-  <contentUpdateDate>1375188560000</contentUpdateDate>
+  <date>1593083633000</date>
+  <contentUpdateDate>1593083633000</contentUpdateDate>
   <version>1.1</version>
   <title>Space Used</title>
   <comment/>
@@ -60,6 +60,7 @@ __xwikiattrecyclebin__ : Recycle bin of attachments.
     #end
 
     #set($prefix = $xwiki.getXWiki().Param('xwiki.db.prefix',''))
+    #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
     #foreach($schema in $dbs)
       #set($alltables = '')
       $xcontext.setDatabase($schema)
@@ -68,9 +69,8 @@ __xwikiattrecyclebin__ : Recycle bin of attachments.
         #set($schema = $xwiki.getXWiki().Param('xwiki.db', $schema))
       #end
       #foreach($table in $tables)
-        #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
         #set($query = "select sum(round(data_length/1024/1024,2)) as '${table}' from information_schema.tables where table_name='${table}' and table_schema='${prefix}${schema}';")
-        #set($results = $sqlTools.getResults($connection, $query, true))
+        #set($results = $sqlTools.getResults($connection, $query, false))
         #set($alltables = $alltables + $results)
       #end
       $alltables
