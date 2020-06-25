@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xwikidoc>
+<xwikidoc version="1.3" reference="Admin.Tools" locale="">
   <web>Admin</web>
   <name>Tools</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
-  <parent>Admin.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
-  <author>xwiki:XWiki.Admin</author>
-  <customClass/>
-  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <creationDate>1375903650000</creationDate>
-  <date>1375907466000</date>
-  <contentUpdateDate>1375907466000</contentUpdateDate>
+  <parent>Admin.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <date>1593076386000</date>
+  <contentUpdateDate>1593076386000</contentUpdateDate>
   <version>1.1</version>
   <title>XWiki Advanced Administration Tools</title>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
@@ -40,7 +37,8 @@ The following pages allow advanced administration of an XWiki or XWiki farm:
 
 * [[Show Logs&gt;&gt;ShowLogs]] : Show n number of log lines
 * [[Show Rights&gt;&gt;ShowRights]]: Tool to give an overview of wiki, spaces and pages rights.
-* [[Flush XWiki Cache&gt;&gt;FlushCache]]: Tool to flush the cache
+* [[Flush JMX &amp; XWiki Cache&gt;&gt;JMXCache]]: Tool to flush all the caches
+* [[Flush XWiki Cache&gt;&gt;FlushCache]]: Tool to flush the xwiki cache
 
 == Storage Management Tools ==
 
