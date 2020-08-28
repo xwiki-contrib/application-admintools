@@ -36,6 +36,7 @@
   <packaging>xar</packaging>
   <description>Contains administration tools for managing a running XWiki instance</description>
   <properties>
+    <xwiki.issueManagement.jira.id>ADMINTOOL</xwiki.issueManagement.jira.id>
     <!-- Disable the automatic Jira release after the clone -->
     <xwiki.release.jira.skip>true</xwiki.release.jira.skip>
     <!-- Don't run CLIRR here since there's no Java code. -->
