@@ -31,7 +31,8 @@ admintools.server.tools=Server tools
 admintools.server.tools.shellCommand=Run Shell Command
 admintools.server.tools.shellCommand.description=Tool to run shell commands on the server **(Only works on linux servers)**
 admintools.server.tools.shellCommand.run=Run
-admintools.server.tools.shellCommand.placeholder=Enter shell command</content>
+admintools.server.tools.shellCommand.placeholder=Enter shell command
+admintools.server.tools.shellCommand.warning=This tool works only on Linux servers. It can create processes which do not stop, it's up to you to then find and kill the processes.</content>
   <object>
     <name>Admin.Translations</name>
     <number>0</number>
