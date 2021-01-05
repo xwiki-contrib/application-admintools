@@ -25,7 +25,13 @@ admintools.flushCache.confirm=Confirm cache flushing
 admintools.flushCache.confirmed=Cache has been flushed!
 
 admintools.database.tools=Database Tools
-admintools.database.tools.query=Tool to run queries on the database</content>
+admintools.database.tools.query=Tool to run queries on the database
+
+admintools.server.tools=Server tools
+admintools.server.tools.shellCommand=Run Shell Command
+admintools.server.tools.shellCommand.description=Tool to run shell commands on the server **(Only works on linux servers)**
+admintools.server.tools.shellCommand.run=Run
+admintools.server.tools.shellCommand.placeholder=Enter shell command</content>
   <object>
     <name>Admin.Translations</name>
     <number>0</number>

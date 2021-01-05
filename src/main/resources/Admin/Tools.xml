@@ -76,6 +76,8 @@ The following pages allow advanced administration of an XWiki or XWiki farm:
 
 * [[Run Query&gt;&gt;Query]]: $services.localization.render('admintools.database.tools.query')
   #end
+== $services.localization.render('admintools.server.tools') ==
+* [[$services.localization.render('admintools.server.tools.shellCommand')&gt;&gt;RunShellCommand]] : $services.localization.render('admintools.server.tools.shellCommand.description')
 #end
 #set($docextras=[])
 {{/velocity}}</content>

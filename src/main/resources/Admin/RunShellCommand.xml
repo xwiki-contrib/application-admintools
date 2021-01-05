@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xwikidoc version="1.3" reference="Admin.RunShellCommand" locale="">
+  <web>Admin</web>
+  <name>RunShellCommand</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <creationDate>1609851840000</creationDate>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <date>1609857199000</date>
+  <contentUpdateDate>1609857166000</contentUpdateDate>
+  <version>1.1</version>
+  <title>Run Shell Command</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{groovy}}
+import org.xwiki.security.authorization.Right;
+import org.apache.velocity.tools.generic.EscapeTool;
+
+if (services.security.authorization.hasAccess(Right.PROGRAM)) {
+  def escapeTool = new EscapeTool();
+  def placeHolder = escapeTool.xml(services.localization.render('admintools.server.tools.shellCommand.placeholder'));
+  def buttonLabel = services.localization.render('admintools.server.tools.shellCommand.run');
+  def shellCmd = request.getParameter("command");
+  def htmlForm = """
+    &lt;form class="form-horizontal" action="" method="POST"&gt;
+      &lt;div class="form-group"&gt;
+        &lt;div class="col-sm-10"&gt;
+          &lt;input type="text" name="command" value="${shellCmd != null ? escapeTool.xml(shellCmd) : ''}" class="form-control col-md-12" style="width: 100%;" placeholder="${placeHolder}"&gt;
+      &lt;/div&gt;
+      &lt;div class="col-sm-2"&gt;
+        &lt;button type="submit" class="btn btn-primary" style="margin:0;"&gt;${buttonLabel}&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/form&gt;""";
+  println("{{html}}${htmlForm}{{/html}}\n\n");
+  if (shellCmd != null ) {
+    String[] cmd = ["sh", "-c", shellCmd];
+    stdout = new java.io.BufferedReader(new java.io.InputStreamReader(Runtime.getRuntime().exec(cmd).getInputStream()));
+    println("{{code language=none}}")
+    while ((s = stdout.readLine()) != null) {
+      println(s);
+    }
+    println("{{/code}}")
+  }
+}
+{{/groovy}}</content>
+</xwikidoc>
