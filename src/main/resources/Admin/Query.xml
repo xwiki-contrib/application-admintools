@@ -26,7 +26,7 @@
 #if($hasProgramming)
   #set($sqlTools = $xwiki.parseGroovyFromPage('Admin.SQLToolsGroovy'))
   = Query =
-  $sqlTools.getForm($request, $doc, true, true)
+  $sqlTools.getForm($request, $doc, true, true, $xcontext)
   #if($request.query)
     #set($connection = $sqlTools.getConnectionFromRequest($request))
     #set($results = $sqlTools.getResults($connection, $request.query, true))

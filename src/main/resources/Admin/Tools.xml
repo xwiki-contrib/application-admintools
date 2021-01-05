@@ -72,7 +72,9 @@ The following pages allow advanced administration of an XWiki or XWiki farm:
 * [[Show Spammed Pages]]: Tool to list spammed pages (huge number of comments)
 * [[Sanity Check&gt;&gt;SanityCheck]]: Tool to check the consistency of the database
   #else
-{{info}}It seems you're not using a MySQL Database. According tools won't be listed.\\Your database is ${system}.{{/info}}
+== $services.localization.render('admintools.database.tools') ==
+
+* [[Run Query&gt;&gt;Query]]: $services.localization.render('admintools.database.tools.query')
   #end
 #end
 #set($docextras=[])

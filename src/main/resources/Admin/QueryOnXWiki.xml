@@ -28,7 +28,7 @@
   #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
   = Query =
   Your database is: **$system**
-  $sqlTools.getForm($request, $doc, false, true)
+  $sqlTools.getForm($request, $doc, false, true, $xcontext)
   #if($request.query)
     #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
     #set($results = $sqlTools.getResults($connection, $request.query, true))

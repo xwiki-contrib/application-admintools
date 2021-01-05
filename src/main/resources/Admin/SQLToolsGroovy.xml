@@ -24,16 +24,79 @@
  */
 import org.apache.velocity.tools.generic.EscapeTool;
 import java.sql.*
+import com.xpn.xwiki.store.DatabaseProduct;
 
 /**
  * Class
  */
 class SQLTools{
+  class DatabaseConfiguration {
+    String CONFIGURATION_PREFIX = 'hibernate.connection.';
+    def databaseProductName;
+    String url;
+    String user;
+    String password;
+    String driver;
+    String query = 'SHOW TABLES';
+
+    DatabaseConfiguration(request, xcontext){
+      def hibernateStore = xcontext.getContext().getWiki().getHibernateStore();
+      def confiuration = hibernateStore.getConfiguration();
+      this.url = (request != null &amp;&amp; request.url != null) ? request.url : confiuration.getProperty(CONFIGURATION_PREFIX + 'url');
+      this.user = (request != null &amp;&amp; request.user != null) ? request.user : confiuration.getProperty(CONFIGURATION_PREFIX + 'username');
+      this.password = (request != null &amp;&amp; request.password != null) ? request.password : confiuration.getProperty(CONFIGURATION_PREFIX + 'password');
+      this.driver = (request != null &amp;&amp; request.driver != null) ? request.driver : confiuration.getProperty(CONFIGURATION_PREFIX + 'driver_class');
+      this.databaseProductName = hibernateStore.getDatabaseProductName(xcontext.getContext());
+      if(request != null &amp;&amp; request.query != null){
+        this.query = request.query;
+      }
+      else if(DatabaseProduct.HSQLDB.equals(this.databaseProductName)){
+        this.query = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'";
+      }
+      else if(DatabaseProduct.ORACLE.equals(this.databaseProductName)){
+        this.query = 'SELECT table_name FROM dba_tables';
+      }
+      else if(DatabaseProduct.POSTGRESQL.equals(this.databaseProductName)){
+        this.query = 'SELECT * FROM pg_catalog.pg_tables';
+      }
+      else if(DatabaseProduct.MSSQL.equals(this.databaseProductName)){
+        this.query = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'";
+      }
+      else if(DatabaseProduct.DB2.equals(this.databaseProductName)){
+        this.query = "SELECT * FROM SYSIBM.SYSTABLES WHERE type = 'T'";
+      }
+    }
+
+    String getUrl(){
+      return url;
+    }
+
+    String getUser(){
+      return user;
+    }
+
+    String getPassword(){
+      return password;
+    }
+
+    String getDriver(){
+      return driver;
+    }
+
+    String getQuery(){
+      return query;
+    }
+
+    def getDatabaseProductName(){
+      return databaseProductName;
+    }
+  }
 
   /**
    * Get Form
    */
-  String getForm(request, doc, withJDBCForm, withQuery){
+  String getForm(request, doc, withJDBCForm, withQuery, xcontext){
+    def databaseConfiguration = new DatabaseConfiguration(request, xcontext);
     def escapeTool = new EscapeTool();
     def spageUrl = escapeTool.xml(doc.getURL());
     
@@ -44,25 +107,11 @@ class SQLTools{
     """;
     // JDB Form (user, password driver, url)
     if(withJDBCForm){
-      // Get the data
-      def user = request.user;
-      if (user==null)
-        user = "xwiki";
-      def password = request.password;
-      if (password==null)
-        password = "xwiki";
-      def url = request.url;
-      if (url==null)
-        url = "jdbc:mysql://localhost/xwiki?useServerPrepStmts=false&amp;useUnicode=true&amp;characterEncoding=UTF-8";
-      def driver = request.driver;
-      if (driver==null)
-        driver = "com.mysql.jdbc.Driver";
-      
-      // Escape datas
-      def surl = escapeTool.xml(url);
-      def suser = escapeTool.xml(user);
-      def spassword = escapeTool.xml(password);
-      def sdriver = escapeTool.xml(driver);
+      // Get/Escape datas
+      def surl = escapeTool.xml(databaseConfiguration.getUrl());
+      def suser = escapeTool.xml(databaseConfiguration.getUser());
+      def spassword = escapeTool.xml(databaseConfiguration.getPassword());
+      def sdriver = escapeTool.xml(databaseConfiguration.getDriver());
     
       // Print form
       toReturn += """
@@ -79,7 +128,7 @@ class SQLTools{
             &lt;label for="password"&gt;Password:&lt;/label&gt;
           &lt;/dt&gt;
           &lt;dd&gt;
-            &lt;input type="text" name="password" id="password" value="${spassword}" size="80" /&gt;
+            &lt;input type="password" name="password" id="password" value="${spassword}" size="80" autocomplete="new-password" /&gt;
           &lt;/dd&gt;
         &lt;/dl&gt;
         &lt;dl&gt;
@@ -102,11 +151,8 @@ class SQLTools{
     }
     // &lt;texteare&gt;Query&lt;/textarea&gt;
     if(withQuery){
-      // Get the datas
-      def query = request.query;
-      if (query==null)
-        query = "SHOW TABLES";
-      def squery = escapeTool.xml(query);
+      // Get the query
+      def squery = escapeTool.xml(databaseConfiguration.getQuery());
       
       // Print the form
       toReturn += """
@@ -153,9 +199,8 @@ class SQLTools{
    * Get XWiki Database System
    */
   String getXWikiDatabaseSystem(xwiki, xcontext){
-    def store = xwiki.getXWiki().getHibernateStore();
-    def db = store.getDatabaseProductName(xcontext.getContext());
-    return db.getProductName();
+    def databaseConfiguration = new DatabaseConfiguration(null, xcontext);
+    return databaseConfiguration.getDatabaseProductName();
   }
   
   /**

@@ -22,7 +22,10 @@
   <content>admin.admintools=Admin Tools
 
 admintools.flushCache.confirm=Confirm cache flushing
-admintools.flushCache.confirmed=Cache has been flushed!</content>
+admintools.flushCache.confirmed=Cache has been flushed!
+
+admintools.database.tools=Database Tools
+admintools.database.tools.query=Tool to run queries on the database</content>
   <object>
     <name>Admin.Translations</name>
     <number>0</number>
