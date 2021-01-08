@@ -6,6 +6,7 @@
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
+  <parent>Admin.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
   <creationDate>1609851840000</creationDate>
   <author>xwiki:XWiki.Admin</author>
@@ -51,4 +52,43 @@ if (services.security.authorization.hasAccess(Right.PROGRAM)) {
   }
 }
 {{/groovy}}</content>
+  <object>
+    <name>Admin.RunShellCommand</name>
+    <number>0</number>
+    <className>XWiki.RequiredRightClass</className>
+    <guid>2345a856-0f6f-40b4-9404-fbc45859d338</guid>
+    <class>
+      <name>XWiki.RequiredRightClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <level>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>level</name>
+        <number>1</number>
+        <picker>0</picker>
+        <prettyName>level</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators> ,|</separators>
+        <size>1</size>
+        <sort>none</sort>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <values>edit|programming</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </level>
+    </class>
+    <property>
+      <level>programming</level>
+    </property>
+  </object>
 </xwikidoc>
