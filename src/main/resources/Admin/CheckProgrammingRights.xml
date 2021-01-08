@@ -435,10 +435,10 @@ def changePagesAuthor(pagelist) {
           protectedDoc.setContentAuthorReference(xcontext.getContext().getUserReference())
           // We need to change the page author in order to have a history about the user who executed this script otherwise the last author will be kept.
           protectedDoc.setAuthorReference(xcontext.getContext().getUserReference())
-          xwiki.getXWiki().saveDocument(protectedDoc, "Changed the content author of the page to fix programming rights", xcontext.context)
-          println " * Successfully changed the content author of the page '${page}'"
+          xwiki.getXWiki().saveDocument(protectedDoc, "Changed the author of the page to fix programming rights", xcontext.context)
+          println " * Successfully changed the author of the page '${page}'"
         } catch (Exception e) {
-          println " * Failed to change the content author of the page '${page}': " + e
+          println " * Failed to change the author of the page '${page}': " + e
         }
     }
 }
