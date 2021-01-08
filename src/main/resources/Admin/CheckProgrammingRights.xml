@@ -296,7 +296,7 @@ if (!"post".equalsIgnoreCase(request.getMethod())) {
 } else if (!services.csrf.isTokenValid(request.getParameter('form_token'))) {
     response.sendRedirect(services.csrf.getResubmissionURL())
 } else {
-    savePages(request.getParameterValues('pagelist'))
+    changePagesAuthor(request.getParameterValues('pagelist'))
 }
 
 def pageListPerWiki()
@@ -417,48 +417,6 @@ def printForm(pagelistPerWiki)
 
 }
 
-def addDenyEdit(prDoc)
-{
-    def rightObjs = prDoc.getObjects('XWiki.XWikiRights')
-
-    def addGroup = true
-    def addUser  = true
-
-    if (rightObjs != null) {
-        for (rightObj in rightObjs.findAll{ o -&gt; o.get('levels').split(' ').count('edit') &gt; 0}) {
-            def users = rightObj.getProperty('users')?.getValue()?.split(' ')
-            def groups = rightObj.getProperty('groups')?.getValue()?.split(' ')
-            if (rightObj.getProperty('allow').getValue() == 1) {
-                if (users != null &amp;&amp; users.count('XWiki.XWikiGuest') &gt; 0) {
-                    rightObj.set('users', users.findAll{ user -&gt; user != 'XWiki.XWikiGuest' }.join(' '))
-                }
-                if (groups != null &amp;&amp; groups.count('XWiki.XWikiAllGroup') &gt; 0) {
-                    rightObj.set('groups', groups.findAll{ group -&gt; group != 'XWiki.XWikiAllGroup' }.join(' '))
-                }
-            } else {
-                if (users != null &amp;&amp; users.count('XWiki.XWikiGuest') &gt; 0) {
-                    addUser = false;
-                }
-                if (groups != null &amp;&amp; groups.count('XWiki.XWikiAllGroup') &gt; 0) {
-                    addGroup = false;
-                }
-            }
-        }
-    }
-
-    if (addUser || addGroup) {
-        def obj = prDoc.newObject('XWiki.XWikiRights')
-        obj.set('allow', 0)
-        obj.set('levels', 'edit')
-        if (addUser) {
-            obj.set('users', 'XWiki.XWikiGuest')
-        }
-        if (addGroup) {
-            obj.set('groups', 'XWiki.XWikiAllGroup')
-        }
-    }
-}
-
 def needsRequiredRightsObj(prDoc)
 {
     def objList = prDoc.getObjects('XWiki.RequiredRightClass');
@@ -468,24 +426,19 @@ def needsRequiredRightsObj(prDoc)
     }.size() == 0
 }
 
-def addRequiredRightProgramming(prDoc)
-{
-    if (needsRequiredRightsObj(prDoc)) {
-        def reqRight = prDoc.newObject('XWiki.RequiredRightClass')
-        reqRight.set('level', 'programming')
-    }
-}
-
-def savePages(pagelist) {
+def changePagesAuthor(pagelist) {
     for (page in pagelist) {
-        prDoc = xwiki.getDocument(page)
-        addDenyEdit(prDoc)
-        addRequiredRightProgramming(prDoc)
+        def prDoc = xwiki.getDocument(page)
         try {
-            prDoc.save('Saving with programming rights.', true)
-            println " * Successfully saved '${page}'"
+          def protectedDoc = prDoc.document
+          // Update the page content author in order to fix programming rights.
+          protectedDoc.setContentAuthorReference(xcontext.getContext().getUserReference())
+          // We need to change the page author in order to have a history about the user who executed this script otherwise the last author will be kept.
+          protectedDoc.setAuthorReference(xcontext.getContext().getUserReference())
+          xwiki.getXWiki().saveDocument(protectedDoc, "Changed the content author of the page to fix programming rights", xcontext.context)
+          println " * Successfully changed the content author of the page '${page}'"
         } catch (Exception e) {
-            println " * Failed to save '${page}': " + e
+          println " * Failed to change the content author of the page '${page}': " + e
         }
     }
 }
