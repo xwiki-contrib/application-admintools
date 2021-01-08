@@ -22,73 +22,73 @@
   <content>/**
  * Import
  */
-import org.apache.velocity.tools.generic.EscapeTool;
+import org.apache.velocity.tools.generic.EscapeTool
 import java.sql.*
-import com.xpn.xwiki.store.DatabaseProduct;
+import com.xpn.xwiki.store.DatabaseProduct
 
 /**
  * Class
  */
 class SQLTools{
   class DatabaseConfiguration {
-    String CONFIGURATION_PREFIX = 'hibernate.connection.';
-    def databaseProductName;
-    String url;
-    String user;
-    String password;
-    String driver;
-    String query = 'SHOW TABLES';
+    String CONFIGURATION_PREFIX = 'hibernate.connection.'
+    def databaseProductName
+    String url
+    String user
+    String password
+    String driver
+    String query = 'SHOW TABLES'
 
     DatabaseConfiguration(request, xcontext){
-      def hibernateStore = xcontext.getContext().getWiki().getHibernateStore();
-      def confiuration = hibernateStore.getConfiguration();
-      this.url = (request != null &amp;&amp; request.url != null) ? request.url : confiuration.getProperty(CONFIGURATION_PREFIX + 'url');
-      this.user = (request != null &amp;&amp; request.user != null) ? request.user : confiuration.getProperty(CONFIGURATION_PREFIX + 'username');
-      this.password = (request != null &amp;&amp; request.password != null) ? request.password : confiuration.getProperty(CONFIGURATION_PREFIX + 'password');
-      this.driver = (request != null &amp;&amp; request.driver != null) ? request.driver : confiuration.getProperty(CONFIGURATION_PREFIX + 'driver_class');
-      this.databaseProductName = hibernateStore.getDatabaseProductName(xcontext.getContext());
+      def hibernateStore = xcontext.getContext().getWiki().getHibernateStore()
+      def configuration = hibernateStore.getConfiguration()
+      this.url = (request != null &amp;&amp; request.url != null) ? request.url : configuration.getProperty(CONFIGURATION_PREFIX + 'url')
+      this.user = (request != null &amp;&amp; request.user != null) ? request.user : configuration.getProperty(CONFIGURATION_PREFIX + 'username')
+      this.password = (request != null &amp;&amp; request.password != null) ? request.password : configuration.getProperty(CONFIGURATION_PREFIX + 'password')
+      this.driver = (request != null &amp;&amp; request.driver != null) ? request.driver : configuration.getProperty(CONFIGURATION_PREFIX + 'driver_class')
+      this.databaseProductName = hibernateStore.getDatabaseProductName(xcontext.getContext())
       if(request != null &amp;&amp; request.query != null){
-        this.query = request.query;
+        this.query = request.query
       }
       else if(DatabaseProduct.HSQLDB.equals(this.databaseProductName)){
-        this.query = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'";
+        this.query = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'"
       }
       else if(DatabaseProduct.ORACLE.equals(this.databaseProductName)){
-        this.query = 'SELECT table_name FROM dba_tables';
+        this.query = 'SELECT table_name FROM dba_tables'
       }
       else if(DatabaseProduct.POSTGRESQL.equals(this.databaseProductName)){
-        this.query = 'SELECT * FROM pg_catalog.pg_tables';
+        this.query = 'SELECT * FROM pg_catalog.pg_tables'
       }
       else if(DatabaseProduct.MSSQL.equals(this.databaseProductName)){
-        this.query = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'";
+        this.query = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'"
       }
       else if(DatabaseProduct.DB2.equals(this.databaseProductName)){
-        this.query = "SELECT * FROM SYSIBM.SYSTABLES WHERE type = 'T'";
+        this.query = "SELECT * FROM SYSIBM.SYSTABLES WHERE type = 'T'"
       }
     }
 
     String getUrl(){
-      return url;
+      return url
     }
 
     String getUser(){
-      return user;
+      return user
     }
 
     String getPassword(){
-      return password;
+      return password
     }
 
     String getDriver(){
-      return driver;
+      return driver
     }
 
     String getQuery(){
-      return query;
+      return query
     }
 
     def getDatabaseProductName(){
-      return databaseProductName;
+      return databaseProductName
     }
   }
 
@@ -96,9 +96,9 @@ class SQLTools{
    * Get Form
    */
   String getForm(request, doc, withJDBCForm, withQuery, xcontext){
-    def databaseConfiguration = new DatabaseConfiguration(request, xcontext);
-    def escapeTool = new EscapeTool();
-    def spageUrl = escapeTool.xml(doc.getURL());
+    def databaseConfiguration = new DatabaseConfiguration(request, xcontext)
+    def escapeTool = new EscapeTool()
+    def spageUrl = escapeTool.xml(doc.getURL())
     
     // &lt;form&gt;
     def toReturn = """
@@ -108,10 +108,10 @@ class SQLTools{
     // JDB Form (user, password driver, url)
     if(withJDBCForm){
       // Get/Escape datas
-      def surl = escapeTool.xml(databaseConfiguration.getUrl());
-      def suser = escapeTool.xml(databaseConfiguration.getUser());
-      def spassword = escapeTool.xml(databaseConfiguration.getPassword());
-      def sdriver = escapeTool.xml(databaseConfiguration.getDriver());
+      def surl = escapeTool.xml(databaseConfiguration.getUrl())
+      def suser = escapeTool.xml(databaseConfiguration.getUser())
+      def spassword = escapeTool.xml(databaseConfiguration.getPassword())
+      def sdriver = escapeTool.xml(databaseConfiguration.getDriver())
     
       // Print form
       toReturn += """
@@ -152,7 +152,7 @@ class SQLTools{
     // &lt;texteare&gt;Query&lt;/textarea&gt;
     if(withQuery){
       // Get the query
-      def squery = escapeTool.xml(databaseConfiguration.getQuery());
+      def squery = escapeTool.xml(databaseConfiguration.getQuery())
       
       // Print the form
       toReturn += """
@@ -164,7 +164,7 @@ class SQLTools{
             &lt;textarea name="query" id="query" cols="100" rows="10"/&gt;${squery}&lt;/textarea&gt;
           &lt;/dd&gt;    
         &lt;/dl&gt; 
-      """;
+      """
     }
     
     // &lt;/form&gt;
@@ -172,35 +172,35 @@ class SQLTools{
       &lt;p&gt;&lt;span class="buttonwrapper"&gt;&lt;input type="submit" value="Go" class="button"/&gt;&lt;/span&gt;&lt;/p&gt;
       &lt;/form&gt;
       {{/html}}
-    """;
+    """
     
-    return toReturn;
+    return toReturn
   }
   
   /**
    * Get connection from request
    */
   Connection getConnectionFromRequest(request){
-    String userName = request.user;
-    String password = request.password;
-    String url = request.url;
+    String userName = request.user
+    String password = request.password
+    String url = request.url
     if(!request.user)
-      throw new Exception("You must fill the field 'user'");
+      throw new Exception("You must fill the field 'user'")
     if(!request.url)
-      throw new Exception("You must fill the field 'url'");
+      throw new Exception("You must fill the field 'url'")
     if(!request.driver)
-      throw new Exception("You must fill the field 'driver'");
-    Class.forName (request.driver).newInstance ();
-    def conn = DriverManager.getConnection (url, userName, password);
-    return conn;
+      throw new Exception("You must fill the field 'driver'")
+    Class.forName (request.driver).newInstance ()
+    def conn = DriverManager.getConnection (url, userName, password)
+    return conn
   }
   
   /**
    * Get XWiki Database System
    */
   String getXWikiDatabaseSystem(xwiki, xcontext){
-    def databaseConfiguration = new DatabaseConfiguration(null, xcontext);
-    return databaseConfiguration.getDatabaseProductName();
+    def databaseConfiguration = new DatabaseConfiguration(null, xcontext)
+    return databaseConfiguration.getDatabaseProductName()
   }
   
   /**
@@ -208,9 +208,9 @@ class SQLTools{
    */
   def getXWikiConnection(xwiki, xcontext){
     def store = xwiki.getXWiki().getHibernateStore();
-    store.beginTransaction(xcontext.getContext());
-    def session = store.getSession(xcontext.getContext());
-    return session.connection();
+    store.beginTransaction(xcontext.getContext())
+    def session = store.getSession(xcontext.getContext())
+    return session.connection()
   }
   
   
@@ -218,75 +218,75 @@ class SQLTools{
    * Get results
    */
   String getResults(connection, sql, closeConnectionAtTheEnd){
-    def toReturn = "";
+    def toReturn = ""
     try{
-      def stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+      def stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY)
       try {
-        def sqlLower = sql.toLowerCase().trim();
+        def sqlLower = sql.toLowerCase().trim()
         if(sqlLower.startsWith("delete") || sqlLower.startsWith("update") || sqlLower.startsWith("insert") || sqlLower.startsWith("drop")){
-          int results = stmt.executeUpdate(sql);
-          return "\n{{success}}$results lines changed{{/success}}\n";
+          int results = stmt.executeUpdate(sql)
+          return "\n{{success}}$results lines changed{{/success}}\n"
         }else{
-          def resultset = stmt.executeQuery(sql);
-          def mdata = resultset.getMetaData();
-          def nbcols = mdata.getColumnCount();
+          def resultset = stmt.executeQuery(sql)
+          def mdata = resultset.getMetaData()
+          def nbcols = mdata.getColumnCount()
           for (def i=1;i&lt;=nbcols;i++) {
-            toReturn += "|=";
-            toReturn += mdata.getColumnName(i);
+            toReturn += "|="
+            toReturn += mdata.getColumnName(i)
           }
-          if (nbcols &gt; 1) toReturn +=  "\n";
+          if (nbcols &gt; 1) toReturn +=  "\n"
           while (resultset.next()) {
             for (def i=1;i&lt;=nbcols;i++) {
-              def value = resultset.getString(i);
+              def value = resultset.getString(i)
               if ((value==null)||(value==""))
-                value = " ";
+                value = " "
               toReturn += "|"
-              toReturn += "{{{${value}}}}";
+              toReturn += "{{{${value}}}}"
             }
-            toReturn +=  "\n";
+            toReturn +=  "\n"
           }
         }
       }
       catch (Exception e2) {
-        toReturn += "\n{{error}} **Error running sql: {{{${sql}}}}**\n" + e2.getMessage() + "{{/error}}\n";
+        toReturn += "\n{{error}} **Error running sql: {{{${sql}}}}**\n" + e2.getMessage() + "{{/error}}\n"
       } finally {
-        stmt.close();
+        stmt.close()
         if(closeConnectionAtTheEnd)
-          connection.close();
+          connection.close()
       }
     }
     catch(Exception e){
-      toReturn += "\n{{error}} Error: " + e.getMessage() + "{{/error}}\n";
+      toReturn += "\n{{error}} Error: " + e.getMessage() + "{{/error}}\n"
     }
-    return toReturn;
+    return toReturn
   }
 
   /**
    * Get Tables
    */
   String getTables(connection){
-    def sql = "SHOW TABLES";
-    def stmt1 = connection.createStatement();
-    def toReturn = "";
+    def sql = "SHOW TABLES"
+    def stmt1 = connection.createStatement()
+    def toReturn = ""
     try {
       // Get Tables list
-      def rs = stmt1.executeQuery(sql);
+      def rs = stmt1.executeQuery(sql)
       while(rs.next()){
-        def table = rs.getString(1);
-        toReturn += "== ${table} ==\n";
-        toReturn += getResults(connection, "DESCRIBE ${table}", false);
+        def table = rs.getString(1)
+        toReturn += "== ${table} ==\n"
+        toReturn += getResults(connection, "DESCRIBE ${table}", false)
       }
     }
     catch (Exception e2) {
-      toReturn += "{{error}} **Error running sql: {{{${sql}}}}**\n" + e2.getMessage() + "{{/error}}\n";
+      toReturn += "{{error}} **Error running sql: {{{${sql}}}}**\n" + e2.getMessage() + "{{/error}}\n"
     } finally {
-      stmt1.close();
-      connection.close();
+      stmt1.close()
+      connection.close()
     }
-    return toReturn;
+    return toReturn
   }
 
-};</content>
+}</content>
   <object>
     <name>Admin.SQLToolsGroovy</name>
     <number>0</number>
