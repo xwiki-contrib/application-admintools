@@ -288,6 +288,9 @@ a.select_all, a.unselect_all {
     </property>
   </object>
   <content>{{groovy}}
+import org.xwiki.model.reference.EntityReference
+import org.xwiki.security.authorization.Right
+
 xwiki.ssx.use(doc.getFullName())
 xwiki.jsx.use(doc.getFullName())
 
@@ -297,6 +300,55 @@ if (!"post".equalsIgnoreCase(request.getMethod())) {
     response.sendRedirect(services.csrf.getResubmissionURL())
 } else {
     changePagesAuthor(request.getParameterValues('pagelist'))
+}
+
+def getXClassPageInstances(xClass) {
+  def templateName = xClass.replace('Class', '') + 'Template'
+  def list = services.query.hql("select distinct doc.fullName from XWikiDocument doc, BaseObject as obj where obj.name = doc.fullName and obj.className = '$xClass' and doc.fullName != '$templateName'").execute()
+  return list
+}
+
+def getTranslationPages(String scope) {
+  def query = services.query.hql("select distinct doc.fullName from XWikiDocument doc, BaseObject as obj, StringProperty as prop where obj.name = doc.fullName and obj.className = :class and prop.id.id = obj.id and prop.id.name = 'scope' and prop.value = :scope ")
+  query.bindValue('class', 'XWiki.TranslationDocumentClass')
+  query.bindValue('scope', scope)
+  return query.execute()
+}
+
+def getJsxOrSsxPages(String scope) {
+  def query = services.query.hql("select distinct doc.fullName from XWikiDocument doc, BaseObject as obj, StringProperty as prop where obj.name = doc.fullName and (obj.className = :class1 or obj.className = :class2) and prop.id.id = obj.id and prop.id.name = 'use' and prop.value = :scope ")
+  query.bindValue('class1', 'XWiki.JavaScriptExtension')
+  query.bindValue('class2', 'XWiki.StyleSheetExtension')
+  query.bindValue('scope', scope)
+  return query.execute()
+}
+
+def getScriptedJsxOrSsxPages() {
+  def query = services.query.hql("select distinct doc.fullName from XWikiDocument doc, BaseObject as obj, IntegerProperty as prop where obj.name = doc.fullName and (obj.className = :class1 or obj.className = :class2) and prop.id.id = obj.id and prop.id.name = 'parse' and prop.value = 1 ")
+  query.bindValue('class1', 'XWiki.JavaScriptExtension')
+  query.bindValue('class2', 'XWiki.StyleSheetExtension')
+  return query.execute()
+}
+
+def getPagesWithScriptedContent(scriptType) {
+  def query = services.query.hql("select distinct doc.fullName from XWikiDocument doc where doc.content like :like")
+  // Trick to not declare a script which would get interpreted within this page content
+  def like = '%{{:tag}}%{{/:tag}}%'
+  like = like.replaceAll(':tag', scriptType)
+  query.bindValue('like', like)
+  return query.execute()
+}
+
+def hasRight(EntityReference reference, Right right) {
+  def page = xwiki.getDocument(reference)
+  if (page != null) {
+    def authorReference = page.getAuthorReference()
+    def hasAccess = services.security.authorization.hasAccess(right, authorReference, reference)
+    return hasAccess
+  } else {
+    // This seems to happen sometimes when an error occurred on target wiki initialization
+    out.println("{{warning}}An error occurred when retrieving page $reference.{{/warning}}")
+  }
 }
 
 def pageListPerWiki()
@@ -326,7 +378,7 @@ def pageListPerWiki()
     def db = context2.getDatabase()
 
     def wikiPagelists = [:]
-     
+
     try {
         for (wiki in wikilist) {
             def wikiname = wiki.toString()
@@ -340,15 +392,70 @@ def pageListPerWiki()
             // required rights object
             for (knownpage in knownpageslist) {
                 if (!pagelist.contains(knownpage) &amp;&amp; xwiki.exists(knownpage)) {
-                    pagelist.add(knownpage)  
-                } 
+                    pagelist.add(knownpage)
+                }
             }
+
+            // Create map linking rights to page lists
+            wikiPagelists[wikiname] = [:]
+
+            /** Get pages requiring programming rights */
+
+            // Add all XClass instances which are likely to need programming rights:
+            // - WikiComponents generally use Groovy scripts
+            // - SchedulerJobs use either a Groovy script or a Java class
+            ['XWiki.ComponentClass', 'XWiki.SchedulerJobClass'].each{
+              it -&gt; pagelist.addAll(getXClassPageInstances(it))
+            }
+
+            // Also add all pages containing Groovy code in their content (they may need to be unchecked in case
+            // it's actually code documentation, not real code)
+            pagelist.addAll(getPagesWithScriptedContent('groovy'))
+
+            // Add translation bundles with global scope since they require programming right
+            // ref: DocumentTranslationBundleFactory#checkRegistrationAuthorization
+            pagelist.addAll(getTranslationPages('GLOBAL'))
+            // JSX or SSX pages which are always loaded require programming right
+            // ref: AbstractDocumentSkinExtensionPlugin#getAlwaysUsedExtensions
+            pagelist.addAll(getJsxOrSsxPages('always'))
 
             def rs = xwiki.getXWiki().getRightService()
 
-            wikiPagelists[wikiname] = pagelist.findAll{
+            wikiPagelists[wikiname]['programming'] = pagelist.findAll{
                 name -&gt; !rs.hasProgrammingRights(xwiki.getDocument(name).getDocument(), context2) ||
                     needsRequiredRightsObj(xwiki.getDocument(name))
+            }
+
+            /** Get pages requiring script right */
+
+            // Using a Set to avoid duplicates
+            wikiPagelists[wikiname]['script'] = new HashSet()
+
+            // Macros, UIExtensions and Skins typically contain Velocity code
+            ['XWiki.WikiMacroClass', 'XWiki.UIExtensionClass', 'XWiki.XWikiSkins'].each{
+              it -&gt; wikiPagelists[wikiname]['script'].addAll(getXClassPageInstances(it))
+            }
+
+            wikiPagelists[wikiname]['script'].addAll(getScriptedJsxOrSsxPages())
+
+            // Add all pages containing a Velocity script saved by a user lacking script right
+            wikiPagelists[wikiname]['script'].addAll(getPagesWithScriptedContent('velocity'))
+            wikiPagelists[wikiname]['script'] = wikiPagelists[wikiname]['script'].findAll{
+              pageId -&gt;
+                def reference = services.model.resolveDocument(wikiname + ':' + pageId)
+                return !hasRight(reference, Right.SCRIPT)
+            }
+
+            /** Get pages likely to require admin right */
+
+            wikiPagelists[wikiname]['admin'] = new HashSet()
+
+            // Add translation documents with wiki scope
+            wikiPagelists[wikiname]['admin'].addAll(getTranslationPages('WIKI'))
+            wikiPagelists[wikiname]['admin'] = wikiPagelists[wikiname]['admin'].findAll{
+              pageId -&gt;
+                def reference = services.model.resolveDocument(wikiname + ':' + pageId)
+                return !hasRight(reference, Right.ADMIN)
             }
 
         }
@@ -361,7 +468,7 @@ def pageListPerWiki()
 
 def printForm(pagelistPerWiki)
 {
-    
+
     println "{{info}} You need to run this with a user that has programming rights, otherwise it will have no effect. {{/info}}\n\n"
 
     println("""\
@@ -393,14 +500,19 @@ def printForm(pagelistPerWiki)
 &lt;/div&gt;
 """)
         println("&lt;div&gt;")
-        for (page in pagelistPerWiki.get(wikiname)) {
+        def rights = ['programming', 'admin', 'script']
+        rights.each{ right -&gt;
+          def str = right.capitalize()
+          println("&lt;h2&gt; $str right &lt;/h2&gt;")
+          for (page in pagelistPerWiki.get(wikiname).get(right)) {
             println("""\
 &lt;div class=\"page_checkbox_item\"&gt;
 &lt;input type=\"checkbox\" name=\"pagelist\" id=\"page_${wikiname}_${page}\"
        class=\"${wikiname}_page\" value=\"${wikiname}:${page}\"/&gt;
- &lt;a href=\"${xwiki.getURL(wikiname + ':' + page)}?viewer=code\"&gt;${page}&lt;/a&gt; 
+ &lt;a href=\"${xwiki.getURL(wikiname + ':' + page)}?viewer=code\"&gt;${page}&lt;/a&gt;
 &lt;/div&gt;
 """)
+          }
         }
         println("&lt;/div&gt;")
         println("&lt;/fieldset&gt;")
