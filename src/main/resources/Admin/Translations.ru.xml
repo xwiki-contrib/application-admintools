@@ -1,4 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
 
 <xwikidoc version="1.1">
   <web>Admin</web>
@@ -20,7 +40,15 @@
   <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
   <content>admin.admintools=Инструменты администратора
-
 admintools.flushCache.confirm=Подтвердите очистку кэша
-admintools.flushCache.confirmed=Кэш был очищен!</content>
+admintools.flushCache.confirmed=Кэш был очищен!
+admintools.database.tools=Инструменты базы данных
+admintools.database.tools.query=Инструмент для выполнения запросов к базе данных
+admintools.server.tools=Серверные инструменты
+admintools.server.tools.shellCommand=Выполнить консольную команду
+admintools.server.tools.shellCommand.description=Инструмент для запуска консольных команд на сервере ** (работает только на серверах linux) **
+admintools.server.tools.shellCommand.run=Выполнить
+admintools.server.tools.shellCommand.placeholder=Введите консольную команду
+admintools.server.tools.shellCommand.warning=Этот инструмент работает только на серверах Linux. Он может создавать процессы, которые не останавливаются, а затем вы должны найти и уничтожить эти процессы.
+</content>
 </xwikidoc>
