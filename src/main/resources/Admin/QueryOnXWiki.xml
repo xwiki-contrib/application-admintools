@@ -31,7 +31,7 @@
   $sqlTools.getForm($request, $doc, false, true, $xcontext)
   #if($request.query)
     #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
-    #set($results = $sqlTools.getResults($connection, $request.query, true))
+    #set($results = $sqlTools.getResults($connection, $request.query, false))
     = Results =
     $results
   #end

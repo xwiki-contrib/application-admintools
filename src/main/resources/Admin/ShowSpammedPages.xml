@@ -37,7 +37,7 @@
 
   #set($query = "select count(XWO_NAME) as Comments,XWO_NAME as doc from xwikiobjects where XWO_CLASSNAME='XWiki.XWikiComments' GROUP BY XWO_NAME HAVING Comments &gt;= ${threshold};")
   #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
-  #set($results = $sqlTools.getResults($connection, $query, true))
+  #set($results = $sqlTools.getResults($connection, $query, false))
   #if($results.split('\n').size() &gt; 1)
      = Spammed pages of wiki $xcontext.getDatabase() =
      $results

@@ -53,7 +53,7 @@
    #set($col=$arrayline[2].trim().toUpperCase())
    #set($query = "show index from $tab from $wiki where key_name='$key';")
    #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
-   #set($results = $sqlTools.getResults($connection, $query, true))
+   #set($results = $sqlTools.getResults($connection, $query, false))
    ## We only list this index if it's there
    #if(! $results.contains($tab))
      * Index $key on column $col from table $tab doesn't exist!

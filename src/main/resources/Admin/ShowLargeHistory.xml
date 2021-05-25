@@ -34,7 +34,7 @@
 
   #set($query = "select count(r.xwr_docid) as Versions,d.xwd_id,d.xwd_fullname from xwikircs as r,xwikidoc as d where r.xwr_docid=d.xwd_id group by d.xwd_id order by count(r.xwr_docid) DESC limit 20;")
   #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
-  #set($results = $sqlTools.getResults($connection, $query, true))
+  #set($results = $sqlTools.getResults($connection, $query, false))
   = Largest documents of wiki $xcontext.getDatabase() =
   $results
 #else
