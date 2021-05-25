@@ -11,4 +11,4 @@ Some tools to help the administration of XWiki.
 * Minimal XWiki version supported: XWiki 4.5.1
 * Translations: http://l10n.xwiki.org/xwiki/bin/view/Contrib/AdminToolsApplication
 * Sonar Dashboard: N/A
-* Continuous Integration Status: [![Build Status](http://ci.xwiki.org/buildStatus/icon?job=Contrib%20-%20Admin%20Tools%20Application)](http://ci.xwiki.org/job/Contrib%20-%20Admin%20Tools%20Application/)
+* Continuous Integration Status: [![Build Status](https://ci.xwiki.org/buildStatus/icon?job=XWiki+Contrib%2Fapplication-admintools%2Fmaster)](https://ci.xwiki.org/job/XWiki%20Contrib/job/application-admintools/job/master/)
