@@ -47,7 +47,7 @@ admintools.database.tools.query=Инструмент для выполнения
 admintools.server.tools=Серверные инструменты
 admintools.server.tools.shellCommand=Выполнить консольную команду
 admintools.server.tools.shellCommand.description=Инструмент для запуска консольных команд на сервере ** (работает только на серверах linux) **
-admintools.server.tools.shellCommand.run=Выполнить
+admintools.server.tools.shellCommand.run=Запустить
 admintools.server.tools.shellCommand.placeholder=Введите консольную команду
 admintools.server.tools.shellCommand.warning=Этот инструмент работает только на серверах Linux. Он может создавать процессы, которые не останавливаются, а затем вы должны найти и уничтожить эти процессы.
 </content>
