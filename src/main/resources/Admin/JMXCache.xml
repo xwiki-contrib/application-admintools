@@ -54,7 +54,11 @@ names.each {
     println "== Cache: ${name} =="
     println "evictionSize: ${sizes[name]}"
     for(attr in mbean.listAttributeNames()) {
-      println "* ${attr}: ${mbean.getProperty(attr)}"
+      try {
+        println "* ${attr}: ${mbean.getProperty(attr)}"
+      } catch (Exception e) {
+        println "* ${attr}: (% style=\"color:red\"%)N/A(%%)"
+      }
     }
   } else {
     println "* ${name}: size: ${mbean.getProperty("numberOfEntries")}/${sizes[name]}"
