@@ -1,1 +1,54 @@
+<?xml version="1.1" encoding="UTF-8"?>
 
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.1" locale="zh">
+  <web>Admin</web>
+  <name>Translations</name>
+  <language>zh</language>
+  <defaultLanguage/>
+  <translation>1</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <creationDate>1424265793000</creationDate>
+  <parent>Admin.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <date>1424267321000</date>
+  <contentUpdateDate>1424267306000</contentUpdateDate>
+  <version>1.1</version>
+  <title>Translations</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>plain/1.0</syntaxId>
+  <hidden>true</hidden>
+  <content>admin.admintools=管理工具
+### Missing: admintools.flushCache.confirm=Confirm cache flushing
+admintools.flushCache.confirmed=缓存已刷新！
+admintools.database.tools=数据库工具
+### Missing: admintools.database.tools.query=Tool to run queries on the database
+admintools.server.tools=服务器工具
+### Missing: admintools.server.tools.shellCommand=Run Shell Command
+admintools.server.tools.shellCommand.description=在服务器上运行shell命令的工具**(仅适用于linux服务器)**
+admintools.server.tools.shellCommand.run=运行
+admintools.server.tools.shellCommand.placeholder=输入shell命令
+admintools.server.tools.shellCommand.warning=此工具仅适用于Linux服务器。它可以创建不停止的进程，然后找到并杀死这些进程取决于你。
+</content>
+  </xwikidoc>
