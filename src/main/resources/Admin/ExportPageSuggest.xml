@@ -29,7 +29,7 @@
 #set($results = $queryResult.toArray())
     &lt;results type="8"&gt;
     #foreach($res in $results)
-      &lt;rs id="$velocityCount" info=""&gt;$res&lt;/rs&gt;
+      &lt;rs id="$foreach.count" info=""&gt;$res&lt;/rs&gt;
     #end
     &lt;/results&gt;
 {{/velocity}}</content>
