@@ -114,7 +114,7 @@ class SQLTools{
   /**
    * Get Form
    */
-  String getForm(request, doc, withJDBCForm, withQuery, xcontext){
+  String getForm(request, doc, withJDBCForm, withQuery, xcontext, csrfToken){
     def databaseConfiguration = new DatabaseConfiguration(request, xcontext)
     def escapeTool = new EscapeTool()
     def spageUrl = escapeTool.xml(doc.getURL())
@@ -123,6 +123,7 @@ class SQLTools{
     def toReturn = """
       {{html clean=="false"}}
       &lt;form action="${spageUrl}#HResults" class="xform" method="post"&gt;
+        &lt;input type="hidden" name="form_token" value="${csrfToken}" /&gt;
     """;
     // JDB Form (user, password driver, url)
     if(withJDBCForm){

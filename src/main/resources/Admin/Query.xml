@@ -45,12 +45,16 @@
 #if($hasProgramming)
   #set($sqlTools = $xwiki.parseGroovyFromPage('Admin.SQLToolsGroovy'))
   = Query =
-  $sqlTools.getForm($request, $doc, true, true, $xcontext)
+  $sqlTools.getForm($request, $doc, true, true, $xcontext, $services.csrf.token)
   #if($request.query)
-    #set($connection = $sqlTools.getConnectionFromRequest($request))
-    #set($results = $sqlTools.getResults($connection, $request.query, true))
-    = Results =
-    $results
+    #if ($services.csrf.isTokenValid($request.getParameter('form_token')))
+      #set($connection = $sqlTools.getConnectionFromRequest($request))
+      #set($results = $sqlTools.getResults($connection, $request.query, true))
+      = Results =
+      $results
+    #else
+      {{error}}Invalid form token. Please verify the query and resubmit.{{/error}}
+    #end
   #end
 #else
 {{error}}Sorry, you need the programming rights to use this tool{{/error}}

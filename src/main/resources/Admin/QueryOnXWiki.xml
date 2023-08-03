@@ -47,12 +47,16 @@
   #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
   = Query =
   Your database is: **$system**
-  $sqlTools.getForm($request, $doc, false, true, $xcontext)
+  $sqlTools.getForm($request, $doc, false, true, $xcontext, $services.csrf.token)
   #if($request.query)
-    #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
-    #set($results = $sqlTools.getResults($connection, $request.query, false))
-    = Results =
-    $results
+    #if ($services.csrf.isTokenValid($request.getParameter('form_token')))
+      #set($connection = $sqlTools.getXWikiConnection($xwiki, $xcontext))
+      #set($results = $sqlTools.getResults($connection, $request.query, false))
+      = Results =
+      $results
+    #else
+      {{error}}Invalid form token. Please verify the query and resubmit.{{/error}}
+    #end
   #end
 #else
 {{error}}Sorry, you need the programming rights to use this tool{{/error}}
