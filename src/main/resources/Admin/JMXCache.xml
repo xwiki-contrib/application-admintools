@@ -80,7 +80,11 @@ names.each {
       }
     }
   } else {
-    println "* ${name}: size: ${mbean.getProperty("numberOfEntries")}/${sizes[name]}"
+    def numberOfEntries = mbean.getProperty("numberOfEntries")
+    if (numberOfEntries == -1) {
+      numberOfEntries = mbean.getProperty("approximateEntries")
+    }
+    println "* ${name}: size: ${numberOfEntries}/${sizes[name]}"
   }
 }
 
