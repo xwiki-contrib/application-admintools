@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.1" encoding="UTF-8"?>
 
 <!--
  * See the NOTICE file distributed with this work for additional
@@ -40,15 +40,16 @@
   <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
   <content>admin.admintools=관리 도구
-admintools.flushCache.confirm=임시 저장 내용 적용하기
-admintools.flushCache.confirmed=임시 저장 내용이 반영되었습니다!
+admintools.flushCache.confirm=캐시 초기화 확인
+admintools.flushCache.confirmed=캐시 초기화가 완료되었습니다!
 admintools.database.tools=데이터베이스 툴
-admintools.database.tools.query=데이터베이스에 쿼리를 실행하는 툴
+admintools.database.tools.query=데이터베이스에서 쿼리를 실행하기 위한 툴
 admintools.server.tools=서버 툴
 admintools.server.tools.shellCommand=쉘 명령어 실행
-admintools.server.tools.shellCommand.description=서버에서 쉘 명령어를 실행하는 툴 **(리눅스 서버에서만 동작)**
+admintools.server.tools.shellCommand.description=서버에서 쉘 명령어를 실행하기 위한 툴 **(리눅스 서버에서만 작동합니다)**
 admintools.server.tools.shellCommand.run=실행
 admintools.server.tools.shellCommand.placeholder=쉘 명령어 입력
-admintools.server.tools.shellCommand.warning=이 툴은 리눅스 서버에서만 동작합니다. 멈추지 않는 프로세스를 생성할 수 있으며, 그 프로세스를 찾아서 죽이는 것은 사용자의 몫입니다.
+admintools.server.tools.shellCommand.warning=이 툴은 리눅스 서버에서만 작동합니다. 이 툴은 중지되지 않는 프로세스를 생성할 수 있으며, 그 프로세스를 찾아서 종료하는 것은 사용자의 몫입니다.
+admintools.server.tools.shellCommand.invalidToken=유효하지 않은 폼 토큰입니다. 확인 후 다시 입력해 주세요.
 </content>
 </xwikidoc>
