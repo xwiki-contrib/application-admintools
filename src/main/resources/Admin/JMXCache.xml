@@ -42,6 +42,7 @@
 import java.lang.management.ManagementFactory;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+import groovy.jmx.GroovyMBean;
 
 println """* [[Show cache info&gt;&gt;||queryString=""]]"""
 println """* [[Show cache details&gt;&gt;||queryString="details=1"]]"""
