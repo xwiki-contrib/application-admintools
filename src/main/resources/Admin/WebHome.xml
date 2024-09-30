@@ -38,7 +38,7 @@
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
   <hidden>true</hidden>
-  <content>{{include document="Tools" /}}</content>
+  <content>{{include reference="Tools" /}}</content>
   <object>
     <name>Admin.WebHome</name>
     <number>0</number>
