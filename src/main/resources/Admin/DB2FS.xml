@@ -45,7 +45,6 @@
 import com.xpn.xwiki.doc.XWikiAttachment;
 import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.doc.DeletedAttachment;
-import org.xwiki.store.legacy.doc.internal.ListAttachmentArchive;
 import com.xpn.xwiki.store.XWikiAttachmentStoreInterface;
 import org.xwiki.store.legacy.store.internal.FilesystemAttachmentStore;
 import com.xpn.xwiki.store.AttachmentVersioningStore;
@@ -352,7 +351,7 @@ private int doIt(int startAt, int seconds, boolean dryRun, boolean verbose, bool
                         // http://jira.xwiki.org/jira/browse/XWIKI-6199
                         attach.getAttachment_archive().getVersions();
                     } catch (NullPointerException e) {
-                        attach.setAttachment_archive(new ListAttachmentArchive([attach]));
+                        attach.setAttachment_archive(new com.xpn.xwiki.internal.doc.ListAttachmentArchive([attach]));
                     }
                     // Setup the runnables to do the save but don't save just yet.
                     fileAttachStore.getAttachmentContentSaveRunnable(attach, false, xc)
@@ -428,7 +427,7 @@ private int doIt(int startAt, int seconds, boolean dryRun, boolean verbose, bool
                 // http://jira.xwiki.org/jira/browse/XWIKI-6199
                 attach.getAttachment_archive().getVersions();
             } catch (NullPointerException e) {
-                attach.setAttachment_archive(new ListAttachmentArchive([attach]));
+                attach.setAttachment_archive(new com.xpn.xwiki.internal.doc.ListAttachmentArchive([attach]));
             }
             if (!dryRun) {
                 fileBin.saveToRecycleBin(attach,
