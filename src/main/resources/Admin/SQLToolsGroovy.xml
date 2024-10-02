@@ -224,6 +224,13 @@ class SQLTools{
   }
   
   /**
+   * Get XWiki Database System from HibernateStore
+   */
+   String getXWikiDatabaseSystemFromHibernateStore(xcontext){
+     xcontext.context.getWiki().getHibernateStore().getDatabaseMetaData().getDatabaseProductName()
+   }
+
+  /**
    * Get XWiki Connection
    */
   def getXWikiConnection(xwiki, xcontext){
