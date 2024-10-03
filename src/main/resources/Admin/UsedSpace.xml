@@ -59,7 +59,7 @@ __xwikiattrecyclebin__ : Recycle bin of attachments.
 
 #if($hasProgramming)
   #set($sqlTools = $xwiki.parseGroovyFromPage('Admin.SQLToolsGroovy'))
-  #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
+  #set($system = $sqlTools.getXWikiDatabaseSystemFromHibernateStore($xcontext))
   Your database is: **$system**
   #if($system == 'HSQL Database Engine')
     {{warning}}$system is not supported for this action{{/warning}}
