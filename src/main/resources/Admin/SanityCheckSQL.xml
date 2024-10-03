@@ -51,10 +51,6 @@ select * from xwikiattachment where XWA_DOC_ID not in (select XWD_ID from xwikid
 select XWA_ID from xwikiattachment_archive where XWA_ID not in (select XWA_ID from xwikiattachment); 
 #ATTACHMENTS: select "checking for attachment_content where the attachment does not exist anymore
 select XWA_ID from xwikiattachment_content where XWA_ID not in (select XWA_ID from xwikiattachment);
-#ATTACHMENTS: checking for attachment with no attachment archive
-select XWA_ID from xwikiattachment where XWA_ID not in (select XWA_ID from xwikiattachment_archive); 
-#ATTACHMENTS: select "checking for attachment with no attachment content
-select XWA_ID from xwikiattachment where XWA_ID not in (select XWA_ID from xwikiattachment_content); 
 #COMMENTS: checking for comments where the object does not exist anymore
 select XWC_ID from xwikicomments where XWC_ID not in (select XWO_ID from xwikiobjects); 
 #PREFERENCES: checking for preferences where the object does not exist anymore
@@ -268,7 +264,5 @@ select xwd_fullname, xwd_default_language, xwd_language from xwikidoc where (xwd
 #DOCUMENT - Translations: Checking translated documents that are marked original
 select xwd_fullname, xwd_default_language, xwd_language from xwikidoc where NOT (xwd_language = '' OR xwd_language IS NULL) and xwd_translation = 0;
 #DOCUMENT - Translations: Checking orphaned translated document (without an original document)
-select tdoc.xwd_fullname, tdoc.xwd_default_language, tdoc.xwd_language from xwikidoc as tdoc left join xwikidoc as doc on doc.xwd_fullname = tdoc.xwd_fullname and tdoc.xwd_id != doc.xwd_id and doc.xwd_translation != 1 where tdoc.xwd_translation = 1 and doc.xwd_translation IS NULL;
-#DOCUMENT - Check that Parent fields still exist
-select xwd_fullname, xwd_parent from xwikidoc where xwd_parent&lt;&gt;'' and xwd_parent not in (select xwd_fullname from xwikidoc)</content>
+select tdoc.xwd_fullname, tdoc.xwd_default_language, tdoc.xwd_language from xwikidoc as tdoc left join xwikidoc as doc on doc.xwd_fullname = tdoc.xwd_fullname and tdoc.xwd_id != doc.xwd_id and doc.xwd_translation != 1 where tdoc.xwd_translation = 1 and doc.xwd_translation IS NULL;</content>
 </xwikidoc>
