@@ -46,6 +46,8 @@ import com.xpn.xwiki.util.Util;
 import java.text.DecimalFormat;
 import java.lang.management.ManagementFactory;
 import javax.management.MBeanServer;
+import groovy.jmx.GroovyMBean;
+import groovy.xml.XmlParser;
 
 if( System.getProperty('catalina.base') ) {
   appserverpath = System.getProperty('catalina.base')
