@@ -224,9 +224,10 @@ class SQLTools{
   }
   
   /**
-   * Get XWiki Database System from HibernateStore
+   * Get XWiki Database System by extracting product name from database metadata provided by JDBC connection itself
+   * provided by Hibernate
    */
-   String getXWikiDatabaseSystemFromHibernateStore(xcontext){
+   String getXWikiDatabaseSystemFromDatabaseMetadata(xcontext){
      xcontext.context.getWiki().getHibernateStore().getDatabaseMetaData().getDatabaseProductName()
    }
 

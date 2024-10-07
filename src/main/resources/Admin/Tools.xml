@@ -80,9 +80,9 @@ The following pages allow advanced administration of an XWiki or XWiki farm:
 
 #if($hasProgramming)
   #set($sqlTools = $xwiki.parseGroovyFromPage('Admin.SQLToolsGroovy'))
-  #set($system = $sqlTools.getXWikiDatabaseSystem($xwiki, $xcontext))
-  #if($system == "MySQL")
-== MySQL Tools ==
+  #set($system = $sqlTools.getXWikiDatabaseSystemFromDatabaseMetadata($xcontext))
+  #if($system == "MySQL" || $system == "MariaDB")
+== MySQL/MariaDB Tools ==
 
 * [[MySQL Database Encoding Check&gt;&gt;CheckDBEncoding]]: Tool to check the MySQL database encoding
 * [[MySQL Indexes Check&gt;&gt;CheckIndexes]]: Tool to check MySQL indexes
