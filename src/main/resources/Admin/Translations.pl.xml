@@ -42,12 +42,12 @@
   <content>admin.admintools=Narzędzia administracyjne
 admintools.flushCache.confirm=Potwierdź opróżnianie pamięci podręcznej
 admintools.flushCache.confirmed=Pamięć podręczna została opróżniona!
-admintools.database.tools=Narzędzia bazodanowe
+admintools.database.tools=Narzędzia Bazodanowe
 admintools.database.tools.query=Narzędzie do uruchamiania zapytań w bazie danych
 admintools.server.tools=Narzędzia serwerowe
 admintools.server.tools.shellCommand=Uruchom polecenie shell
 admintools.server.tools.shellCommand.description=Narzędzie do uruchamiania poleceń shell na serwerze **(Działa tylko na serwerach linux)**
-admintools.server.tools.shellCommand.run=start
+admintools.server.tools.shellCommand.run=Start
 admintools.server.tools.shellCommand.placeholder=Wprowadź polecenie shell
 admintools.server.tools.shellCommand.warning=To narzędzie działa tylko na serwerach Linux. Może tworzyć procesy, które się nie zatrzymują, od Ciebie zależy, czy je znajdziesz i wyłączysz.
 admintools.server.tools.shellCommand.invalidToken=Nieprawidłowy token formularza. Sprawdź polecenie i prześlij je ponownie.
