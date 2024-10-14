@@ -102,7 +102,7 @@ __xwikiattrecyclebin__ : Recycle bin of attachments.
 == Recommendations ==
 
 #if($fsstore != true)
-{{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This version is available since XWiki 3.4. More information [[here&gt;&gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
+{{warning}}It appears that you're not using the filesystem attachment store feature. You should use it if you plan to have large documents in your wiki. This feature is available since XWiki 3.4. More information [[here&gt;&gt;http://platform.xwiki.org/xwiki/bin/view/AdminGuide/Attachments#HFilesystemAttachmentStore]]{{/warning}}
 #end
 {{/velocity}}</content>
 </xwikidoc>
