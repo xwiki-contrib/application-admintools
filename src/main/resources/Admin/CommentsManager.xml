@@ -21,27 +21,27 @@
 -->
 
 <xwikidoc>
-<web>Admin</web>
-<name>CommentsManager</name>
-<language></language>
-<defaultLanguage/>
-<translation>0</translation>
-<parent>Admin.Tools</parent>
-<creator>xwiki:XWiki.Admin</creator>
-<author>xwiki:XWiki.Admin</author>
-<contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-<creationDate>1378887785000</creationDate>
-<date>1378888133000</date>
-<contentUpdateDate>1378888133000</contentUpdateDate>
-<version>1.1</version>
-<title>CommentsManager</title>
-<template></template>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/2.1</syntaxId>
-<hidden>false</hidden>
+  <web>Admin</web>
+  <name>CommentsManager</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>Admin.Tools</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1378887785000</creationDate>
+  <date>1378888133000</date>
+  <contentUpdateDate>1378888133000</contentUpdateDate>
+  <version>1.1</version>
+  <title>CommentsManager</title>
+  <template/>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>false</hidden>
   <content>{{velocity}}
     #if(! $request.delete)
     {{info}}This app intends to show every comment and delete them if needed.{{/info}}
@@ -51,11 +51,11 @@
     $results.size() comments in this wiki, most recent first:
 
     {{html wiki=true}}
-    &lt;form action="" method="get">
-    &lt;table>
-    &lt;tr>&lt;td>
-    &lt;input type="submit" value="Delete selected comments">
-    &lt;/td>&lt;/tr>
+    &lt;form action="" method="get"&gt;
+    &lt;table&gt;
+    &lt;tr&gt;&lt;td&gt;
+    &lt;input type="submit" value="Delete selected comments"&gt;
+    &lt;/td&gt;&lt;/tr&gt;
 
     #foreach($row in $results)
     #foreach($col in $row)
@@ -73,20 +73,20 @@
     #set($page = $col)
     #end
     #end
-    &lt;tr>&lt;td>
-    Comment on [[$space.$page]] by [[$author]] on $date:&lt;br/>
-    $comment&lt;br/>
+    &lt;tr&gt;&lt;td&gt;
+    Comment on [[$space.$page]] by [[$author]] on $date:&lt;br/&gt;
+    $comment&lt;br/&gt;
     #set($path = "$space;$page;$author")
-    &lt;input type="checkbox" name='delete' value="$path">Delete this comment&lt;/input>
-    &lt;/td>&lt;/tr>
+    &lt;input type="checkbox" name='delete' value="$path"&gt;Delete this comment&lt;/input&gt;
+    &lt;/td&gt;&lt;/tr&gt;
     #end
 
-    &lt;tr>&lt;td>
-    &lt;input type="submit" value="Delete selected comments"/>
-    &lt;/td>&lt;/tr>
+    &lt;tr&gt;&lt;td&gt;
+    &lt;input type="submit" value="Delete selected comments"/&gt;
+    &lt;/td&gt;&lt;/tr&gt;
 
-    &lt;/table>
-    &lt;/form>
+    &lt;/table&gt;
+    &lt;/form&gt;
     {{/html}}
 
     #else
