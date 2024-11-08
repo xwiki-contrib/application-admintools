@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.1" encoding="UTF-8"?>
 
 <!--
  * See the NOTICE file distributed with this work for additional
@@ -40,16 +40,16 @@
   <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
   <content>admin.admintools=管理工具
-admintools.flushCache.confirm=确认清除缓存
+admintools.flushCache.confirm=确认刷新缓存
 admintools.flushCache.confirmed=缓存已刷新！
 admintools.database.tools=数据库工具
-admintools.database.tools.query=数据库查询工具
+admintools.database.tools.query=在数据库上运行查询的工具
 admintools.server.tools=服务器工具
-admintools.server.tools.shellCommand=执行Shell命令
-admintools.server.tools.shellCommand.description=在服务器上运行shell命令的工具**(仅适用于linux服务器)**
+admintools.server.tools.shellCommand=运行 Shell 命令
+admintools.server.tools.shellCommand.description=用于在服务器上运行 shell 命令的工具 **(仅适用于linux服务器)**
 admintools.server.tools.shellCommand.run=运行
-admintools.server.tools.shellCommand.placeholder=输入shell命令
-admintools.server.tools.shellCommand.warning=此工具仅适用于Linux服务器。它可以创建不停止的进程，然后找到并杀死这些进程取决于你。
-admintools.server.tools.shellCommand.invalidToken=无效的令牌。请验证命令再重新提交。
+admintools.server.tools.shellCommand.placeholder=输入 shell 命令
+admintools.server.tools.shellCommand.warning=此工具仅适用于 Linux 服务器。它可以创建不停止的进程，找到并杀死进程这取决于你。
+admintools.server.tools.shellCommand.invalidToken=无效的表单令牌。请验证这个命令并重新提交。
 </content>
 </xwikidoc>
