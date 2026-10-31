@@ -39,17 +39,17 @@
   <minorEdit>false</minorEdit>
   <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
-  <content>### Missing: admin.admintools=
-### Missing: admintools.flushCache.confirm=
-### Missing: admintools.flushCache.confirmed=
-### Missing: admintools.database.tools=
-### Missing: admintools.database.tools.query=
-### Missing: admintools.server.tools=
-### Missing: admintools.server.tools.shellCommand=
-### Missing: admintools.server.tools.shellCommand.description=
-### Missing: admintools.server.tools.shellCommand.run=
-### Missing: admintools.server.tools.shellCommand.placeholder=
-### Missing: admintools.server.tools.shellCommand.warning=
-### Missing: admintools.server.tools.shellCommand.invalidToken=
+  <content>admin.admintools=Administrationsværktøjer
+admintools.flushCache.confirm=Bekræft tømning af cachen
+admintools.flushCache.confirmed=Cachen er tømt!
+admintools.database.tools=Databaseværktøjer
+admintools.database.tools.query=Værktøj til at køre forespørgsler på databasen
+admintools.server.tools=Serverværktøjer
+admintools.server.tools.shellCommand=Kør shell-kommando
+admintools.server.tools.shellCommand.description=Værktøj til at køre shell-kommandoer på serveren **(virker kun på Linux-servere)**
+admintools.server.tools.shellCommand.run=Kør
+admintools.server.tools.shellCommand.placeholder=Angiv shell-kommando
+admintools.server.tools.shellCommand.warning=Dette værktøj virker kun på Linux-servere. Det kan starte processer, som ikke stopper, og så er det op til dig at finde og afslutte dem.
+admintools.server.tools.shellCommand.invalidToken=Ugyldigt formulartoken. Kontrollér kommandoen, og send den igen.
 </content>
 </xwikidoc>
