@@ -1,0 +1,55 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.1" locale="da">
+  <web>Admin</web>
+  <name>Translations</name>
+  <language>da</language>
+  <defaultLanguage>en</defaultLanguage>
+  <translation>1</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <creationDate>1424265793000</creationDate>
+  <parent>Admin.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <date>1424267321000</date>
+  <contentUpdateDate>1424267306000</contentUpdateDate>
+  <version>1.1</version>
+  <title>Translations</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>plain/1.0</syntaxId>
+  <hidden>true</hidden>
+  <content>admin.admintools=Administrationsværktøjer
+admintools.flushCache.confirm=Bekræft tømning af cachen
+admintools.flushCache.confirmed=Cachen er tømt!
+admintools.database.tools=Databaseværktøjer
+admintools.database.tools.query=Værktøj til at køre forespørgsler på databasen
+admintools.server.tools=Serverværktøjer
+admintools.server.tools.shellCommand=Kør shell-kommando
+admintools.server.tools.shellCommand.description=Værktøj til at køre shell-kommandoer på serveren **(virker kun på Linux-servere)**
+admintools.server.tools.shellCommand.run=Kør
+admintools.server.tools.shellCommand.placeholder=Angiv shell-kommando
+admintools.server.tools.shellCommand.warning=Dette værktøj virker kun på Linux-servere. Det kan starte processer, som ikke stopper, og så er det op til dig at finde og afslutte dem.
+admintools.server.tools.shellCommand.invalidToken=Ugyldigt formulartoken. Kontrollér kommandoen, og send den igen.
+</content>
+</xwikidoc>
